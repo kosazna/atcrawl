@@ -4,6 +4,8 @@
 # email: kaznavouridis@gmail.com
 # github: https://github.com/kosazna
 
+# crawler for: https://www.tripadvisor.com
+
 # TripAdvisor Crawler developed on September 2020
 # for academic purposes and not commercial use
 

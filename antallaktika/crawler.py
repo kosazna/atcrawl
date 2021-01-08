@@ -4,6 +4,8 @@
 # email: kaznavouridis@gmail.com
 # github: https://github.com/kosazna
 
+# crawler for: https://www.antallaktikaonline.gr
+
 import re
 import pandas as pd
 from time import sleep

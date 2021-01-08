@@ -340,7 +340,9 @@ class PageBlock:
         if close:
             self.driver.close()
 
-    def export(self, name: str, folder: str, export_type: str = 'csv'):
+    def export(self, name: Union[str, Path],
+               folder: Union[str, Path],
+               export_type: str = 'csv'):
         """
         Creates a pandas dataframe from the collected data dictionary. The
         dataframe index is incremented by 1 and two new columns are added
@@ -360,12 +362,14 @@ class PageBlock:
         else:
             _data = pd.DataFrame.from_dict(self.data)
             _data.index += 1
+            self.df = _data
 
-        if export_type == 'csv':
-            dst = Path(folder).joinpath(f'{name}.csv')
-            _data.to_csv(dst)
-            print(f"Exported csv file at:\n    {dst}\n")
-        else:
-            dst = Path(folder).joinpath(f'{name}.xlsx')
-            _data.to_excel(dst)
-            print(f"Exported excel file at:\n    {dst}\n")
+        if self.df is not None:
+            if export_type == 'csv':
+                dst = Path(folder).joinpath(f'{name}.csv')
+                _data.to_csv(dst)
+                print(f"Exported csv file at:\n    {dst}\n")
+            else:
+                dst = Path(folder).joinpath(f'{name}.xlsx')
+                _data.to_excel(dst)
+                print(f"Exported excel file at:\n    {dst}\n")

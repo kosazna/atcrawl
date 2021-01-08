@@ -1,3 +1,3 @@
 # -*- coding: utf-8 -*-
 
-from crawler import *
+from atcrawl.antallaktika.crawler import *

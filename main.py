@@ -1,25 +1,20 @@
 # -*- coding: utf-8 -*-
 
-import requests
 from atcrawl.antallaktika import *
 
 print(f"atCrawl utilities\n")
 
 if counter < 20:
     url = input("\nGive URL:\n")
-    is_valid_url = requests.get(url).status_code
     ao = None
 
     try:
-        if is_valid_url:
-            ao = PageBlock(url)
-            ao.launch('Chrome', 'chromedriver.exe')
+        ao = PageBlock(url)
+        ao.launch('Chrome', 'chromedriver.exe')
 
-            print("\n\nCrawler is collecting the data...\n\n")
+        print("\n\nCrawler is collecting the data...\n\n")
 
-            ao.collect()
-        else:
-            print("\nNot a valid URL\n")
+        ao.collect()
     except KeyboardInterrupt:
         print("\nProcess cancelled by user\n")
     finally:

@@ -19,6 +19,7 @@ if user_is_licensed():
         print("\nProcess cancelled by user\n")
     finally:
         export = input("\nExport the collected data?\n[y/n]").lower()
+        export_type = input("\nExport csv or excel: (1-csv | 2-xlsx\n")
         if export == 'y':
             _filename = input("\nEnter filename:\n")
             _folder = input("\nDestination folder:\n")
@@ -33,6 +34,9 @@ if user_is_licensed():
             else:
                 filename = _filename
 
-            ao.export(filename, folder)
+            if export_type == '1':
+                ao.export(filename, folder)
+            else:
+                ao.export(filename, folder, 'xlsx')
 else:
     print("[Access denied]")

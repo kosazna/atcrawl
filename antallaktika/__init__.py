@@ -1,17 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from atcrawl.antallaktika.crawler import *
-
-file = Path.home().joinpath("Documents\\.config.txt")
-
-if file.exists():
-    counter = int(file.read_text())
-else:
-    with open(file, 'w') as f:
-        f.write("1")
-    counter = 1
+from getpass import getuser
 
 
-def log(what):
-    with open(file, 'w') as tf:
-        tf.write(str(what))
+li = 'https://raw.githubusercontent.com/' \
+     'kosazna/general/main/atcrawl_license.csv'
+
+
+def user_is_licensed():
+    users = pd.read_csv(li, dtype={'is_licensed': bool}).set_index('user')
+    current_user = getuser()
+    return users.loc[current_user, 'is_licensed']

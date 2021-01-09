@@ -4,7 +4,7 @@ from atcrawl.antallaktika import *
 
 print(f"atCrawl utilities\n")
 
-if counter < 20:
+if user_is_licensed():
     url = input("\nGive URL:\n")
     ao = None
 
@@ -18,7 +18,6 @@ if counter < 20:
     except KeyboardInterrupt:
         print("\nProcess cancelled by user\n")
     finally:
-        log(counter + 1)
         export = input("\nExport the collected data?\n[y/n]").lower()
         if export == 'y':
             _filename = input("\nEnter filename:\n")

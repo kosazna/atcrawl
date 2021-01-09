@@ -185,9 +185,9 @@ class PageBlock:
     def __init__(self, url: str, driver=None):
         self.url = url
         self.driver = driver
-        self.data = {'product_id': list(),
-                     'old_price': list(),
-                     'current_price': list(),
+        self.data = {'article_no': list(),
+                     'retail_price': list(),
+                     'price_after_discount': list(),
                      'availability': list()}
         self.df = None
         self.is_transformed = False
@@ -288,9 +288,9 @@ class PageBlock:
 
     def reset(self):
         self.driver.get(self.url)
-        self.data = {'product_id': list(),
-                     'old_price': list(),
-                     'current_price': list(),
+        self.data = {'article_no': list(),
+                     'retail_price': list(),
+                     'price_after_discount': list(),
                      'availability': list()}
         self.df = None
         self.is_transformed = False

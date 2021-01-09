@@ -307,9 +307,9 @@ class PageBlock:
 
         for element in elements:
             _obj = ElementBlock(element)
-            self.data['product_id'].append(_obj.product_id)
-            self.data['old_price'].append(_obj.old_price)
-            self.data['current_price'].append(_obj.new_price)
+            self.data['article_no'].append(_obj.product_id)
+            self.data['retail_price'].append(_obj.old_price)
+            self.data['price_after_discount'].append(_obj.new_price)
             self.data['availability'].append(_obj.stock)
 
     def collect(self, close=True):
@@ -364,12 +364,16 @@ class PageBlock:
             _data.index += 1
             self.df = _data
 
+        _data['retail_price'] = _data['retail_price'].str.replace('.', ',')
+        _data['price_after_discount'] = _data[
+            'price_after_discount'].str.replace('.', ',')
+
         if self.df is not None:
             if export_type == 'csv':
                 dst = Path(folder).joinpath(f'{name}.csv')
-                _data.to_csv(dst)
+                _data.to_csv(dst, index=False, sep=';')
                 print(f"Exported csv file at:\n    {dst}\n")
             else:
                 dst = Path(folder).joinpath(f'{name}.xlsx')
-                _data.to_excel(dst)
+                _data.to_excel(dst, index=False)
                 print(f"Exported excel file at:\n    {dst}\n")

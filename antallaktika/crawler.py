@@ -182,9 +182,10 @@ class PageBlock:
     COllECT_WAIT = 0.5
     LOADING_WAIT = 5
 
-    def __init__(self, url: str, driver=None):
+    def __init__(self, url: str, name: str, driver=None):
         self.url = url
         self.driver = driver
+        self.name = name
         self.data = {'article_no': list(),
                      'retail_price': list(),
                      'price_after_discount': list(),
@@ -210,6 +211,7 @@ class PageBlock:
     def transform(self):
         if not self.is_transformed:
             self.df = pd.DataFrame.from_dict(self.data)
+            self.df.insert(0, 'brand', self.name)
             self.df.index += 1
 
             self.is_transformed = True
@@ -361,6 +363,7 @@ class PageBlock:
             _data = self.df
         else:
             _data = pd.DataFrame.from_dict(self.data)
+            _data.insert(0, 'brand', self.name)
             _data.index += 1
             self.df = _data
 

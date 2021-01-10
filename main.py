@@ -5,38 +5,34 @@ from atcrawl.antallaktika import *
 print(f"atCrawl utilities\n")
 
 if user_is_licensed():
-    url = input("\nGive URL:\n")
+    url = input("\nΔώσε URL:\n")
+    brand = input("Γράψε το όνομα του brand:\n")
+    _filename = input("Γράψε το όνομα αποθήκευσης του αρχέιου:\n")
+    _folder = input("Σε ποιο φάκελο θέλεις να αποθηκευτεί:\n")
+
+    if _folder == '':
+        folder = Path().cwd()
+    else:
+        folder = _folder
+
+    if _filename == '':
+        filename = 'Collected Data'
+    else:
+        filename = _filename
+
     ao = None
 
     try:
-        ao = PageBlock(url)
+        ao = PageBlock(url, brand)
         ao.launch('Chrome', 'chromedriver.exe')
 
-        print("\n\nCrawler is collecting the data...\n\n")
+        print("\n\nCrawler is collecting the data...\n")
 
         ao.collect()
+        ao.export(filename, folder, 'xlsx')
     except KeyboardInterrupt:
         print("\nProcess cancelled by user\n")
     finally:
-        export = input("\nExport the collected data?\n[y/n]").lower()
-        export_type = input("\nExport csv or excel: (1->csv | 2->xlsx)\n")
-        if export == 'y':
-            _filename = input("\nEnter filename:\n")
-            _folder = input("\nDestination folder:\n")
-
-            if _folder == '':
-                folder = Path().cwd()
-            else:
-                folder = _folder
-
-            if _filename == '':
-                filename = 'Collected Data'
-            else:
-                filename = _filename
-
-            if export_type == '1':
-                ao.export(filename, folder)
-            else:
-                ao.export(filename, folder, 'xlsx')
+        ao.export(filename, folder, 'xlsx')
 else:
     print("[Access denied]")

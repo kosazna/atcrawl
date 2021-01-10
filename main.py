@@ -7,6 +7,19 @@ print(f"atCrawl utilities\n")
 if user_is_licensed():
     url = input("\nΔώσε URL:\n")
     brand = input("\nΓράψε το όνομα του brand:\n")
+
+    discount = input("\nΠοσοστό έκπτωσης (%):\n")
+
+    try:
+        _discount = int(discount)
+    except ValueError:
+        print("Η έκπτωση πρέπει να είναι ακέραιος αριθμός.")
+        _discount = input("\nΠοσοστό έκπτωσης (%):\n")
+
+    while not 0 <= int(_discount) <= 100:
+        print("Το ποσοστό έκπτωσης πρέπει να είναι ανάμεσα στο 0-100.")
+        _discount = input("\nΠοσοστό έκπτωσης (%):\n")
+
     _filename = input("\nΓράψε το όνομα αποθήκευσης του αρχέιου:\n")
     _folder = input("\nΣε ποιο φάκελο θέλεις να αποθηκευτεί:\n")
 
@@ -29,13 +42,13 @@ if user_is_licensed():
         print("\n\nCrawler is collecting the data...\n")
 
         ao.collect()
-        ao.export(filename, folder, 'xlsx')
+        ao.export(filename, folder, 'xlsx', _discount)
 
         sleep(4)
     except KeyboardInterrupt:
         print("\nProcess cancelled by user.\n")
     finally:
-        ao.export(filename, folder, 'xlsx')
+        ao.export(filename, folder, 'xlsx', _discount)
         sleep(4)
 else:
     print("\n[Access denied]\n")

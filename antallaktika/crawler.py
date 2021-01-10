@@ -178,8 +178,8 @@ class ElementBlock:
 
 
 class PageBlock:
-    LAUNCH_WAIT = 3
-    COllECT_WAIT = 0.5
+    LAUNCH_WAIT = 4
+    COllECT_WAIT = 0.8
     LOADING_WAIT = 5
 
     def __init__(self, url: str, name: str, driver=None):
@@ -340,11 +340,13 @@ class PageBlock:
 
     def export(self, name: Union[str, Path],
                folder: Union[str, Path],
-               export_type: str = 'csv'):
+               export_type: str = 'csv',
+               discount: float = 1.0):
         """
         Creates a pandas dataframe from the collected data dictionary. The
         dataframe index is incremented by 1 and two new columns are added
         with the provided hotel name and hotel place.
+
 
         :param name: str
             File name
@@ -352,20 +354,25 @@ class PageBlock:
             Folder path to save the excel file.
         :param export_type: str (default: 'csv')
             Whether to export csv file or excel file
+        :param discount:
         :return: None
         """
+        _data = pd.DataFrame.from_dict(self.data)
 
-        if self.is_transformed:
-            _data = self.df
-        else:
-            _data = pd.DataFrame.from_dict(self.data)
-            _data.insert(0, 'brand', self.name)
-            _data.index += 1
-            self.df = _data
+        discount_rate = (100 - discount) / 100
+
+        new_prices = (_data['retail_price'].astype(
+            float) * discount_rate).round(2).astype('string')
+        col_name = f'price_after_discount_{discount}%'
+        _data.insert(0, 'brand', self.name)
+        _data.insert(4, col_name, new_prices)
+        _data.index += 1
+        self.df = _data
 
         _data['retail_price'] = _data['retail_price'].str.replace('.', ',')
         _data['price_after_discount'] = _data[
             'price_after_discount'].str.replace('.', ',')
+        _data[col_name] = _data[col_name].str.replace('.', ',')
 
         if self.df is not None:
             if export_type == 'csv':

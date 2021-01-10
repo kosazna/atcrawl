@@ -228,10 +228,6 @@ class PageBlock:
         """
         if button == 'Next':
             try:
-                # self.driver.find_element_by_class_name(
-                #     site_map['button_next']['class']).find_element_by_tag_name(
-                #     "a").click()
-
                 to_click = WebDriverWait(self.driver,
                                          PageBlock.LOADING_WAIT).until(
                     ec.element_to_be_clickable(

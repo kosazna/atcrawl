@@ -6,9 +6,9 @@ print(f"atCrawl utilities\n")
 
 if user_is_licensed():
     url = input("\nΔώσε URL:\n")
-    brand = input("Γράψε το όνομα του brand:\n")
-    _filename = input("Γράψε το όνομα αποθήκευσης του αρχέιου:\n")
-    _folder = input("Σε ποιο φάκελο θέλεις να αποθηκευτεί:\n")
+    brand = input("\nΓράψε το όνομα του brand:\n")
+    _filename = input("\nΓράψε το όνομα αποθήκευσης του αρχέιου:\n")
+    _folder = input("\nΣε ποιο φάκελο θέλεις να αποθηκευτεί:\n")
 
     if _folder == '':
         folder = Path().cwd()
@@ -30,9 +30,13 @@ if user_is_licensed():
 
         ao.collect()
         ao.export(filename, folder, 'xlsx')
+
+        sleep(4)
     except KeyboardInterrupt:
-        print("\nProcess cancelled by user\n")
+        print("\nProcess cancelled by user.\n")
     finally:
         ao.export(filename, folder, 'xlsx')
+        sleep(4)
 else:
-    print("[Access denied]")
+    print("\n[Access denied]\n")
+    sleep(4)

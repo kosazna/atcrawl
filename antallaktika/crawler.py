@@ -233,7 +233,9 @@ class PageBlock:
 
                 to_click.click()
                 return True
-            except (NoSuchElementException, TimeoutException):
+            except (NoSuchElementException, TimeoutException) as e:
+                print(e)
+                print("\n\nΗ διαδικασία σταμάτησε.\n\n")
                 return False
         elif button == 'Cookies':
             to_click = WebDriverWait(self.driver,

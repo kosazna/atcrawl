@@ -34,6 +34,7 @@ if user_is_licensed():
         filename = _filename
 
     ao = None
+    export = False
 
     try:
         ao = PageBlock(url, brand)
@@ -44,14 +45,16 @@ if user_is_licensed():
         ao.collect()
         ao.transform(_discount)
         ao.export(filename, folder, 'xlsx')
+        export = True
 
         sleep(4)
     except KeyboardInterrupt:
         print("\nProcess cancelled by user.\n")
     finally:
-        ao.transform(_discount)
-        ao.export(filename, folder, 'xlsx')
-        sleep(4)
+        if not export:
+            ao.transform(_discount)
+            ao.export(filename, folder, 'xlsx')
+            sleep(4)
 else:
     print("\n[Access denied]\n")
     sleep(4)

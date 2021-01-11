@@ -42,13 +42,15 @@ if user_is_licensed():
         print("\n\nCrawler is collecting the data...\n")
 
         ao.collect()
-        ao.export(filename, folder, 'xlsx', _discount)
+        ao.transform(_discount)
+        ao.export(filename, folder, 'xlsx')
 
         sleep(4)
     except KeyboardInterrupt:
         print("\nProcess cancelled by user.\n")
     finally:
-        ao.export(filename, folder, 'xlsx', _discount)
+        ao.transform(_discount)
+        ao.export(filename, folder, 'xlsx')
         sleep(4)
 else:
     print("\n[Access denied]\n")

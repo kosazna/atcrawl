@@ -157,7 +157,7 @@ class ElementBlock:
         old_price = parse(self.soup, 'poldprice')
 
         if old_price is None:
-            return ''
+            return '-1.0'
         return fmtnumber(get_numbers_from_text(old_price))
 
     @property
@@ -165,7 +165,7 @@ class ElementBlock:
         new_price = parse(self.soup, 'pnewprice')
 
         if new_price is None:
-            return ''
+            return '-1.0'
         return fmtnumber(get_numbers_from_text(new_price))
 
     @property
@@ -191,33 +191,31 @@ class PageBlock:
                      'price_after_discount': list(),
                      'availability': list()}
         self.df = None
+        self.dfe = None
         self.is_transformed = False
 
-    @classmethod
-    def change_launch_wait(cls, wait):
-        cls.LAUNCH_WAIT = wait
+    def transform(self, discount: float = 1.0):
+        _data = pd.DataFrame.from_dict(self.data)
 
-    @classmethod
-    def change_collect_wait(cls, wait):
-        cls.COllECT_WAIT = wait
+        discount_rate = (100 - discount) / 100
 
-    def show(self):
-        if self.df is not None:
-            return self.df
-        else:
-            _data = self.transform()
-            return _data
+        new_prices = (_data['retail_price'].astype(
+            float) * discount_rate).round(2).astype('string')
+        col_name = f'price_after_discount_{discount}%'
+        _data.insert(0, 'brand', self.name)
+        _data.insert(4, col_name, new_prices)
+        _data['retail_price'] = _data['retail_price'].astype(float).round(2)
+        _data['price_after_discount'] = _data['price_after_discount'].astype(
+            float).round(2)
+        _data.index += 1
+        self.df = _data
 
-    def transform(self):
-        if not self.is_transformed:
-            self.df = pd.DataFrame.from_dict(self.data)
-            self.df.insert(0, 'brand', self.name)
-            self.df.index += 1
-
-            self.is_transformed = True
-            return self.df
-        else:
-            print("Data already transformed")
+        _data['retail_price'] = _data['retail_price'].astype(
+            'string').str.replace('.', ',')
+        _data['price_after_discount'] = _data[
+            'price_after_discount'].astype('string').str.replace('.', ',')
+        _data[col_name] = _data[col_name].str.replace('.', ',')
+        self.dfe = _data
 
     def click(self, button: str):
         """
@@ -340,8 +338,7 @@ class PageBlock:
 
     def export(self, name: Union[str, Path],
                folder: Union[str, Path],
-               export_type: str = 'csv',
-               discount: float = 1.0):
+               export_type: str = 'csv'):
         """
         Creates a pandas dataframe from the collected data dictionary. The
         dataframe index is incremented by 1 and two new columns are added
@@ -354,32 +351,15 @@ class PageBlock:
             Folder path to save the excel file.
         :param export_type: str (default: 'csv')
             Whether to export csv file or excel file
-        :param discount:
         :return: None
         """
-        _data = pd.DataFrame.from_dict(self.data)
 
-        discount_rate = (100 - discount) / 100
-
-        new_prices = (_data['retail_price'].astype(
-            float) * discount_rate).round(2).astype('string')
-        col_name = f'price_after_discount_{discount}%'
-        _data.insert(0, 'brand', self.name)
-        _data.insert(4, col_name, new_prices)
-        _data.index += 1
-        self.df = _data
-
-        _data['retail_price'] = _data['retail_price'].str.replace('.', ',')
-        _data['price_after_discount'] = _data[
-            'price_after_discount'].str.replace('.', ',')
-        _data[col_name] = _data[col_name].str.replace('.', ',')
-
-        if self.df is not None:
+        if self.dfe is not None:
             if export_type == 'csv':
                 dst = Path(folder).joinpath(f'{name}.csv')
-                _data.to_csv(dst, index=False, sep=';')
+                self.dfe.to_csv(dst, index=False, sep=';')
                 print(f"Exported csv file at:\n    {dst}\n")
             else:
                 dst = Path(folder).joinpath(f'{name}.xlsx')
-                _data.to_excel(dst, index=False)
+                self.dfe.to_excel(dst, index=False)
                 print(f"Exported excel file at:\n    {dst}\n")

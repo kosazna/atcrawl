@@ -56,5 +56,6 @@ if user_is_licensed():
             ao.export(filename, folder, 'xlsx')
             sleep(4)
 else:
-    print("\n[Access denied]\n")
+    print("\nΈχεις αποκλειστεί από την εφαρμογή. "
+          "Επικοινώνησε με τον κατασκευαστή.\n")
     sleep(4)

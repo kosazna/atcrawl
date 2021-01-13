@@ -179,8 +179,8 @@ class ElementBlock:
 
 class PageBlock:
     LAUNCH_WAIT = 4
-    COllECT_WAIT = 0.8
-    LOADING_WAIT = 5
+    COllECT_WAIT = 1
+    LOADING_WAIT = 8
 
     def __init__(self, url: str, name: str, driver=None):
         self.url = url
@@ -216,6 +216,8 @@ class PageBlock:
             'price_after_discount'].astype('string').str.replace('.', ',')
         _data[col_name] = _data[col_name].str.replace('.', ',')
         self.dfe = _data
+        self.dfe = self.dfe.drop_duplicates(subset=['article_no']).reset_index(
+            drop=True)
 
     def click(self, button: str):
         """
@@ -233,10 +235,19 @@ class PageBlock:
 
                 to_click.click()
                 return True
-            except (NoSuchElementException, TimeoutException) as e:
-                print(e)
-                print("\n\nΗ διαδικασία σταμάτησε.\n\n")
-                return False
+            except (NoSuchElementException, TimeoutException):
+                try:
+                    to_click = WebDriverWait(self.driver,
+                                             PageBlock.LOADING_WAIT).until(
+                        ec.element_to_be_clickable(
+                            (By.CLASS_NAME, site_map['button_next']['class'])))
+
+                    to_click.click()
+                    return True
+                except (NoSuchElementException, TimeoutException) as e:
+                    print(e)
+                    print("\n\nΗ διαδικασία σταμάτησε.\n\n")
+                    return False
         elif button == 'Cookies':
             to_click = WebDriverWait(self.driver,
                                      PageBlock.LOADING_WAIT).until(

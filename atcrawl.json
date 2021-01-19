@@ -1,0 +1,16 @@
+{
+	"aznavouridis.k": {
+		"antallaktikaonline.gr": true,
+		"skroutz.gr": true,
+		"tripadvisor.com": true,
+		"booking.com": true,
+		"spitogatos.gr": true
+	},
+	"nikos": {
+		"antallaktikaonline.gr": true,
+		"skroutz.gr": true,
+		"tripadvisor.com": false,
+		"booking.com": false,
+		"spitogatos.gr": false
+	}
+}

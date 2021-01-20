@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from atcrawl.crawlers.antallaktika import *
-from atcrawl.utilities import *
 
-paths = Paths()
 auth = Authorize(AntallaktikaOnline.NAME)
 
 if auth.user_is_licensed():

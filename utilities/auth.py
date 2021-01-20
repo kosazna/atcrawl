@@ -3,7 +3,7 @@
 from getpass import getuser
 import requests
 import json
-from atcrawl.utilities.singleton import Singleton
+from atcrawl.utilities.display import *
 
 
 class Authorize(metaclass=Singleton):
@@ -39,4 +39,4 @@ class Authorize(metaclass=Singleton):
                 self._counter += 1
                 return self._user_access[self._current_user][self._domain]
         except KeyError:
-            print("Access to the service can't be verified. Contact support.")
+            log("Access to the service can't be verified. Contact support.")

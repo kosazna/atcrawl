@@ -12,22 +12,28 @@ from atcrawl.core.product import *
 from selenium.common.exceptions import ElementClickInterceptedException
 
 
-site_map = {'element_block': {'tag': 'div',
-                              'class': 'brand-products'},
-            'pid': {'tag': 'div',
-                    'class': 'nr'},
-            'poldprice': {'tag': 'div',
-                          'class': 'old_price promo'},
-            'pnewprice': {'tag': 'div',
-                          'class': 'price'},
-            'pstock': {'tag': 'span',
-                       'class': 'text_vers'},
-            'bt_next': {'tag': 'span',
-                        'class': 'next'},
-            'bt_cookies': {'tag': 'div',
-                           'class': 'block-cookies__button'},
-            'bt_popup': {'tag': 'a',
-                         'class': 'popup-box-selector__close'}
+site_map = {'filter_block': {'tag': 'h2',
+                             'class': 'scroll-area'},
+            'filter': {'tag': 'a',
+                       'class': 'icon closable-tag'},
+            'products_block': {'tag': 'ol',
+                               'class': 'list cf tile blp-enabled',
+                               'id': 'sku-list'},
+            'product_block': {'tag': 'li',
+                              'class': 'cf card'},
+            'product_img_area': {'tag': 'a',
+                                 'class': 'js-sku-link pic'},
+            'product_img': {'tag': 'img',
+                            'class': ''},
+            'product_name': {'tag': 'a',
+                             'class': 'js-sku-link '},
+            'product_price': {'tag': 'span',
+                              'class': 'unit-price'},
+            'bt_next': {'tag': 'i',
+                        'class': 'icon next-arrow'},
+            'bt_cookies': {'tag': 'button',
+                           'class': 'accept-all'}
+
             }
 
 properties = ['article_no',
@@ -77,7 +83,7 @@ class Skroutz(PageBlock):
             Parser to be used from BeautifulSoup (default: 'lxml')
         :return: None
         """
-        _soup = BeautifulSoup(self.driver.page_source, parser)
+        _soup = BeautifulSoup(self.driver.page_source, method)
         _tag = self.site_map[ProductBlock.NAME]['tag']
         _class = self.site_map[ProductBlock.NAME]['class']
 

@@ -8,6 +8,7 @@ class Paths:
         self._userhome = Path.home()
         self._chrome = self._userhome.joinpath("chromedriver.exe")
         self._firefox = self._userhome.joinpath("geckodriver.exe")
+        self._cwd = Path.cwd()
 
     def get_userhome(self) -> str:
         return str(self._userhome)
@@ -17,3 +18,9 @@ class Paths:
 
     def get_firefox(self) -> str:
         return str(self._chrome)
+
+    def get_cwd(self):
+        return self._cwd
+
+
+paths = Paths()

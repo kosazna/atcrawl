@@ -117,8 +117,11 @@ class PageBlock:
         self.driver.get(self.url)
         sleep(PageBlock.LAUNCH_WAIT)
 
-    def reset(self):
-        self.driver.get(self.url)
+    def reset(self, url=None):
+        if url is None:
+            self.driver.get(self.url)
+        else:
+            self.driver.get(url)
         self.data = {k: list() for k in self.properties}
         self.collected_data = None
         self.transformed_data = None

@@ -37,7 +37,11 @@ site_map = {'filter': {'tag': 'a',
             'bt_next': {'tag': 'i',
                         'class': 'icon next-arrow',
                         'xpath': '//*[@id="categories_show"]'
-                                 '/div[1]/main/section/div[2]/div/ol/li[%s]/a'}}
+                                 '/div[1]/main/section/div[2]/div/ol/li[%s]/a'},
+            'bt_cookies': {'tag': '',
+                           'class': '',
+                           'xpath': '//*[@id="accept-all"]'}
+            }
 
 properties = ['img_source',
               'article_no',
@@ -74,6 +78,13 @@ class Skroutz(PageBlock):
         except NoSuchElementException:
             print("\nΗ διαδικασία σταμάτησε.\n")
             return False
+
+    def click_cookies(self):
+        try:
+            self.driver.find_element(By.XPATH,
+                                     site_map['bt_cookies']['xpath']).click()
+        except NoSuchElementException:
+            pass
 
     def transform(self, discount: int = 1):
         _data = pd.DataFrame.from_dict(self.data)
@@ -121,6 +132,7 @@ class Skroutz(PageBlock):
             self.data['retail_price'].append(_retail)
 
     def collect(self, close=True):
+        self.click_cookies()
         self.find_filters()
         self.scroll_down()
         self.parse()

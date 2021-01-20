@@ -1,6 +1,16 @@
 # -*- coding: utf-8 -*-
 
 import re
+import time
+
+
+def scroll_down(driver, scrollby=1500, wait=0.1):
+    max_y = driver.execute_script("return document.body.scrollHeight")
+    go_y = scrollby
+    while go_y < max_y:
+        driver.execute_script(f"window.scrollTo(0, {go_y});")
+        go_y += scrollby
+        time.sleep(wait)
 
 
 def str2int(string_number: str,

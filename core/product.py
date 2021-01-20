@@ -66,6 +66,9 @@ class PageBlock:
     def collect(self, close=True):
         pass
 
+    def scroll_down(self):
+        scroll_down(self.driver)
+
     def click(self, element: str):
         try:
             to_click = WebDriverWait(self.driver, PageBlock.LOADING_WAIT).until(

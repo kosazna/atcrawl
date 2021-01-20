@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from atcrawl.utilities import *
+import warnings
 
+warnings.filterwarnings('ignore')
 
 if __name__ == "__main__":
 

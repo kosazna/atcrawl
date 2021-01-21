@@ -8,7 +8,7 @@ if auth.user_is_licensed():
     url = input("\nΔώσε URL:\n")
     brand = input("\nΓράψε το όνομα του brand:\n")
 
-    discount = float(validate_input('discount'))
+    discount = int(validate_input('discount'))
 
     _filename = input("\nΓράψε το όνομα αποθήκευσης του αρχείου:\n")
     _folder = validate_path("\nΣε ποιο φάκελο θέλεις να αποθηκευτεί:\n")
@@ -34,6 +34,7 @@ if auth.user_is_licensed():
         ao.transform(brand, discount)
         ao.export(filename, _folder, 'xlsx')
         sleep(4)
+        ao.terminate()
 else:
     print("\nΈχεις αποκλειστεί από την εφαρμογή. "
           "Επικοινώνησε με τον κατασκευαστή.\n")

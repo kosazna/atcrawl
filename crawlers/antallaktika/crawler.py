@@ -8,52 +8,77 @@
 
 
 import pandas as pd
-from atcrawl.core.product import *
-from selenium.common.exceptions import ElementClickInterceptedException
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as ec
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import (NoSuchElementException,
+                                        TimeoutException,
+                                        ElementClickInterceptedException)
+
+from atcrawl.core.parser import *
+from atcrawl.core.driver import *
+from atcrawl.crawlers.antallaktika.settings import *
 
 
-site_map = {'element_block': {'tag': 'div',
-                              'class': 'brand-products'},
-            'pid': {'tag': 'div',
-                    'class': 'nr'},
-            'poldprice': {'tag': 'div',
-                          'class': 'old_price promo'},
-            'pnewprice': {'tag': 'div',
-                          'class': 'price'},
-            'pstock': {'tag': 'span',
-                       'class': 'text_vers'},
-            'bt_next': {'tag': 'span',
-                        'class': 'next'},
-            'bt_cookies': {'tag': 'div',
-                           'class': 'block-cookies__button'},
-            'bt_popup': {'tag': 'a',
-                         'class': 'popup-box-selector__close'}
-            }
+class AntallaktikaOnlineProductContainer:
+    def __init__(self, soup: BeautifulSoup, site_map: dict):
+        self._soup = soup
+        self.site_map = site_map
 
-properties = ['article_no',
-              'retail_price',
-              'price_after_discount',
-              'availability']
+    def get(self, element: str, default: str = '') -> str:
+        _element = parse(soup=self._soup,
+                         element_tag=self.site_map[element].TAG,
+                         element_class=self.site_map[element].CLASS,
+                         text=True)
+
+        if _element is None:
+            return default
+        return _element
 
 
-class AntallaktikaOnline(PageBlock):
+class AntallaktikaOnline(CrawlDriver):
     NAME = "antallaktikaonline.gr"
 
     def __init__(self, url: str, driver=None):
         super().__init__(url=url,
-                         site_map=site_map,
                          driver=driver,
-                         properties=properties)
+                         properties=antallaktika_properties,
+                         waits=antallaktika_waits)
+        self.site_map = antallaktika_site_map
 
-    def transform(self, brand: str, discount: float = 0.0):
+    def click(self, element: str):
+
+        try:
+            to_click = WebDriverWait(self.driver,
+                                     self.wait_times['TIMEOUT']).until(
+                ec.element_to_be_clickable((By.CLASS_NAME,
+                                            self.site_map[element].CLASS)))
+
+            to_click.click()
+            return True
+        except (NoSuchElementException, TimeoutException):
+            try:
+                to_click = WebDriverWait(self.driver,
+                                         self.wait_times['TIMEOUT']).until(
+                    ec.element_to_be_clickable((By.CLASS_NAME,
+                                                self.site_map[element].CLASS)))
+
+                to_click.click()
+                return True
+            except (NoSuchElementException, TimeoutException) as e:
+                print(e)
+                print("\nΗ διαδικασία σταμάτησε.\n")
+                return False
+
+    def transform(self, brand: str, discount: int = 0):
         _data = pd.DataFrame.from_dict(self.data)
         self.collected_data = _data.copy()
 
-        discount_rate = (100 - discount) / 100
+        discount_rate = (100 + discount) / 100
 
         new_prices = (_data['retail_price'].astype(
             float) * discount_rate).round(2).astype('string')
-        col_name = f'price_after_discount_{discount}%'
+        col_name = f'price_after_discount_{+discount}%'
         _data.insert(0, 'brand', brand)
         _data.insert(4, col_name, new_prices)
         _data['retail_price'] = _data['retail_price'].astype(float).round(2)
@@ -71,15 +96,10 @@ class AntallaktikaOnline(PageBlock):
             subset=['article_no']).reset_index(drop=True)
 
     def parse(self, method: str = 'lxml'):
-        """
-        Parses all the elements from a single page.
-        :param method: str
-            Parser to be used from BeautifulSoup (default: 'lxml')
-        :return: None
-        """
+
         _soup = BeautifulSoup(self.driver.page_source, method)
-        _tag = self.site_map[ProductBlock.NAME]['tag']
-        _class = self.site_map[ProductBlock.NAME]['class']
+        _tag = self.site_map['product'].TAG
+        _class = self.site_map['product'].CLASS
 
         elements = multi_parse(soup=_soup,
                                element_tag=_tag,
@@ -87,7 +107,7 @@ class AntallaktikaOnline(PageBlock):
                                text=False)
 
         for element in elements:
-            pb = ProductBlock(element, self.site_map)
+            pb = AntallaktikaOnlineProductContainer(element, self.site_map)
 
             _article_no = pb.get('pid').strip('\n').split(':')[1].strip()
             _retail = fmtnumber(num_from_text(pb.get('poldprice', '-1.0')))
@@ -99,17 +119,7 @@ class AntallaktikaOnline(PageBlock):
             self.data['price_after_discount'].append(_after)
             self.data['availability'].append(_stock)
 
-    def collect(self, accept_cookies=True, close=True):
-        """
-        Collects all reviews from the given hotel url page.
-        It goes through all pages and when finished the webdriver is closed
-        if parameter close is True.
-        :param accept_cookies:
-        :param close: bool
-            Whether to terminate the webdriver session or not.
-            (default: True)
-        :return: None
-        """
+    def collect(self, accept_cookies=True):
         if accept_cookies:
             self.click('bt_cookies')
 
@@ -117,14 +127,11 @@ class AntallaktikaOnline(PageBlock):
 
         try:
             while self.click('bt_next'):
-                sleep(PageBlock.COllECT_WAIT)
+                sleep(self.wait_times['COLLECT_WAIT'])
                 self.parse()
         except ElementClickInterceptedException:
             self.click('bt_popup')
         finally:
             while self.click('bt_next'):
-                sleep(PageBlock.COllECT_WAIT)
+                sleep(self.wait_times['COLLECT_WAIT'])
                 self.parse()
-
-        if close:
-            self.driver.close()

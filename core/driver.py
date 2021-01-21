@@ -3,59 +3,31 @@
 from time import sleep
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as ec
-from selenium.webdriver.common.by import By
-from selenium.common.exceptions import (NoSuchElementException,
-                                        TimeoutException)
+from typing import Union
 
-from atcrawl.core.parser import *
 from atcrawl.utilities import *
 
 
-class ProductBlock:
-    NAME = 'element_block'
-
-    def __init__(self, soup: BeautifulSoup, site_map: dict):
-        self._soup = soup
-        self.site_map = site_map
-
-    def get(self, element: str, default: str = '') -> str:
-        _element = parse(soup=self._soup,
-                         element_tag=self.site_map[element]['tag'],
-                         element_class=self.site_map[element]['class'],
-                         text=True)
-
-        if _element is None:
-            return default
-        return _element
-
-
-class PageBlock:
-    LAUNCH_WAIT = 4
-    COllECT_WAIT = 1
-    LOADING_WAIT = 8
+class CrawlDriver:
+    DEFAULT_WAITS = {'LAUNCH_WAIT': 4,
+                     'COllECT_WAIT': 1,
+                     'TIMEOUT': 8}
 
     def __init__(self,
                  url: str,
-                 site_map: dict,
                  driver=None,
-                 properties: list = None):
+                 properties: list = None,
+                 waits: dict = None):
         self.url = url
-        self.site_map = site_map
         self.driver = driver
         self.properties = properties if properties is not None else list()
+        self.wait_times = waits if waits is not None \
+            else CrawlDriver.DEFAULT_WAITS
 
         self.data = {k: list() for k in self.properties}
 
         self.collected_data = None
         self.transformed_data = None
-
-    def show_collected(self):
-        return self.collected_data
-
-    def show_transformed(self):
-        return self.transformed_data
 
     def transform(self, *args, **kwargs):
         pass
@@ -63,34 +35,17 @@ class PageBlock:
     def parse(self, *args, **kwargs):
         pass
 
-    def collect(self, close=True):
+    def collect(self, *args, **kwargs):
+        pass
+
+    def click(self, *args, **kwargs):
         pass
 
     def scroll_down(self):
         scroll_down(self.driver)
 
-    def click(self, element: str):
-        try:
-            to_click = WebDriverWait(self.driver, PageBlock.LOADING_WAIT).until(
-                ec.element_to_be_clickable((By.CLASS_NAME,
-                                            self.site_map[element]['class'])))
-
-            to_click.click()
-            return True
-        except (NoSuchElementException, TimeoutException):
-            try:
-                to_click = WebDriverWait(self.driver,
-                                         PageBlock.LOADING_WAIT).until(
-                    ec.element_to_be_clickable((By.CLASS_NAME,
-                                                self.site_map[element][
-                                                    'class'])))
-
-                to_click.click()
-                return True
-            except (NoSuchElementException, TimeoutException) as e:
-                print(e)
-                print("\nΗ διαδικασία σταμάτησε.\n")
-                return False
+    def terminate(self):
+        self.driver.close()
 
     def launch(self, browser: str, executable: str):
         """
@@ -115,7 +70,7 @@ class PageBlock:
             return
 
         self.driver.get(self.url)
-        sleep(PageBlock.LAUNCH_WAIT)
+        sleep(self.wait_times['LAUNCH_WAIT'])
 
     def reset(self, url=None):
         if url is None:

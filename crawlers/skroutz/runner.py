@@ -22,7 +22,7 @@ if auth.user_is_licensed():
     while True:
         try:
             log("\n\nCrawler is collecting the data...\n")
-            sk.collect(close=False)
+            sk.collect()
         except KeyboardInterrupt:
             print("\nProcess cancelled by user.\n")
         finally:
@@ -45,7 +45,9 @@ if auth.user_is_licensed():
 
             sk.reset(url)
         else:
+            sk.terminate()
             break
+
 else:
     print("\nΈχεις αποκλειστεί από την εφαρμογή. "
           "Επικοινώνησε με τον κατασκευαστή.\n")

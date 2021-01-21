@@ -30,7 +30,7 @@ def validate_input(text: str) -> str:
                'discount': "\nΠοσοστό έκπτωσης (%):\n"}
 
     approved = {'action': ['1', '2', '3', '4', '5'],
-                'discount': list(map(str, range(101)))}
+                'discount': list(map(str, range(-100, 101)))}
 
     user_action = input(console[text]).upper()
     accepted = ' | '.join(approved[text])

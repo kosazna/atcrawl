@@ -8,97 +8,103 @@
 
 
 import pandas as pd
-from atcrawl.core.product import *
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException
+
+from atcrawl.core.driver import *
+from atcrawl.crawlers.skroutz.settings import *
 
 
-site_map = {'filter': {'tag': 'a',
-                       'class': 'icon closable-tag',
-                       'xpath': '//*[@id="categories_show"]'
-                                '/div[1]/main/section/div[1]/h2'},
-            'sku_list': {'tag': 'ol',
-                         'class': 'list cf tile blp-enabled',
-                         'id': 'sku-list',
-                         'xpath': '//*[@id="sku-list"]/li'},
-            'product_img': {'tag': 'img',
-                            'class': '',
-                            'xpath': '//*[@id="sku-list"]/li[%s]/a/img',
-                            'attribute': 'src'},
-            'product_name': {'tag': 'a',
-                             'class': 'js-sku-link ',
-                             'xpath': '//*[@id="sku-list"]/li[%s]/div/h2/a'},
-            'product_price': {'tag': 'span',
-                              'class': 'unit-price',
-                              'xpath': '//*[@id="sku-list"]'
-                                       '/li[%s]/div/div[2]/div/a'},
-            'num_pages': {'tag': '',
-                          'class': '',
-                          'xpath': '//*[@id="categories_show"]'
-                                   '/div[1]/main/section/div[2]/div/ol/li'},
-            'bt_next': {'tag': 'i',
-                        'class': 'icon next-arrow',
-                        'xpath': '//*[@id="categories_show"]'
-                                 '/div[1]/main/section/div[2]/div/ol/li[%s]/a'},
-            'bt_cookies': {'tag': '',
-                           'class': '',
-                           'xpath': '//*[@id="accept-all"]'}
-            }
+class SkroutzProductContainer:
+    def __init__(self, element):
+        self.element = element
 
-properties = ['img_source',
-              'article_no',
-              'retail_price']
+    def get_img(self):
+        _img = self.element.find_element(By.TAG_NAME, img.TAG)
+
+        return _img.get_attribute(img.ATTRIBUTE)
+
+    def get_name(self):
+        _product = self.element.find_element(By.TAG_NAME, product.TAG)
+
+        return _product.text
+
+    def get_description(self):
+        try:
+            _d = self.element.find_elements(By.TAG_NAME,
+                                            description.TAG)[description.LOC]
+            return _d.text
+        except IndexError:
+            return description.DEFAULT
+
+    def get_price(self):
+        try:
+            _price = self.element.find_elements(By.TAG_NAME,
+                                                price.TAG)[price.LOC].text
+            _retail = fmtnumber(num_from_text(_price))
+            return _retail
+        except IndexError:
+            return price.DEFAULT
+
+    def get_shop(self):
+        try:
+            _shop = self.element.find_elements(By.TAG_NAME,
+                                               shop.TAG)[shop.LOC].text
+            return _shop
+        except IndexError:
+            return shop.DEFAULT
 
 
-class Skroutz(PageBlock):
+class Skroutz(CrawlDriver):
     NAME = "skroutz.gr"
 
     def __init__(self, url: str, driver=None):
         super().__init__(url=url,
-                         site_map=site_map,
                          driver=driver,
-                         properties=properties)
-        self.numfilters = 0
+                         properties=skroutz_properties,
+                         waits=skroutz_waits)
+        self.nfilters = 0
         self.filters = None
 
     def find_filters(self):
         elements = self.driver.find_element(By.XPATH,
-                                            site_map['filter']['xpath'])
-        filters = elements.text.split('\n')
+                                            filters.XPATH)
 
-        self.numfilters = len(filters)
-        self.filters = filters.copy()
+        _filters = elements.text.split('\n')
 
-    def click_next(self):
-        try:
-            num_pages = len(self.driver.find_elements(By.XPATH,
-                                                      site_map['num_pages'][
-                                                          'xpath']))
-            next_xpath = site_map['bt_next']['xpath'] % num_pages
-            self.driver.find_element(By.XPATH, next_xpath).click()
-            return True
-        except NoSuchElementException:
-            print("\nΗ διαδικασία σταμάτησε.\n")
-            return False
+        self.nfilters = len(_filters)
+        self.filters = _filters.copy()
 
-    def click_cookies(self):
-        try:
-            self.driver.find_element(By.XPATH,
-                                     site_map['bt_cookies']['xpath']).click()
-        except NoSuchElementException:
-            pass
+    def click(self, element):
+        if element == 'Next':
+            try:
+                num_pages = len(self.driver.find_elements(By.XPATH,
+                                                          npages.XPATH))
+                bt_next_xpath = bt_next.XPATH % num_pages
+                self.driver.find_element(By.XPATH, bt_next_xpath).click()
+                return True
+            except NoSuchElementException:
+                print("\nΗ διαδικασία σταμάτησε.\n")
+                return False
+        elif element == 'Cookies':
+            try:
+                self.driver.find_element(By.XPATH,
+                                         bt_cookies.XPATH).click()
+            except NoSuchElementException:
+                pass
 
-    def transform(self, discount: int = 1):
+    def transform(self, discount: int = 0):
         _data = pd.DataFrame.from_dict(self.data)
         self.collected_data = _data.copy()
 
-        discount_rate = (100 - discount) / 100
+        discount_rate = (100 + discount) / 100
 
-        new_prices = (_data['retail_price'].astype(
+        new_prices = (_data['price'].astype(
             float) * discount_rate).round(2).astype('string')
-        col_name = f'price_after_discount_{discount}%'
+        col_name = f'price_after_discount_{+discount}%'
         _data[col_name] = new_prices
 
-        _data['retail_price'] = _data['retail_price'].astype(
-            'string').str.replace('.', ',')
+        _data['price'] = _data['price'].astype('string').str.replace('.', ',')
         _data[col_name] = _data[col_name].str.replace('.', ',')
 
         for idx, sfilter in enumerate(self.filters, 1):
@@ -107,40 +113,24 @@ class Skroutz(PageBlock):
 
         self.transformed_data = _data
 
-        self.transformed_data = self.transformed_data.drop_duplicates(
-            subset=['article_no']).reset_index(drop=True)
-
     def parse(self):
-        elements = self.driver.find_elements(By.XPATH,
-                                             site_map['sku_list']['xpath'])
+        elements = self.driver.find_elements(By.XPATH, sku.XPATH)
 
-        for idx, element in enumerate(elements, 1):
-            _name = element.find_element(By.XPATH,
-                                         site_map['product_name'][
-                                             'xpath'] % idx).text
-            _price = element.find_element(By.XPATH,
-                                          site_map['product_price'][
-                                              'xpath'] % idx).text
-            _img = element.find_element(By.XPATH,
-                                        site_map['product_img'][
-                                            'xpath'] % idx).get_attribute('src')
+        for element in elements:
+            obj = SkroutzProductContainer(element)
+            self.data['img'].append(obj.get_img())
+            self.data['product'].append(obj.get_name())
+            self.data['price'].append(obj.get_price())
+            self.data['description'].append(obj.get_description())
+            self.data['shop'].append(obj.get_shop())
 
-            _retail = fmtnumber(num_from_text(_price))
-
-            self.data['img_source'].append(_img)
-            self.data['article_no'].append(_name)
-            self.data['retail_price'].append(_retail)
-
-    def collect(self, close=True):
-        self.click_cookies()
+    def collect(self):
+        self.click('Cookies')
         self.find_filters()
         self.scroll_down()
         self.parse()
 
-        while self.click_next():
-            sleep(0.5)
+        while self.click('Next'):
+            sleep(self.wait_times['COLLECT_WAIT'])
             self.scroll_down()
             self.parse()
-
-        if close:
-            self.driver.close()

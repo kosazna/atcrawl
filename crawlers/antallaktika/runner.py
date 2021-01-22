@@ -3,7 +3,7 @@
 from atcrawl.crawlers.antallaktika import *
 
 
-def run():
+def antallaktika_run():
     authorizer = Authorize("antallaktikaonline.gr")
 
     if authorizer.user_is_licensed():

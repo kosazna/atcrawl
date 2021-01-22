@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
+from atcrawl.utilities import *
+from atcrawl.crawlers.antallaktika.runner import antallaktika_run
+from atcrawl.crawlers.skroutz.runner import skroutz_run
 
 
 if __name__ == "__main__":
     import sys
-    from atcrawl.utilities import *
-    import warnings
-
-    warnings.filterwarnings('ignore')
 
     try:
         mode = str(sys.argv[1])
@@ -19,13 +18,9 @@ if __name__ == "__main__":
         process = validate_input('action')
 
         if process == '1':
-            from atcrawl.crawlers.antallaktika.runner import run
-
-            run()
+            antallaktika_run()
         elif process == '2':
-            from atcrawl.crawlers.skroutz.runner import run
-
-            run()
+            skroutz_run()
         else:
             pass
     else:

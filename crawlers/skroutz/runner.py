@@ -3,7 +3,7 @@
 from atcrawl.crawlers.skroutz import *
 
 
-def run():
+def skroutz_run():
     authorizer = Authorize("skroutz.gr")
 
     if authorizer.user_is_licensed():

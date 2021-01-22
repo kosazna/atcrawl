@@ -13,26 +13,26 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_CrawlerUI(object):
     def setupUi(self, CrawlerUI):
         CrawlerUI.setObjectName("CrawlerUI")
-        CrawlerUI.resize(920, 600)
+        CrawlerUI.resize(766, 461)
         CrawlerUI.setStyleSheet("background-color: rgb(214, 214, 214);")
         self.centralwidget = QtWidgets.QWidget(CrawlerUI)
         self.centralwidget.setObjectName("centralwidget")
         self.label_url = QtWidgets.QLabel(self.centralwidget)
-        self.label_url.setGeometry(QtCore.QRect(10, 70, 31, 31))
+        self.label_url.setGeometry(QtCore.QRect(10, 60, 31, 31))
         font = QtGui.QFont()
         font.setFamily("Century Gothic")
         font.setPointSize(9)
-        font.setBold(False)
+        font.setBold(True)
         font.setItalic(False)
-        font.setWeight(50)
+        font.setWeight(75)
         self.label_url.setFont(font)
         self.label_url.setStyleSheet("")
         self.label_url.setObjectName("label_url")
         self.in_url = QtWidgets.QLineEdit(self.centralwidget)
-        self.in_url.setGeometry(QtCore.QRect(50, 70, 861, 31))
+        self.in_url.setGeometry(QtCore.QRect(50, 60, 711, 31))
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
-        font.setPointSize(9)
+        font.setPointSize(10)
         self.in_url.setFont(font)
         self.in_url.setStyleSheet("background-color: rgb(255, 255, 255);\n"
 "border-width:4px;\n"
@@ -42,7 +42,7 @@ class Ui_CrawlerUI(object):
         self.in_url.setText("")
         self.in_url.setObjectName("in_url")
         self.bt_reset = QtWidgets.QToolButton(self.centralwidget)
-        self.bt_reset.setGeometry(QtCore.QRect(790, 250, 120, 40))
+        self.bt_reset.setGeometry(QtCore.QRect(660, 220, 100, 30))
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
         font.setPointSize(10)
@@ -52,27 +52,27 @@ class Ui_CrawlerUI(object):
         self.bt_reset.setStyleSheet("background-color: rgb(112, 112, 112);\n"
 "color: rgb(255, 255, 255);\n"
 "border-width:10px;\n"
-"border-radius:20px;\n"
+"border-radius:10px;\n"
 "")
         self.bt_reset.setObjectName("bt_reset")
         self.label_brand = QtWidgets.QLabel(self.centralwidget)
-        self.label_brand.setGeometry(QtCore.QRect(10, 200, 51, 31))
+        self.label_brand.setGeometry(QtCore.QRect(10, 180, 51, 31))
         font = QtGui.QFont()
         font.setFamily("Century Gothic")
         font.setPointSize(9)
-        font.setBold(False)
+        font.setBold(True)
         font.setItalic(False)
-        font.setWeight(50)
+        font.setWeight(75)
         self.label_brand.setFont(font)
         self.label_brand.setStyleSheet("")
         self.label_brand.setObjectName("label_brand")
         self.line_1 = QtWidgets.QFrame(self.centralwidget)
-        self.line_1.setGeometry(QtCore.QRect(10, 180, 901, 16))
+        self.line_1.setGeometry(QtCore.QRect(10, 160, 901, 16))
         self.line_1.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_1.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_1.setObjectName("line_1")
         self.bt_launch = QtWidgets.QToolButton(self.centralwidget)
-        self.bt_launch.setGeometry(QtCore.QRect(650, 110, 120, 40))
+        self.bt_launch.setGeometry(QtCore.QRect(550, 100, 100, 30))
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
         font.setPointSize(10)
@@ -82,11 +82,11 @@ class Ui_CrawlerUI(object):
         self.bt_launch.setStyleSheet("background-color: rgb(112, 112, 112);\n"
 "color: rgb(255, 255, 255);\n"
 "border-width:10px;\n"
-"border-radius:20px;\n"
+"border-radius:10px;\n"
 "")
         self.bt_launch.setObjectName("bt_launch")
         self.bt_collect = QtWidgets.QToolButton(self.centralwidget)
-        self.bt_collect.setGeometry(QtCore.QRect(790, 200, 120, 40))
+        self.bt_collect.setGeometry(QtCore.QRect(660, 180, 100, 30))
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
         font.setPointSize(10)
@@ -96,11 +96,11 @@ class Ui_CrawlerUI(object):
         self.bt_collect.setStyleSheet("background-color: rgb(112, 112, 112);\n"
 "color: rgb(255, 255, 255);\n"
 "border-width:10px;\n"
-"border-radius:20px;\n"
+"border-radius:10px;\n"
 "")
         self.bt_collect.setObjectName("bt_collect")
         self.bt_export = QtWidgets.QToolButton(self.centralwidget)
-        self.bt_export.setGeometry(QtCore.QRect(790, 520, 120, 40))
+        self.bt_export.setGeometry(QtCore.QRect(660, 410, 100, 30))
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
         font.setPointSize(10)
@@ -110,14 +110,14 @@ class Ui_CrawlerUI(object):
         self.bt_export.setStyleSheet("background-color: rgb(112, 112, 112);\n"
 "color: rgb(255, 255, 255);\n"
 "border-width:10px;\n"
-"border-radius:20px;\n"
+"border-radius:10px;\n"
 "")
         self.bt_export.setObjectName("bt_export")
         self.in_brand = QtWidgets.QLineEdit(self.centralwidget)
-        self.in_brand.setGeometry(QtCore.QRect(90, 200, 281, 31))
+        self.in_brand.setGeometry(QtCore.QRect(90, 180, 281, 31))
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
-        font.setPointSize(9)
+        font.setPointSize(10)
         self.in_brand.setFont(font)
         self.in_brand.setStyleSheet("background-color: rgb(255, 255, 255);\n"
 "border-width:4px;\n"
@@ -127,21 +127,21 @@ class Ui_CrawlerUI(object):
         self.in_brand.setText("")
         self.in_brand.setObjectName("in_brand")
         self.label_discount = QtWidgets.QLabel(self.centralwidget)
-        self.label_discount.setGeometry(QtCore.QRect(10, 240, 71, 31))
+        self.label_discount.setGeometry(QtCore.QRect(10, 230, 71, 31))
         font = QtGui.QFont()
         font.setFamily("Century Gothic")
         font.setPointSize(9)
-        font.setBold(False)
+        font.setBold(True)
         font.setItalic(False)
-        font.setWeight(50)
+        font.setWeight(75)
         self.label_discount.setFont(font)
         self.label_discount.setStyleSheet("")
         self.label_discount.setObjectName("label_discount")
         self.in_discount = QtWidgets.QLineEdit(self.centralwidget)
-        self.in_discount.setGeometry(QtCore.QRect(90, 240, 71, 31))
+        self.in_discount.setGeometry(QtCore.QRect(90, 230, 71, 31))
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
-        font.setPointSize(9)
+        font.setPointSize(10)
         self.in_discount.setFont(font)
         self.in_discount.setStyleSheet("background-color: rgb(255, 255, 255);\n"
 "border-width:4px;\n"
@@ -151,7 +151,7 @@ class Ui_CrawlerUI(object):
         self.in_discount.setText("")
         self.in_discount.setObjectName("in_discount")
         self.label_pct = QtWidgets.QLabel(self.centralwidget)
-        self.label_pct.setGeometry(QtCore.QRect(170, 240, 21, 31))
+        self.label_pct.setGeometry(QtCore.QRect(170, 230, 21, 31))
         font = QtGui.QFont()
         font.setFamily("Century Gothic")
         font.setPointSize(9)
@@ -162,10 +162,10 @@ class Ui_CrawlerUI(object):
         self.label_pct.setStyleSheet("")
         self.label_pct.setObjectName("label_pct")
         self.in_folder = QtWidgets.QLineEdit(self.centralwidget)
-        self.in_folder.setGeometry(QtCore.QRect(90, 530, 611, 31))
+        self.in_folder.setGeometry(QtCore.QRect(90, 410, 441, 31))
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
-        font.setPointSize(9)
+        font.setPointSize(10)
         self.in_folder.setFont(font)
         self.in_folder.setStyleSheet("background-color: rgb(255, 255, 255);\n"
 "border-width:4px;\n"
@@ -175,32 +175,32 @@ class Ui_CrawlerUI(object):
         self.in_folder.setText("")
         self.in_folder.setObjectName("in_folder")
         self.label_folder = QtWidgets.QLabel(self.centralwidget)
-        self.label_folder.setGeometry(QtCore.QRect(10, 530, 71, 31))
+        self.label_folder.setGeometry(QtCore.QRect(10, 410, 71, 31))
         font = QtGui.QFont()
         font.setFamily("Century Gothic")
         font.setPointSize(9)
-        font.setBold(False)
+        font.setBold(True)
         font.setItalic(False)
-        font.setWeight(50)
+        font.setWeight(75)
         self.label_folder.setFont(font)
         self.label_folder.setStyleSheet("")
         self.label_folder.setObjectName("label_folder")
         self.label_filename = QtWidgets.QLabel(self.centralwidget)
-        self.label_filename.setGeometry(QtCore.QRect(10, 480, 71, 31))
+        self.label_filename.setGeometry(QtCore.QRect(10, 360, 71, 31))
         font = QtGui.QFont()
         font.setFamily("Century Gothic")
         font.setPointSize(9)
-        font.setBold(False)
+        font.setBold(True)
         font.setItalic(False)
-        font.setWeight(50)
+        font.setWeight(75)
         self.label_filename.setFont(font)
         self.label_filename.setStyleSheet("")
         self.label_filename.setObjectName("label_filename")
         self.in_filename = QtWidgets.QLineEdit(self.centralwidget)
-        self.in_filename.setGeometry(QtCore.QRect(90, 480, 561, 31))
+        self.in_filename.setGeometry(QtCore.QRect(90, 360, 441, 31))
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
-        font.setPointSize(9)
+        font.setPointSize(10)
         self.in_filename.setFont(font)
         self.in_filename.setStyleSheet("background-color: rgb(255, 255, 255);\n"
 "border-width:4px;\n"
@@ -210,12 +210,12 @@ class Ui_CrawlerUI(object):
         self.in_filename.setText("")
         self.in_filename.setObjectName("in_filename")
         self.line_2 = QtWidgets.QFrame(self.centralwidget)
-        self.line_2.setGeometry(QtCore.QRect(10, 460, 901, 16))
+        self.line_2.setGeometry(QtCore.QRect(10, 340, 901, 16))
         self.line_2.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_2.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_2.setObjectName("line_2")
         self.label_export = QtWidgets.QLabel(self.centralwidget)
-        self.label_export.setGeometry(QtCore.QRect(10, 430, 121, 31))
+        self.label_export.setGeometry(QtCore.QRect(10, 300, 121, 31))
         font = QtGui.QFont()
         font.setFamily("Century Gothic")
         font.setPointSize(11)
@@ -226,7 +226,7 @@ class Ui_CrawlerUI(object):
         self.label_export.setStyleSheet("")
         self.label_export.setObjectName("label_export")
         self.bt_terminate = QtWidgets.QToolButton(self.centralwidget)
-        self.bt_terminate.setGeometry(QtCore.QRect(790, 110, 120, 40))
+        self.bt_terminate.setGeometry(QtCore.QRect(660, 100, 100, 30))
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
         font.setPointSize(10)
@@ -236,11 +236,11 @@ class Ui_CrawlerUI(object):
         self.bt_terminate.setStyleSheet("background-color: rgb(112, 112, 112);\n"
 "color: rgb(255, 255, 255);\n"
 "border-width:10px;\n"
-"border-radius:20px;\n"
+"border-radius:10px;\n"
 "")
         self.bt_terminate.setObjectName("bt_terminate")
         self.bt_launch_collect = QtWidgets.QToolButton(self.centralwidget)
-        self.bt_launch_collect.setGeometry(QtCore.QRect(750, 350, 161, 41))
+        self.bt_launch_collect.setGeometry(QtCore.QRect(600, 260, 160, 30))
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
         font.setPointSize(10)
@@ -250,11 +250,11 @@ class Ui_CrawlerUI(object):
         self.bt_launch_collect.setStyleSheet("background-color: rgb(112, 112, 112);\n"
 "color: rgb(255, 255, 255);\n"
 "border-width:10px;\n"
-"border-radius:20px;\n"
+"border-radius:10px;\n"
 "")
         self.bt_launch_collect.setObjectName("bt_launch_collect")
         self.label_params = QtWidgets.QLabel(self.centralwidget)
-        self.label_params.setGeometry(QtCore.QRect(10, 150, 121, 31))
+        self.label_params.setGeometry(QtCore.QRect(10, 130, 121, 31))
         font = QtGui.QFont()
         font.setFamily("Century Gothic")
         font.setPointSize(11)
@@ -265,7 +265,7 @@ class Ui_CrawlerUI(object):
         self.label_params.setStyleSheet("")
         self.label_params.setObjectName("label_params")
         self.label_domain = QtWidgets.QLabel(self.centralwidget)
-        self.label_domain.setGeometry(QtCore.QRect(10, 20, 121, 31))
+        self.label_domain.setGeometry(QtCore.QRect(10, 10, 121, 31))
         font = QtGui.QFont()
         font.setFamily("Century Gothic")
         font.setPointSize(11)
@@ -276,12 +276,12 @@ class Ui_CrawlerUI(object):
         self.label_domain.setStyleSheet("")
         self.label_domain.setObjectName("label_domain")
         self.line_3 = QtWidgets.QFrame(self.centralwidget)
-        self.line_3.setGeometry(QtCore.QRect(10, 50, 901, 16))
+        self.line_3.setGeometry(QtCore.QRect(10, 40, 901, 16))
         self.line_3.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_3.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_3.setObjectName("line_3")
         self.check_export = QtWidgets.QCheckBox(self.centralwidget)
-        self.check_export.setGeometry(QtCore.QRect(790, 480, 121, 31))
+        self.check_export.setGeometry(QtCore.QRect(640, 360, 121, 31))
         font = QtGui.QFont()
         font.setFamily("Century Gothic")
         font.setPointSize(10)
@@ -291,31 +291,35 @@ class Ui_CrawlerUI(object):
         self.check_export.setChecked(True)
         self.check_export.setObjectName("check_export")
         self.status = QtWidgets.QLineEdit(self.centralwidget)
-        self.status.setGeometry(QtCore.QRect(70, 110, 61, 31))
+        self.status.setGeometry(QtCore.QRect(70, 100, 71, 30))
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
         font.setPointSize(10)
+        font.setBold(True)
+        font.setWeight(75)
         self.status.setFont(font)
+        self.status.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.status.setStyleSheet("background-color: rgba(253, 4, 50, 0.8);\n"
 "border-width:4px;\n"
 "border-color:black;\n"
-"color: rgb(255, 255, 255);\n"
+"color: rgb(0, 0, 0);\n"
 "border-style:offset;\n"
 "border-radius:10px;")
+        self.status.setAlignment(QtCore.Qt.AlignCenter)
         self.status.setObjectName("status")
         self.label_status = QtWidgets.QLabel(self.centralwidget)
-        self.label_status.setGeometry(QtCore.QRect(10, 110, 51, 31))
+        self.label_status.setGeometry(QtCore.QRect(10, 100, 51, 30))
         font = QtGui.QFont()
         font.setFamily("Century Gothic")
         font.setPointSize(9)
-        font.setBold(False)
+        font.setBold(True)
         font.setItalic(False)
-        font.setWeight(50)
+        font.setWeight(75)
         self.label_status.setFont(font)
         self.label_status.setStyleSheet("")
         self.label_status.setObjectName("label_status")
         self.bt_reset_collect = QtWidgets.QToolButton(self.centralwidget)
-        self.bt_reset_collect.setGeometry(QtCore.QRect(750, 400, 161, 41))
+        self.bt_reset_collect.setGeometry(QtCore.QRect(600, 300, 160, 30))
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
         font.setPointSize(10)
@@ -325,11 +329,11 @@ class Ui_CrawlerUI(object):
         self.bt_reset_collect.setStyleSheet("background-color: rgb(112, 112, 112);\n"
 "color: rgb(255, 255, 255);\n"
 "border-width:10px;\n"
-"border-radius:20px;\n"
+"border-radius:10px;\n"
 "")
         self.bt_reset_collect.setObjectName("bt_reset_collect")
         self.browse_folder = QtWidgets.QToolButton(self.centralwidget)
-        self.browse_folder.setGeometry(QtCore.QRect(700, 530, 31, 30))
+        self.browse_folder.setGeometry(QtCore.QRect(550, 410, 31, 30))
         self.browse_folder.setStyleSheet("background-color: rgb(255, 255, 255);\n"
 "border-width:4px;\n"
 "border-color:black;\n"
@@ -337,7 +341,7 @@ class Ui_CrawlerUI(object):
 "border-radius:10px;")
         self.browse_folder.setObjectName("browse_folder")
         self.list_type = QtWidgets.QComboBox(self.centralwidget)
-        self.list_type.setGeometry(QtCore.QRect(670, 480, 61, 31))
+        self.list_type.setGeometry(QtCore.QRect(540, 360, 51, 31))
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
         font.setPointSize(10)

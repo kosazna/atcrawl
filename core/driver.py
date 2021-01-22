@@ -38,6 +38,9 @@ class CrawlDriver:
     def collect(self, *args, **kwargs):
         pass
 
+    def collect_single(self, *args, **kwargs):
+        pass
+
     def click(self, *args, **kwargs):
         pass
 

@@ -58,7 +58,7 @@ class SkroutzProductContainer:
 class Skroutz(CrawlDriver):
     NAME = "skroutz.gr"
 
-    def __init__(self, url: str, driver=None):
+    def __init__(self, url: str = None, driver=None):
         super().__init__(url=url,
                          driver=driver,
                          properties=skroutz_properties,
@@ -134,3 +134,7 @@ class Skroutz(CrawlDriver):
             sleep(self.wait_times['COLLECT_WAIT'])
             self.scroll_down()
             self.parse()
+
+    def collect_single(self):
+        self.scroll_down()
+        self.parse()

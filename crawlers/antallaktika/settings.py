@@ -4,7 +4,7 @@ from atcrawl.utilities.elements import *
 
 
 antallaktika_waits = {'LAUNCH_WAIT': 4,
-                      'COllECT_WAIT': 1,
+                      'COLLECT_WAIT': 1,
                       'TIMEOUT': 8}
 
 antallaktika_properties = ['article_no',

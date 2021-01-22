@@ -39,7 +39,7 @@ class AntallaktikaOnlineProductContainer:
 class AntallaktikaOnline(CrawlDriver):
     NAME = "antallaktikaonline.gr"
 
-    def __init__(self, url: str, driver=None):
+    def __init__(self, url: str = None, driver=None):
         super().__init__(url=url,
                          driver=driver,
                          properties=antallaktika_properties,
@@ -135,3 +135,6 @@ class AntallaktikaOnline(CrawlDriver):
             while self.click('bt_next'):
                 sleep(self.wait_times['COLLECT_WAIT'])
                 self.parse()
+
+    def collect_single(self):
+        self.parse()

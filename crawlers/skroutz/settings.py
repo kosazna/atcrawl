@@ -4,7 +4,7 @@ from atcrawl.utilities.elements import *
 
 
 skroutz_waits = {'LAUNCH_WAIT': 3,
-                 'COllECT_WAIT': 0.5,
+                 'COLLECT_WAIT': 0.5,
                  'TIMEOUT': 8}
 
 skroutz_properties = ['img',

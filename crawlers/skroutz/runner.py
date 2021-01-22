@@ -2,7 +2,7 @@
 
 from atcrawl.crawlers.skroutz import *
 
-auth = Authorize(Skroutz.NAME)
+auth = Authorize("skroutz.gr")
 
 if auth.user_is_licensed():
     url = input("\nΔώσε URL:\n")

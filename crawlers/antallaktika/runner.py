@@ -2,7 +2,7 @@
 
 from atcrawl.crawlers.antallaktika import *
 
-auth = Authorize(AntallaktikaOnline.NAME)
+auth = Authorize("antallaktikaonline.gr")
 
 if auth.user_is_licensed():
     url = input("\nΔώσε URL:\n")

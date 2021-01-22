@@ -41,6 +41,9 @@ class CrawlDriver:
     def click(self, *args, **kwargs):
         pass
 
+    def set_url(self, url):
+        self.url = url
+
     def scroll_down(self):
         scroll_down(self.driver)
 

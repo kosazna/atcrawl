@@ -22,56 +22,23 @@ class WelcomeUI(Ui_WelcomeUI):
         self.setupUi(window)
         self.ui = None
 
-        self.bt_antallaktika.clicked.connect(self.start_antallaktika)
-        self.bt_skroutz.clicked.connect(self.start_skroutz)
-        self.bt_booking.clicked.connect(self.start_booking)
-        self.bt_tripadvisor.clicked.connect(self.start_tripadvisor)
-        self.bt_spitogatos.clicked.connect(self.start_spitogatos)
+        self.bt_antallaktika.clicked.connect(
+            lambda: self.init_crawler("antallaktikaonline.gr"))
+        self.bt_skroutz.clicked.connect(
+            lambda: self.init_crawler("skroutz.gr"))
+        self.bt_booking.clicked.connect(
+            lambda: self.init_crawler("booking.com"))
+        self.bt_tripadvisor.clicked.connect(
+            lambda: self.init_crawler("tripadvisor.com"))
+        self.bt_spitogatos.clicked.connect(
+            lambda: self.init_crawler("spitogatos.gr"))
 
-    def start_antallaktika(self):
-        authorizer = Authorize('antallaktikaonline.gr')
+    def init_crawler(self, name):
+        authorizer = Authorize(name)
         if authorizer.user_is_licensed():
             self.ui = CrawlerUI()
-            self.ui.set_crawler(AntallaktikaOnline())
+            self.ui.set_crawler(crawler_map[name]())
             self.ui.set_auth(authorizer)
-            self.ui.show()
-        else:
-            show_popup("You are not authorized",
-                       "Contact support")
-
-    def start_skroutz(self):
-        authorizer = Authorize('skroutz.gr')
-        if authorizer.user_is_licensed():
-            self.ui = CrawlerUI()
-            self.ui.set_crawler(Skroutz())
-            self.ui.set_auth(authorizer)
-            self.ui.show()
-        else:
-            show_popup("You are not authorized",
-                       "Contact support")
-
-    def start_booking(self):
-        authorizer = Authorize('booking.com')
-        if authorizer.user_is_licensed():
-            self.ui = CrawlerUI()
-            self.ui.show()
-        else:
-            show_popup("You are not authorized",
-                       "Contact support")
-
-    def start_tripadvisor(self):
-        authorizer = Authorize('tripadvisor.com')
-        if authorizer.user_is_licensed():
-            self.ui = CrawlerUI()
-            self.ui.show()
-        else:
-            show_popup("You are not authorized",
-                       "Contact support")
-
-    def start_spitogatos(self):
-        authorizer = Authorize('spitogatos.gr')
-        if authorizer.user_is_licensed():
-            self.ui = CrawlerUI()
             self.ui.show()
         else:
             show_popup("You are not authorized",
@@ -102,7 +69,25 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         self.bt_export.clicked.connect(self.export)
         self.browse_folder.clicked.connect(self.folder)
 
-        # self.check_export.stateChanged.connect()
+    def change_status(self, status):
+        if status == 'online':
+            self.status.setText(status)
+            self.status.setStyleSheet(
+                "background-color: rgba(80, 244, 20, 0.8);\n"
+                "border-width:4px;\n"
+                "border-color:black;\n"
+                "color: rgb(0, 0, 0);\n"
+                "border-style:offset;\n"
+                "border-radius:10px;")
+        else:
+            self.status.setText(status)
+            self.status.setStyleSheet(
+                "background-color: rgba(253, 4, 50, 0.8);\n"
+                "border-width:4px;\n"
+                "border-color:black;\n"
+                "color: rgb(0, 0, 0);\n"
+                "border-style:offset;\n"
+                "border-radius:10px;")
 
     def set_crawler(self, crawler_obj):
         self.crawler = crawler_obj
@@ -153,15 +138,9 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
             self.driver_status = True
 
             self.status.setText("online")
-            self.status.setStyleSheet(
-                "background-color: rgba(80, 244, 20, 0.8);\n"
-                "border-width:4px;\n"
-                "border-color:black;\n"
-                "color: rgb(0, 0, 0);\n"
-                "border-style:offset;\n"
-                "border-radius:10px;")
+            self.change_status("online")
         else:
-            show_popup("URL is not set. Launch cancelled !",
+            show_popup("URL is not set. Launch cancelled!",
                        "Set the url and then launch.",
                        QMessageBox.Critical)
 
@@ -175,13 +154,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
                 self.driver_status = True
 
                 self.status.setText("online")
-                self.status.setStyleSheet(
-                    "background-color: rgba(80, 244, 20, 0.8);\n"
-                    "border-width:4px;\n"
-                    "border-color:black;\n"
-                    "color: rgb(0, 0, 0);\n"
-                    "border-style:offset;\n"
-                    "border-radius:10px;")
+                self.change_status("online")
 
                 self.collect()
                 self.to_export = True
@@ -189,7 +162,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
                 if self.check_export.isChecked():
                     self.export()
             else:
-                show_popup("URL is not set. Launch cancelled !",
+                show_popup("URL is not set. Launch cancelled!",
                            "Set the url and then launch.",
                            QMessageBox.Critical)
         else:
@@ -262,13 +235,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
             self.crawler.terminate()
             self.driver_status = False
             self.status.setText("offline")
-            self.status.setStyleSheet(
-                "background-color: rgba(253, 4, 50, 0.8);\n"
-                "border-width:4px;\n"
-                "border-color:black;\n"
-                "color: rgb(0, 0, 0);\n"
-                "border-style:offset;\n"
-                "border-radius:10px;")
+            self.change_status("offline")
         else:
             show_popup("Launch the driver first!")
 

@@ -1,19 +1,39 @@
 # -*- coding: utf-8 -*-
 
-from atcrawl.utilities import *
-import warnings
-
-warnings.filterwarnings('ignore')
 
 if __name__ == "__main__":
+    import sys
+    from atcrawl.utilities import *
+    import warnings
 
-    log(f"atCrawl utilities\n")
+    warnings.filterwarnings('ignore')
 
-    process = validate_input('action')
+    try:
+        mode = str(sys.argv[1])
+    except IndexError:
+        mode = "CMD"
 
-    if process == '1':
-        from atcrawl.crawlers.antallaktika import runner
-    elif process == '2':
-        from atcrawl.crawlers.skroutz import runner
+    if mode == 'CMD':
+        log(f"atCrawl utilities\n")
+
+        process = validate_input('action')
+
+        if process == '1':
+            from atcrawl.crawlers.antallaktika.runner import run
+
+            run()
+        elif process == '2':
+            from atcrawl.crawlers.skroutz.runner import run
+
+            run()
+        else:
+            pass
     else:
-        pass
+        from atcrawl.gui import *
+
+        app = QtWidgets.QApplication(sys.argv)
+        main_window = QtWidgets.QMainWindow()
+
+        welcome_ui = WelcomeUI(main_window)
+        main_window.show()
+        sys.exit(app.exec_())

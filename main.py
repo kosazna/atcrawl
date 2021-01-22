@@ -11,7 +11,7 @@ if __name__ == "__main__":
     try:
         mode = str(sys.argv[1])
     except IndexError:
-        mode = "CMD"
+        mode = "GUI"
 
     if mode == 'CMD':
         log(f"atCrawl utilities\n")

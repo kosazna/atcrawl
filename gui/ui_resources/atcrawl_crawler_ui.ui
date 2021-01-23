@@ -138,7 +138,7 @@ border-radius:10px;
     <property name="geometry">
      <rect>
       <x>500</x>
-      <y>100</y>
+      <y>110</y>
       <width>100</width>
       <height>30</height>
      </rect>
@@ -298,7 +298,7 @@ border-radius:10px;</string>
    <widget class="QLabel" name="label_pct">
     <property name="geometry">
      <rect>
-      <x>170</x>
+      <x>160</x>
       <y>230</y>
       <width>21</width>
       <height>31</height>
@@ -307,7 +307,7 @@ border-radius:10px;</string>
     <property name="font">
      <font>
       <family>Century Gothic</family>
-      <pointsize>9</pointsize>
+      <pointsize>11</pointsize>
       <weight>50</weight>
       <italic>false</italic>
       <bold>false</bold>
@@ -318,6 +318,9 @@ border-radius:10px;</string>
     </property>
     <property name="text">
      <string>%</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
    <widget class="QLineEdit" name="in_folder">
@@ -492,7 +495,7 @@ border-radius:10px;
     <property name="geometry">
      <rect>
       <x>610</x>
-      <y>100</y>
+      <y>110</y>
       <width>160</width>
       <height>30</height>
      </rect>
@@ -582,9 +585,9 @@ border-radius:10px;
    <widget class="QCheckBox" name="check_export">
     <property name="geometry">
      <rect>
-      <x>620</x>
+      <x>650</x>
       <y>360</y>
-      <width>151</width>
+      <width>121</width>
       <height>31</height>
      </rect>
     </property>

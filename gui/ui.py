@@ -210,16 +210,12 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
 
             if self.url is not None and self.url != '':
                 self.crawler.set_url(self.url)
-                self.crawler.launch('Chrome', self.paths.get_chrome())
+                self.crawler.launch('Chrome', paths.get_chrome())
                 self.driver_status = True
                 self.change_browser_status("online")
                 self.change_crawler_status('running')
                 self.collect()
                 self.change_crawler_status('idle')
-                self.to_export = True
-                if self.check_export.isChecked():
-                    self.export()
-
                 self.count_items.setText(self.count_parsed())
             else:
                 show_popup("URL is not set. Launch cancelled!",

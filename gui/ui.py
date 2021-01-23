@@ -230,7 +230,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         if self.driver_status:
             if self.auth.user_is_licensed():
                 self.change_crawler_status('running')
-                self.crawler.collect()
+                self.crawler.collect_batch()
                 self.change_crawler_status('idle')
                 self.to_export = True
                 if self.check_export.isChecked():

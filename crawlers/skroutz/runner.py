@@ -24,7 +24,7 @@ def skroutz_run():
         while True:
             try:
                 log("\n\nCrawler is collecting the data...\n")
-                sk.collect()
+                sk.collect_batch()
             except KeyboardInterrupt:
                 print("\nProcess cancelled by user.\n")
             finally:

@@ -43,14 +43,14 @@ class AntallaktikaOnline(CrawlDriver):
         super().__init__(url=url,
                          driver=driver,
                          properties=antallaktika_properties,
-                         waits=antallaktika_waits)
+                         standby_times=antallaktika_standby)
         self.site_map = antallaktika_site_map
 
     def click(self, element: str):
 
         try:
             to_click = WebDriverWait(self.driver,
-                                     self.wait_times['TIMEOUT']).until(
+                                     self.standby.TIMEOUT).until(
                 ec.element_to_be_clickable((By.CLASS_NAME,
                                             self.site_map[element].CLASS)))
 
@@ -59,7 +59,7 @@ class AntallaktikaOnline(CrawlDriver):
         except (NoSuchElementException, TimeoutException):
             try:
                 to_click = WebDriverWait(self.driver,
-                                         self.wait_times['TIMEOUT']).until(
+                                         self.standby.TIMEOUT).until(
                     ec.element_to_be_clickable((By.CLASS_NAME,
                                                 self.site_map[element].CLASS)))
 
@@ -101,12 +101,12 @@ class AntallaktikaOnline(CrawlDriver):
         _tag = self.site_map['product'].TAG
         _class = self.site_map['product'].CLASS
 
-        elements = multi_parse(soup=_soup,
-                               element_tag=_tag,
-                               element_class=_class,
-                               text=False)
+        _elements = multi_parse(soup=_soup,
+                                element_tag=_tag,
+                                element_class=_class,
+                                text=False)
 
-        for element in elements:
+        for element in _elements:
             pb = AntallaktikaOnlineProductContainer(element, self.site_map)
 
             _article_no = pb.get('pid').strip('\n').split(':')[1].strip()
@@ -119,7 +119,7 @@ class AntallaktikaOnline(CrawlDriver):
             self.data['price_after_discount'].append(_after)
             self.data['availability'].append(_stock)
 
-    def collect(self, accept_cookies=True):
+    def collect_batch(self, accept_cookies=True):
         if accept_cookies:
             self.click('bt_cookies')
 
@@ -127,14 +127,15 @@ class AntallaktikaOnline(CrawlDriver):
 
         try:
             while self.click('bt_next'):
-                sleep(self.wait_times['COLLECT_WAIT'])
+                sleep(self.standby.COLLECT)
                 self.parse()
         except ElementClickInterceptedException:
             self.click('bt_popup')
         finally:
             while self.click('bt_next'):
-                sleep(self.wait_times['COLLECT_WAIT'])
+                sleep(self.standby.COLLECT)
                 self.parse()
 
     def collect_single(self):
+        sleep(self.standby.COLLECT)
         self.parse()

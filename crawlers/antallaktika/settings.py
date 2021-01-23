@@ -3,9 +3,9 @@
 from atcrawl.utilities.elements import *
 
 
-antallaktika_waits = {'LAUNCH_WAIT': 4,
-                      'COLLECT_WAIT': 1,
-                      'TIMEOUT': 8}
+antallaktika_standby = Standby(LAUNCH=4,
+                               COLLECT=1,
+                               TIMEOUT=8)
 
 antallaktika_properties = ['article_no',
                            'retail_price',

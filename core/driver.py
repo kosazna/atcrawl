@@ -3,25 +3,24 @@
 from time import sleep
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from typing import Union
 
 from atcrawl.utilities import *
 
 
 class CrawlDriver:
-    DEFAULT_WAITS = {'LAUNCH_WAIT': 4,
-                     'COllECT_WAIT': 1,
-                     'TIMEOUT': 8}
+    DEFAULT_WAITS = Standby(LAUNCH=4,
+                            COLLECT=1,
+                            TIMEOUT=8)
 
     def __init__(self,
                  url: str,
                  driver=None,
                  properties: list = None,
-                 waits: dict = None):
+                 standby_times: Standby = None):
         self.url = url
         self.driver = driver
         self.properties = properties if properties is not None else list()
-        self.wait_times = waits if waits is not None \
+        self.standby = standby_times if standby_times is not None \
             else CrawlDriver.DEFAULT_WAITS
 
         self.data = {k: list() for k in self.properties}
@@ -35,7 +34,7 @@ class CrawlDriver:
     def parse(self, *args, **kwargs):
         pass
 
-    def collect(self, *args, **kwargs):
+    def collect_batch(self, *args, **kwargs):
         pass
 
     def collect_single(self, *args, **kwargs):
@@ -76,7 +75,7 @@ class CrawlDriver:
             return
 
         self.driver.get(self.url)
-        sleep(self.wait_times['LAUNCH_WAIT'])
+        sleep(self.standby.LAUNCH)
 
     def reset(self, url=None):
         if url is None:

@@ -39,6 +39,7 @@ class WelcomeUI(Ui_WelcomeUI):
             self.ui = CrawlerUI()
             self.ui.set_crawler(crawler_map[name]())
             self.ui.set_auth(authorizer)
+            self.ui.mask_brand()
             self.ui.show()
         else:
             show_popup("You are not authorized",
@@ -70,6 +71,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         self.folder_name = None
         self.driver_status = False
         self.to_export = False
+        self.nitems = 0
 
         self.bt_launch.clicked.connect(self.launch)
         self.bt_terminate.clicked.connect(self.terminate)
@@ -79,6 +81,15 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         self.bt_reset_collect.clicked.connect(self.reset_collect)
         self.bt_export.clicked.connect(self.export)
         self.browse_folder.clicked.connect(self.folder)
+
+    def mask_brand(self):
+        if self.crawler.NAME == 'skroutz.gr':
+            self.in_brand.setStyleSheet(
+                "background-color: rgba(112, 112, 112, 0.8);\n"
+                "border-width:4px;\n"
+                "border-color:black;\n"
+                "border-style:offset;\n"
+                "border-radius:10px;")
 
     def change_browser_status(self, status):
         if status == 'online':
@@ -128,6 +139,11 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
                 "color: rgb(0, 0, 0);\n"
                 "border-style:offset;\n"
                 "border-radius:10px;")
+
+    def count_parsed(self):
+        dd = self.crawler.data
+        self.nitems = str(len(dd[list(dd.keys())[0]]))
+        return self.nitems
 
     def set_crawler(self, crawler_obj):
         self.crawler = crawler_obj
@@ -203,6 +219,8 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
                 self.to_export = True
                 if self.check_export.isChecked():
                     self.export()
+
+                self.count_items.setText(self.count_parsed())
             else:
                 show_popup("URL is not set. Launch cancelled!",
                            "Set the url and then launch.",
@@ -221,6 +239,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
                 self.to_export = True
                 if self.check_export.isChecked():
                     self.export()
+                self.count_items.setText(self.count_parsed())
             else:
                 show_popup("You are not authorized",
                            "Contact support",
@@ -258,6 +277,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
                 self.crawler.reset(_url)
 
             self.to_export = False
+            self.count_items.setText(self.count_parsed())
         else:
             show_popup("Launch the driver first!")
 
@@ -268,6 +288,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
                 self.change_crawler_status('running')
                 self.collect()
                 self.change_crawler_status('idle')
+                self.count_items.setText(self.count_parsed())
             else:
                 show_popup("You are not authorized",
                            "Contact support",

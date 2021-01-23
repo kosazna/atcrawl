@@ -248,7 +248,7 @@ border-radius:10px;</string>
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>230</y>
+      <y>220</y>
       <width>71</width>
       <height>31</height>
      </rect>
@@ -273,7 +273,7 @@ border-radius:10px;</string>
     <property name="geometry">
      <rect>
       <x>90</x>
-      <y>230</y>
+      <y>220</y>
       <width>71</width>
       <height>31</height>
      </rect>
@@ -299,7 +299,7 @@ border-radius:10px;</string>
     <property name="geometry">
      <rect>
       <x>160</x>
-      <y>230</y>
+      <y>220</y>
       <width>21</width>
       <height>31</height>
      </rect>
@@ -807,6 +807,56 @@ border-radius:10px;</string>
     </property>
     <property name="text">
      <string>Crawler</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_items">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>260</y>
+      <width>71</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Century Gothic</family>
+      <pointsize>9</pointsize>
+      <weight>50</weight>
+      <italic>false</italic>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="text">
+     <string>Items</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="count_items">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>260</y>
+      <width>81</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Century Gothic</family>
+      <pointsize>11</pointsize>
+      <weight>75</weight>
+      <italic>false</italic>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="text">
+     <string>0</string>
     </property>
    </widget>
   </widget>

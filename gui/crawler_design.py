@@ -291,23 +291,23 @@ class Ui_CrawlerUI(object):
         self.check_export.setFont(font)
         self.check_export.setChecked(True)
         self.check_export.setObjectName("check_export")
-        self.status = QtWidgets.QLineEdit(self.centralwidget)
-        self.status.setGeometry(QtCore.QRect(70, 100, 71, 30))
+        self.status_browser = QtWidgets.QLineEdit(self.centralwidget)
+        self.status_browser.setGeometry(QtCore.QRect(70, 100, 71, 30))
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
         font.setPointSize(10)
         font.setBold(True)
         font.setWeight(75)
-        self.status.setFont(font)
-        self.status.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.status.setStyleSheet("background-color: rgba(253, 4, 50, 0.8);\n"
+        self.status_browser.setFont(font)
+        self.status_browser.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.status_browser.setStyleSheet("background-color: rgba(253, 4, 50, 0.8);\n"
 "border-width:4px;\n"
 "border-color:black;\n"
 "color: rgb(0, 0, 0);\n"
 "border-style:offset;\n"
 "border-radius:10px;")
-        self.status.setAlignment(QtCore.Qt.AlignCenter)
-        self.status.setObjectName("status")
+        self.status_browser.setAlignment(QtCore.Qt.AlignCenter)
+        self.status_browser.setObjectName("status_browser")
         self.label_status = QtWidgets.QLabel(self.centralwidget)
         self.label_status.setGeometry(QtCore.QRect(10, 100, 51, 30))
         font = QtGui.QFont()
@@ -357,6 +357,34 @@ class Ui_CrawlerUI(object):
         self.list_type.setObjectName("list_type")
         self.list_type.addItem("")
         self.list_type.addItem("")
+        self.status_crawler = QtWidgets.QLineEdit(self.centralwidget)
+        self.status_crawler.setGeometry(QtCore.QRect(220, 100, 71, 30))
+        font = QtGui.QFont()
+        font.setFamily("Segoe UI")
+        font.setPointSize(10)
+        font.setBold(True)
+        font.setWeight(75)
+        self.status_crawler.setFont(font)
+        self.status_crawler.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.status_crawler.setStyleSheet("background-color:rgba(253, 4, 50, 0.8);\n"
+"border-width:4px;\n"
+"border-color:black;\n"
+"color: rgb(0, 0, 0);\n"
+"border-style:offset;\n"
+"border-radius:10px;")
+        self.status_crawler.setAlignment(QtCore.Qt.AlignCenter)
+        self.status_crawler.setObjectName("status_crawler")
+        self.label_crawler = QtWidgets.QLabel(self.centralwidget)
+        self.label_crawler.setGeometry(QtCore.QRect(160, 100, 51, 30))
+        font = QtGui.QFont()
+        font.setFamily("Century Gothic")
+        font.setPointSize(9)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(50)
+        self.label_crawler.setFont(font)
+        self.label_crawler.setStyleSheet("")
+        self.label_crawler.setObjectName("label_crawler")
         CrawlerUI.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(CrawlerUI)
         self.statusbar.setObjectName("statusbar")
@@ -384,12 +412,14 @@ class Ui_CrawlerUI(object):
         self.label_params.setText(_translate("CrawlerUI", "Parameters"))
         self.label_domain.setText(_translate("CrawlerUI", "Domain"))
         self.check_export.setText(_translate("CrawlerUI", "export on finish"))
-        self.status.setText(_translate("CrawlerUI", "offline"))
-        self.label_status.setText(_translate("CrawlerUI", "Status"))
+        self.status_browser.setText(_translate("CrawlerUI", "offline"))
+        self.label_status.setText(_translate("CrawlerUI", "Browser"))
         self.bt_reset_collect.setText(_translate("CrawlerUI", "reset and collect"))
         self.browse_folder.setText(_translate("CrawlerUI", "..."))
         self.list_type.setItemText(0, _translate("CrawlerUI", "xlsx"))
         self.list_type.setItemText(1, _translate("CrawlerUI", "csv"))
+        self.status_crawler.setText(_translate("CrawlerUI", "offline"))
+        self.label_crawler.setText(_translate("CrawlerUI", "Crawler"))
 
 
 if __name__ == "__main__":

@@ -45,6 +45,17 @@ class WelcomeUI(Ui_WelcomeUI):
                        "Contact support")
 
 
+# class Worker(QObject):
+#     finished = pyqtSignal()
+#     progress = pyqtSignal(int)
+#
+#     def run(self):
+#         for i in range(5):
+#             sleep(1)
+#             self.progress.emit(i + 1)
+#         self.finished.emit()
+
+
 class CrawlerUI(QMainWindow, Ui_CrawlerUI):
     def __init__(self):
         QMainWindow.__init__(self)
@@ -69,10 +80,10 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         self.bt_export.clicked.connect(self.export)
         self.browse_folder.clicked.connect(self.folder)
 
-    def change_status(self, status):
+    def change_browser_status(self, status):
         if status == 'online':
-            self.status.setText(status)
-            self.status.setStyleSheet(
+            self.status_browser.setText(status)
+            self.status_browser.setStyleSheet(
                 "background-color: rgba(80, 244, 20, 0.8);\n"
                 "border-width:4px;\n"
                 "border-color:black;\n"
@@ -80,9 +91,38 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
                 "border-style:offset;\n"
                 "border-radius:10px;")
         else:
-            self.status.setText(status)
-            self.status.setStyleSheet(
+            self.status_browser.setText(status)
+            self.status_browser.setStyleSheet(
                 "background-color: rgba(253, 4, 50, 0.8);\n"
+                "border-width:4px;\n"
+                "border-color:black;\n"
+                "color: rgb(0, 0, 0);\n"
+                "border-style:offset;\n"
+                "border-radius:10px;")
+
+    def change_crawler_status(self, status):
+        if status == 'running':
+            self.status_crawler.setText(status)
+            self.status_crawler.setStyleSheet(
+                "background-color: rgba(80, 244, 20, 0.8);\n"
+                "border-width:4px;\n"
+                "border-color:black;\n"
+                "color: rgb(0, 0, 0);\n"
+                "border-style:offset;\n"
+                "border-radius:10px;")
+        elif status == 'offline':
+            self.status_crawler.setText(status)
+            self.status_crawler.setStyleSheet(
+                "background-color: rgba(253, 4, 50, 0.8);\n"
+                "border-width:4px;\n"
+                "border-color:black;\n"
+                "color: rgb(0, 0, 0);\n"
+                "border-style:offset;\n"
+                "border-radius:10px;")
+        else:
+            self.status_crawler.setText(status)
+            self.status_crawler.setStyleSheet(
+                "background-color: rgba(208, 243, 33, 0.8);\n"
                 "border-width:4px;\n"
                 "border-color:black;\n"
                 "color: rgb(0, 0, 0);\n"
@@ -104,9 +144,11 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
 
     def get_folder(self):
         _folder = self.in_folder.text()
+
         if _folder == '':
             self.folder_name = paths.get_cwd()
-        self.folder_name = _folder
+        else:
+            self.folder_name = _folder
 
         return self.folder_name
 
@@ -114,7 +156,8 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         _filename = self.in_filename.text()
         if _filename == '':
             self.file_name = 'Collected_Data'
-        self.file_name = _filename
+        else:
+            self.file_name = _filename
 
         return self.file_name
 
@@ -122,7 +165,8 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         _discount = self.in_discount.text()
         if _discount == '':
             self.discount = 0
-        self.discount = int(_discount)
+        else:
+            self.discount = int(_discount)
         return self.discount
 
     def get_brand(self):
@@ -137,8 +181,8 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
             self.crawler.launch('Chrome', paths.get_chrome())
             self.driver_status = True
 
-            self.status.setText("online")
-            self.change_status("online")
+            self.change_browser_status("online")
+            self.change_crawler_status('idle')
         else:
             show_popup("URL is not set. Launch cancelled!",
                        "Set the url and then launch.",
@@ -152,13 +196,11 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
                 self.crawler.set_url(self.url)
                 self.crawler.launch('Chrome', self.paths.get_chrome())
                 self.driver_status = True
-
-                self.status.setText("online")
-                self.change_status("online")
-
+                self.change_browser_status("online")
+                self.change_crawler_status('running')
                 self.collect()
+                self.change_crawler_status('idle')
                 self.to_export = True
-
                 if self.check_export.isChecked():
                     self.export()
             else:
@@ -173,9 +215,10 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
     def collect(self):
         if self.driver_status:
             if self.auth.user_is_licensed():
+                self.change_crawler_status('running')
                 self.crawler.collect()
+                self.change_crawler_status('idle')
                 self.to_export = True
-
                 if self.check_export.isChecked():
                     self.export()
             else:
@@ -222,7 +265,9 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         if self.driver_status:
             if self.auth.user_is_licensed():
                 self.reset()
+                self.change_crawler_status('running')
                 self.collect()
+                self.change_crawler_status('idle')
             else:
                 show_popup("You are not authorized",
                            "Contact support",
@@ -234,8 +279,8 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         if self.driver_status:
             self.crawler.terminate()
             self.driver_status = False
-            self.status.setText("offline")
-            self.change_status("offline")
+            self.change_browser_status("offline")
+            self.change_crawler_status("offline")
         else:
             show_popup("Launch the driver first!")
 

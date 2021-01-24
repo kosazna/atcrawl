@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5.QtWidgets import QFileDialog, QMainWindow, QMessageBox
+from PyQt5.QtCore import pyqtSlot, QThreadPool
 from atcrawl.gui.welcome_design import *
 from atcrawl.gui.crawler_design import *
 from atcrawl.crawlers import *
@@ -46,15 +47,48 @@ class WelcomeUI(Ui_WelcomeUI):
                        "Contact support")
 
 
-# class Worker(QObject):
-#     finished = pyqtSignal()
-#     progress = pyqtSignal(int)
+# class ThreadClass(QtCore.QThread):
+#     any_signal = QtCore.pyqtSignal(int)
+#
+#     def __init__(self, parent=None, index=0):
+#         super(ThreadClass, self).__init__(parent)
+#         self.index = index
+#         self.is_running = True
+#
+#     def run(self):
+#         cnt = 0
+#         while True:
+#             cnt += 1
+#             if cnt == 99:
+#                 cnt = 0
+#             time.sleep(0.01)
+#             self.any_signal.emit(cnt)
+#
+#     def stop(self):
+#         self.is_running = False
+#         self.terminate()
+#
+#
+# class Worker(QtCore.QObject):
+#     finished = QtCore.pyqtSignal()
+#     progress = QtCore.pyqtSignal(int)
 #
 #     def run(self):
 #         for i in range(5):
 #             sleep(1)
 #             self.progress.emit(i + 1)
 #         self.finished.emit()
+#
+class Worker(QtCore.QRunnable):
+    def __init__(self, fn, *args, **kwargs):
+        super().__init__()
+        self.fn = fn
+        self.args = args
+        self.kwargs = kwargs
+
+    @pyqtSlot()
+    def run(self):
+        self.fn(*self.args, **self.kwargs)
 
 
 class CrawlerUI(QMainWindow, Ui_CrawlerUI):
@@ -72,11 +106,15 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         self.driver_status = False
         self.to_export = False
         self.nitems = 0
+        # self.thread = {}
+        self.worker = None
+
+        self.threadpool = QThreadPool()
 
         self.bt_launch.clicked.connect(self.launch)
         self.bt_terminate.clicked.connect(self.terminate)
-        self.bt_collect.clicked.connect(self.collect)
-        self.bt_reset.clicked.connect(self.reset)
+        self.bt_collect.clicked.connect(self.collect_start)
+        self.bt_reset.clicked.connect(self.collect_stop)
         self.bt_launch_collect.clicked.connect(self.launch_collect)
         self.bt_reset_collect.clicked.connect(self.reset_collect)
         self.bt_export.clicked.connect(self.export)
@@ -242,6 +280,39 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
                            QMessageBox.Information)
         else:
             show_popup("Launch the driver first!")
+
+    # def collect_thread(self):
+    #     # Step 2: Create a QThread object
+    #     self.thread = QtCore.QThread()
+    #     # Step 3: Create a worker object
+    #     self.worker = Worker()
+    #     self.worker.run = self.collect
+    #     # Step 4: Move worker to the thread
+    #     self.worker.moveToThread(self.thread)
+    #     # Step 5: Connect signals and slots
+    #     self.thread.started.connect(self.worker.run)
+    #     self.worker.finished.connect(self.thread.quit)
+    #     self.worker.finished.connect(self.worker.deleteLater)
+    #     self.thread.finished.connect(self.thread.deleteLater)
+    #     self.worker.progress.connect(self.reportProgress)
+    #     # Step 6: Start the thread
+    #     self.thread.start()
+    #
+    #     # Final resets
+    #     self.bt_collect.setEnabled(False)
+    #     self.thread.finished.connect(
+    #         lambda: self.bt_collect.setEnabled(True)
+    #     )
+    #     # self.thread.finished.connect(
+    #     #     lambda: self.stepLabel.setText("Long-Running Step: 0")
+    #     # )
+
+    def collect_start(self):
+        self.worker = Worker(self.collect)
+        self.threadpool.start(self.worker)
+
+    def collect_stop(self):
+        self.threadpool.cancel(self.worker)
 
     def export(self):
         if self.to_export:

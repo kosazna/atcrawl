@@ -7,7 +7,7 @@ from selenium.webdriver.chrome.options import Options
 from atcrawl.utilities import *
 
 
-class CrawlDriver:
+class CrawlEngine:
     DEFAULT_WAITS = Standby(LAUNCH=4,
                             COLLECT=1,
                             TIMEOUT=8)
@@ -21,9 +21,10 @@ class CrawlDriver:
         self.driver = driver
         self.properties = properties if properties is not None else list()
         self.standby = standby_times if standby_times is not None \
-            else CrawlDriver.DEFAULT_WAITS
+            else CrawlEngine.DEFAULT_WAITS
 
         self.data = {k: list() for k in self.properties}
+        self.products = []
 
         self.collected_data = None
         self.transformed_data = None
@@ -34,14 +35,31 @@ class CrawlDriver:
     def parse(self, *args, **kwargs):
         pass
 
-    def collect_batch(self, *args, **kwargs):
+    def parse_page(self, *args, **kwargs):
         pass
 
-    def collect_single(self, *args, **kwargs):
+    def collect(self, *args, **kwargs):
+        pass
+
+    def find_elements(self, *args, **kwargs):
+        pass
+
+    def iterate(self, *args, **kwargs):
+        pass
+
+    def pre_collect(self, *args, **kwargs):
+        pass
+
+    def pre_iterate(self, *args, **kwargs):
         pass
 
     def click(self, *args, **kwargs):
         pass
+
+    def count_parsed(self):
+        dd = self.data
+        nitems = str(len(dd[list(dd.keys())[0]]))
+        return nitems
 
     def set_url(self, url):
         self.url = url

@@ -319,20 +319,20 @@ class Ui_CrawlerUI(object):
         self.label_status.setFont(font)
         self.label_status.setStyleSheet("")
         self.label_status.setObjectName("label_status")
-        self.bt_reset_collect = QtWidgets.QToolButton(self.centralwidget)
-        self.bt_reset_collect.setGeometry(QtCore.QRect(559, 220, 211, 30))
+        self.bt_stop_collect = QtWidgets.QToolButton(self.centralwidget)
+        self.bt_stop_collect.setGeometry(QtCore.QRect(559, 220, 211, 30))
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
         font.setPointSize(10)
         font.setBold(True)
         font.setWeight(75)
-        self.bt_reset_collect.setFont(font)
-        self.bt_reset_collect.setStyleSheet("background-color: rgba(112, 112, 112, 0.8);\n"
+        self.bt_stop_collect.setFont(font)
+        self.bt_stop_collect.setStyleSheet("background-color: rgba(112, 112, 112, 0.8);\n"
 "color: rgb(0, 0, 0);\n"
 "border-width:10px;\n"
 "border-radius:10px;\n"
 "")
-        self.bt_reset_collect.setObjectName("bt_reset_collect")
+        self.bt_stop_collect.setObjectName("bt_stop_collect")
         self.browse_folder = QtWidgets.QToolButton(self.centralwidget)
         self.browse_folder.setGeometry(QtCore.QRect(570, 410, 31, 30))
         self.browse_folder.setStyleSheet("background-color: rgb(255, 255, 255);\n"
@@ -358,7 +358,7 @@ class Ui_CrawlerUI(object):
         self.list_type.addItem("")
         self.list_type.addItem("")
         self.status_crawler = QtWidgets.QLineEdit(self.centralwidget)
-        self.status_crawler.setGeometry(QtCore.QRect(220, 100, 71, 30))
+        self.status_crawler.setGeometry(QtCore.QRect(230, 100, 90, 30))
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
         font.setPointSize(10)
@@ -375,7 +375,7 @@ class Ui_CrawlerUI(object):
         self.status_crawler.setAlignment(QtCore.Qt.AlignCenter)
         self.status_crawler.setObjectName("status_crawler")
         self.label_crawler = QtWidgets.QLabel(self.centralwidget)
-        self.label_crawler.setGeometry(QtCore.QRect(160, 100, 51, 30))
+        self.label_crawler.setGeometry(QtCore.QRect(160, 100, 61, 30))
         font = QtGui.QFont()
         font.setFamily("Century Gothic")
         font.setPointSize(9)
@@ -436,7 +436,7 @@ class Ui_CrawlerUI(object):
         self.check_export.setText(_translate("CrawlerUI", "export on finish"))
         self.status_browser.setText(_translate("CrawlerUI", "offline"))
         self.label_status.setText(_translate("CrawlerUI", "Browser"))
-        self.bt_reset_collect.setText(_translate("CrawlerUI", "reset and collect"))
+        self.bt_stop_collect.setText(_translate("CrawlerUI", "stop collecting"))
         self.browse_folder.setText(_translate("CrawlerUI", "..."))
         self.list_type.setItemText(0, _translate("CrawlerUI", "xlsx"))
         self.list_type.setItemText(1, _translate("CrawlerUI", "csv"))

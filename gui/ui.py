@@ -95,7 +95,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
     def __init__(self):
         QMainWindow.__init__(self)
         self.setupUi(self)
-        self.crawler = None
+        self.crawler: CrawlEngine = None
         self.auth = None
 
         self.url = None
@@ -105,18 +105,17 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         self.folder_name = None
         self.driver_status = False
         self.to_export = False
+        self.collecting = False
         self.nitems = 0
         # self.thread = {}
-        self.worker = None
-
         self.threadpool = QThreadPool()
 
         self.bt_launch.clicked.connect(self.launch)
         self.bt_terminate.clicked.connect(self.terminate)
-        self.bt_collect.clicked.connect(self.collect_start)
-        self.bt_reset.clicked.connect(self.collect_stop)
+        self.bt_collect.clicked.connect(self.collect_single)
+        self.bt_reset.clicked.connect(self.reset)
         self.bt_launch_collect.clicked.connect(self.launch_collect)
-        self.bt_reset_collect.clicked.connect(self.reset_collect)
+        self.bt_stop_collect.clicked.connect(self.collect_stop)
         self.bt_export.clicked.connect(self.export)
         self.browse_folder.clicked.connect(self.folder)
 
@@ -228,19 +227,24 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         return self.brand
 
     def launch(self):
-        self.url = self.in_url.text()
+        def _launch():
+            self.url = self.in_url.text()
 
-        if self.url is not None and self.url != '':
-            self.crawler.set_url(self.url)
-            self.crawler.launch('Chrome', paths.get_chrome())
-            self.driver_status = True
+            if self.url is not None and self.url != '':
+                self.crawler.set_url(self.url)
+                self.crawler.launch('Chrome', paths.get_chrome())
+                self.driver_status = True
 
-            self.change_browser_status("online")
-            self.change_crawler_status('idle')
-        else:
-            show_popup("URL is not set. Launch cancelled!",
-                       "Set the url and then launch.",
-                       QMessageBox.Critical)
+                self.change_browser_status("online")
+                self.change_crawler_status('idle')
+            else:
+                show_popup("URL is not set. Launch cancelled!",
+                           "Set the url and then launch.",
+                           QMessageBox.Critical)
+
+        # worker = Worker(_launch)
+        # self.threadpool.start(worker)
+        _launch()
 
     def launch_collect(self):
         if self.auth.user_is_licensed():
@@ -268,7 +272,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         if self.driver_status:
             if self.auth.user_is_licensed():
                 self.change_crawler_status('running')
-                self.crawler.collect_batch()
+                self.crawler.collect('all')
                 self.change_crawler_status('idle')
                 self.to_export = True
                 if self.check_export.isChecked():
@@ -281,38 +285,56 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         else:
             show_popup("Launch the driver first!")
 
-    # def collect_thread(self):
-    #     # Step 2: Create a QThread object
-    #     self.thread = QtCore.QThread()
-    #     # Step 3: Create a worker object
-    #     self.worker = Worker()
-    #     self.worker.run = self.collect
-    #     # Step 4: Move worker to the thread
-    #     self.worker.moveToThread(self.thread)
-    #     # Step 5: Connect signals and slots
-    #     self.thread.started.connect(self.worker.run)
-    #     self.worker.finished.connect(self.thread.quit)
-    #     self.worker.finished.connect(self.worker.deleteLater)
-    #     self.thread.finished.connect(self.thread.deleteLater)
-    #     self.worker.progress.connect(self.reportProgress)
-    #     # Step 6: Start the thread
-    #     self.thread.start()
-    #
-    #     # Final resets
-    #     self.bt_collect.setEnabled(False)
-    #     self.thread.finished.connect(
-    #         lambda: self.bt_collect.setEnabled(True)
-    #     )
-    #     # self.thread.finished.connect(
-    #     #     lambda: self.stepLabel.setText("Long-Running Step: 0")
-    #     # )
+    def collect1(self):
+        if self.driver_status:
+            if self.auth.user_is_licensed():
+                self.change_crawler_status('running')
+                self.crawler.iterate('all')
+                self.change_crawler_status('idle')
+                self.crawler.parse()
+                self.to_export = True
+                if self.check_export.isChecked():
+                    self.export()
+                self.count_items.setText(self.count_parsed())
+            else:
+                show_popup("You are not authorized",
+                           "Contact support",
+                           QMessageBox.Information)
+        else:
+            show_popup("Launch the driver first!")
+
+    def collect_single(self):
+        def _inner():
+            self.change_crawler_status('running')
+            self.collecting = True
+            self.crawler.pre_iterate()
+            while self.collecting and self.crawler.click('Next'):
+                self.crawler.iterate('single')
+            print(len(self.crawler.products))
+            self.crawler.parse()
+            print(self.crawler.data)
+            self.count_items.setText(self.count_parsed())
+            self.change_crawler_status('idle')
+            self.to_export = True
+            if self.check_export.isChecked():
+                self.export()
+
+        if self.driver_status:
+            if self.auth.user_is_licensed():
+                _inner()
+            else:
+                show_popup("You are not authorized",
+                           "Contact support",
+                           QMessageBox.Information)
+        else:
+            show_popup("Launch the driver first!")
 
     def collect_start(self):
-        self.worker = Worker(self.collect)
-        self.threadpool.start(self.worker)
+        worker = Worker(self.collect_single)
+        self.threadpool.start(worker)
 
     def collect_stop(self):
-        self.threadpool.cancel(self.worker)
+        self.collecting = False
 
     def export(self):
         if self.to_export:

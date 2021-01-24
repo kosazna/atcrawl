@@ -666,7 +666,7 @@ border-radius:10px;</string>
      <string>Browser</string>
     </property>
    </widget>
-   <widget class="QToolButton" name="bt_reset_collect">
+   <widget class="QToolButton" name="bt_stop_collect">
     <property name="geometry">
      <rect>
       <x>559</x>
@@ -691,7 +691,7 @@ border-radius:10px;
 </string>
     </property>
     <property name="text">
-     <string>reset and collect</string>
+     <string>stop collecting</string>
     </property>
    </widget>
    <widget class="QToolButton" name="browse_folder">
@@ -752,9 +752,9 @@ border-radius:10px;</string>
    <widget class="QLineEdit" name="status_crawler">
     <property name="geometry">
      <rect>
-      <x>220</x>
+      <x>230</x>
       <y>100</y>
-      <width>71</width>
+      <width>90</width>
       <height>30</height>
      </rect>
     </property>
@@ -789,7 +789,7 @@ border-radius:10px;</string>
      <rect>
       <x>160</x>
       <y>100</y>
-      <width>51</width>
+      <width>61</width>
       <height>30</height>
      </rect>
     </property>

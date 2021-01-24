@@ -11,7 +11,7 @@ import pandas as pd
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 
-from atcrawl.core.driver import *
+from atcrawl.core.engine import *
 from atcrawl.crawlers.skroutz.settings import *
 
 
@@ -55,7 +55,7 @@ class SkroutzProductContainer:
             return shop.DEFAULT
 
 
-class Skroutz(CrawlDriver):
+class Skroutz(CrawlEngine):
     NAME = "skroutz.gr"
 
     def __init__(self, url: str = None, driver=None):
@@ -113,10 +113,19 @@ class Skroutz(CrawlDriver):
 
         self.transformed_data = _data
 
-    def parse(self):
+    def find_elements(self):
         _elements = self.driver.find_elements(By.XPATH, sku.XPATH)
+        self.products.extend(_elements)
 
-        for element in _elements:
+        return _elements
+
+    def parse(self, what=None):
+        if what is None:
+            to_parse = self.products
+        else:
+            to_parse = what
+
+        for element in to_parse:
             obj = SkroutzProductContainer(element)
             self.data['img'].append(obj.get_img())
             self.data['product'].append(obj.get_name())
@@ -124,18 +133,48 @@ class Skroutz(CrawlDriver):
             self.data['description'].append(obj.get_description())
             self.data['shop'].append(obj.get_shop())
 
-    def collect_batch(self):
+    def parse_page(self):
+        _elements = self.driver.find_elements(By.XPATH, sku.XPATH)
+
+        self.parse(_elements)
+
+    def pre_collect(self):
         self.click('Cookies')
         self.find_filters()
         self.scroll_down()
-        self.parse()
+        self.parse_page()
 
-        while self.click('Next'):
+    def pre_iterate(self):
+        self.click('Cookies')
+        self.find_filters()
+        self.scroll_down()
+        self.find_elements()
+
+    def collect(self, mode='all'):
+        if mode == 'all':
+            self.pre_collect()
+
+            while self.click('Next'):
+                sleep(self.standby.COLLECT)
+                self.scroll_down()
+                self.parse_page()
+        else:
             sleep(self.standby.COLLECT)
             self.scroll_down()
-            self.parse()
+            self.parse_page()
 
-    def collect_single(self):
-        sleep(self.standby.COLLECT)
-        self.scroll_down()
-        self.parse()
+    def iterate(self, mode='all'):
+        if mode == 'all':
+            self.click('Cookies')
+            self.find_filters()
+            self.scroll_down()
+            self.find_elements()
+            while self.click('Next'):
+                sleep(self.standby.COLLECT)
+                self.scroll_down()
+                self.find_elements()
+        else:
+            sleep(self.standby.COLLECT)
+            self.scroll_down()
+            sleep(self.standby.COLLECT)
+            self.find_elements()

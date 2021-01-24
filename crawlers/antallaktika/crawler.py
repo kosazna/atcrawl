@@ -16,7 +16,7 @@ from selenium.common.exceptions import (NoSuchElementException,
                                         ElementClickInterceptedException)
 
 from atcrawl.core.parser import *
-from atcrawl.core.driver import *
+from atcrawl.core.engine import *
 from atcrawl.crawlers.antallaktika.settings import *
 
 
@@ -36,7 +36,7 @@ class AntallaktikaOnlineProductContainer:
         return _element
 
 
-class AntallaktikaOnline(CrawlDriver):
+class AntallaktikaOnline(CrawlEngine):
     NAME = "antallaktikaonline.gr"
 
     def __init__(self, url: str = None, driver=None):
@@ -95,7 +95,7 @@ class AntallaktikaOnline(CrawlDriver):
         self.transformed_data = self.transformed_data.drop_duplicates(
             subset=['article_no']).reset_index(drop=True)
 
-    def parse(self, method: str = 'lxml'):
+    def parse_page(self, method: str = 'lxml'):
 
         _soup = BeautifulSoup(self.driver.page_source, method)
         _tag = self.site_map['product'].TAG
@@ -119,23 +119,33 @@ class AntallaktikaOnline(CrawlDriver):
             self.data['price_after_discount'].append(_after)
             self.data['availability'].append(_stock)
 
-    def collect_batch(self, accept_cookies=True):
+    def collect_all_pages(self, accept_cookies=True):
         if accept_cookies:
             self.click('bt_cookies')
 
-        self.parse()
+        self.parse_page()
 
         try:
             while self.click('bt_next'):
                 sleep(self.standby.COLLECT)
-                self.parse()
+                self.parse_page()
         except ElementClickInterceptedException:
             self.click('bt_popup')
         finally:
             while self.click('bt_next'):
                 sleep(self.standby.COLLECT)
-                self.parse()
+                self.parse_page()
 
-    def collect_single(self):
-        sleep(self.standby.COLLECT)
-        self.parse()
+    def collect_single_page(self):
+        try:
+            sleep(self.standby.COLLECT)
+            self.parse_page()
+        except ElementClickInterceptedException:
+            self.click('bt_popup')
+        finally:
+            sleep(self.standby.COLLECT)
+            self.parse_page()
+
+    def pre_collect(self):
+        self.click('bt_cookies')
+        self.parse_page()

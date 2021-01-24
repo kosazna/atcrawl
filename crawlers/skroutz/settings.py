@@ -3,9 +3,9 @@
 from atcrawl.utilities.elements import *
 
 
-skroutz_waits = {'LAUNCH_WAIT': 3,
-                 'COLLECT_WAIT': 0.5,
-                 'TIMEOUT': 8}
+skroutz_standby = Standby(LAUNCH=3,
+                          COLLECT=0.5,
+                          TIMEOUT=8)
 
 skroutz_properties = ['img',
                       'product',

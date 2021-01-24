@@ -14,3 +14,10 @@ class Element:
     ATTRIBUTE: Union[str, None] = None
     LOC: Union[int, None] = None
     DEFAULT: Union[str, None] = None
+
+
+@dataclass
+class Standby:
+    LAUNCH: Union[int, float, None] = None
+    COLLECT: Union[int, float, None] = None
+    TIMEOUT: Union[int, float, None] = None

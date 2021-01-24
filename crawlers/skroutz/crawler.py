@@ -62,15 +62,15 @@ class Skroutz(CrawlDriver):
         super().__init__(url=url,
                          driver=driver,
                          properties=skroutz_properties,
-                         waits=skroutz_waits)
+                         standby_times=skroutz_standby)
         self.nfilters = 0
         self.filters = None
 
     def find_filters(self):
-        elements = self.driver.find_element(By.XPATH,
-                                            filters.XPATH)
+        _elements = self.driver.find_element(By.XPATH,
+                                             filters.XPATH)
 
-        _filters = elements.text.split('\n')
+        _filters = _elements.text.split('\n')
 
         self.nfilters = len(_filters)
         self.filters = _filters.copy()
@@ -114,9 +114,9 @@ class Skroutz(CrawlDriver):
         self.transformed_data = _data
 
     def parse(self):
-        elements = self.driver.find_elements(By.XPATH, sku.XPATH)
+        _elements = self.driver.find_elements(By.XPATH, sku.XPATH)
 
-        for element in elements:
+        for element in _elements:
             obj = SkroutzProductContainer(element)
             self.data['img'].append(obj.get_img())
             self.data['product'].append(obj.get_name())
@@ -124,17 +124,18 @@ class Skroutz(CrawlDriver):
             self.data['description'].append(obj.get_description())
             self.data['shop'].append(obj.get_shop())
 
-    def collect(self):
+    def collect_batch(self):
         self.click('Cookies')
         self.find_filters()
         self.scroll_down()
         self.parse()
 
         while self.click('Next'):
-            sleep(self.wait_times['COLLECT_WAIT'])
+            sleep(self.standby.COLLECT)
             self.scroll_down()
             self.parse()
 
     def collect_single(self):
+        sleep(self.standby.COLLECT)
         self.scroll_down()
         self.parse()

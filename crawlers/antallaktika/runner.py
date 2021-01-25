@@ -28,7 +28,8 @@ def antallaktika_run():
 
             print("\n\nCrawler is collecting the data...\n")
 
-            ao.collect_all_pages()
+            ao.collect()
+            ao.parse()
         except KeyboardInterrupt:
             print("\nProcess cancelled by user.\n")
         finally:

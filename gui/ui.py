@@ -48,38 +48,6 @@ class WelcomeUI(Ui_WelcomeUI):
                        "Contact support")
 
 
-# class ThreadClass(QtCore.QThread):
-#     any_signal = QtCore.pyqtSignal(int)
-#
-#     def __init__(self, parent=None, index=0):
-#         super(ThreadClass, self).__init__(parent)
-#         self.index = index
-#         self.is_running = True
-#
-#     def run(self):
-#         cnt = 0
-#         while True:
-#             cnt += 1
-#             if cnt == 99:
-#                 cnt = 0
-#             time.sleep(0.01)
-#             self.any_signal.emit(cnt)
-#
-#     def stop(self):
-#         self.is_running = False
-#         self.terminate()
-#
-#
-# class Worker(QtCore.QObject):
-#     finished = QtCore.pyqtSignal()
-#     progress = QtCore.pyqtSignal(int)
-#
-#     def run(self):
-#         for i in range(5):
-#             sleep(1)
-#             self.progress.emit(i + 1)
-#         self.finished.emit()
-#
 class Worker(QtCore.QRunnable):
     def __init__(self, fn, *args, **kwargs):
         super().__init__()
@@ -306,21 +274,6 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
 
             self.to_export = False
             self.count_items.setText(self.count_parsed())
-        else:
-            show_popup("Launch the driver first!")
-
-    def reset_collect(self):
-        if self.driver_status:
-            if self.auth.user_is_licensed():
-                self.reset()
-                self.change_crawler_status('running')
-                self.collect()
-                self.change_crawler_status('idle')
-                self.count_items.setText(self.count_parsed())
-            else:
-                show_popup("You are not authorized",
-                           "Contact support",
-                           QMessageBox.Information)
         else:
             show_popup("Launch the driver first!")
 

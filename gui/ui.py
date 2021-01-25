@@ -2,6 +2,7 @@
 
 from PyQt5.QtWidgets import QFileDialog, QMainWindow, QMessageBox
 from PyQt5.QtCore import pyqtSlot, QThreadPool
+
 from atcrawl.gui.welcome_design import *
 from atcrawl.gui.crawler_design import *
 from atcrawl.crawlers import *
@@ -95,7 +96,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
     def __init__(self):
         QMainWindow.__init__(self)
         self.setupUi(self)
-        self.crawler: CrawlEngine = None
+        self.crawler: CrawlEngine = CrawlEngine('None')
         self.auth = None
 
         self.url = None
@@ -108,14 +109,15 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         self.collecting = False
         self.nitems = 0
         # self.thread = {}
+
+        self.worker = None
         self.threadpool = QThreadPool()
 
         self.bt_launch.clicked.connect(self.launch)
         self.bt_terminate.clicked.connect(self.terminate)
-        self.bt_collect.clicked.connect(self.collect_single)
+        self.bt_collect.clicked.connect(self.collect_thread_start)
+        self.bt_stop_collect.clicked.connect(self.collect_thread_stop)
         self.bt_reset.clicked.connect(self.reset)
-        self.bt_launch_collect.clicked.connect(self.launch_collect)
-        self.bt_stop_collect.clicked.connect(self.collect_stop)
         self.bt_export.clicked.connect(self.export)
         self.browse_folder.clicked.connect(self.folder)
 
@@ -227,101 +229,42 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         return self.brand
 
     def launch(self):
-        def _launch():
-            self.url = self.in_url.text()
+        self.url = self.in_url.text()
 
-            if self.url is not None and self.url != '':
-                self.crawler.set_url(self.url)
-                self.crawler.launch('Chrome', paths.get_chrome())
-                self.driver_status = True
+        if self.url is not None and self.url != '':
+            self.crawler.set_url(self.url)
+            self.crawler.launch('Chrome', paths.get_chrome())
+            self.driver_status = True
 
-                self.change_browser_status("online")
-                self.change_crawler_status('idle')
-            else:
-                show_popup("URL is not set. Launch cancelled!",
-                           "Set the url and then launch.",
-                           QMessageBox.Critical)
-
-        # worker = Worker(_launch)
-        # self.threadpool.start(worker)
-        _launch()
-
-    def launch_collect(self):
-        if self.auth.user_is_licensed():
-            self.url = self.in_url.text()
-
-            if self.url is not None and self.url != '':
-                self.crawler.set_url(self.url)
-                self.crawler.launch('Chrome', paths.get_chrome())
-                self.driver_status = True
-                self.change_browser_status("online")
-                self.change_crawler_status('running')
-                self.collect()
-                self.change_crawler_status('idle')
-                self.count_items.setText(self.count_parsed())
-            else:
-                show_popup("URL is not set. Launch cancelled!",
-                           "Set the url and then launch.",
-                           QMessageBox.Critical)
+            self.change_browser_status("online")
+            self.change_crawler_status('idle')
         else:
-            show_popup("You are not authorized",
-                       "Contact support",
-                       QMessageBox.Information)
+            show_popup("URL is not set. Launch cancelled!",
+                       "Set the url and then launch.",
+                       QMessageBox.Critical)
 
     def collect(self):
-        if self.driver_status:
-            if self.auth.user_is_licensed():
-                self.change_crawler_status('running')
-                self.crawler.collect('all')
-                self.change_crawler_status('idle')
-                self.to_export = True
-                if self.check_export.isChecked():
-                    self.export()
-                self.count_items.setText(self.count_parsed())
-            else:
-                show_popup("You are not authorized",
-                           "Contact support",
-                           QMessageBox.Information)
-        else:
-            show_popup("Launch the driver first!")
+        self.change_crawler_status('running')
+        self.collecting = True
+        self.crawler.pre_collect()
 
-    def collect1(self):
-        if self.driver_status:
-            if self.auth.user_is_licensed():
-                self.change_crawler_status('running')
-                self.crawler.iterate('all')
-                self.change_crawler_status('idle')
-                self.crawler.parse()
-                self.to_export = True
-                if self.check_export.isChecked():
-                    self.export()
-                self.count_items.setText(self.count_parsed())
-            else:
-                show_popup("You are not authorized",
-                           "Contact support",
-                           QMessageBox.Information)
-        else:
-            show_popup("Launch the driver first!")
+        while self.collecting and self.crawler.click('Next'):
+            self.crawler.collect(gather='single')
 
-    def collect_single(self):
-        def _inner():
-            self.change_crawler_status('running')
-            self.collecting = True
-            self.crawler.pre_iterate()
-            while self.collecting and self.crawler.click('Next'):
-                self.crawler.iterate('single')
-            print(len(self.crawler.products))
+        if self.crawler.NAME == "antallaktikaonline.gr":
             self.crawler.parse()
-            print(self.crawler.data)
-            self.count_items.setText(self.count_parsed())
-            self.change_crawler_status('idle')
-            self.to_export = True
-            if self.check_export.isChecked():
-                self.export()
 
+        self.count_items.setText(self.count_parsed())
+        self.change_crawler_status('idle')
+        self.to_export = True
+        if self.check_export.isChecked():
+            self.export()
+
+    def collect_thread_start(self):
         if self.driver_status:
             if self.auth.user_is_licensed():
-                _inner()
+                worker = Worker(self.collect)
+                self.threadpool.start(worker)
             else:
                 show_popup("You are not authorized",
                            "Contact support",
@@ -329,11 +272,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         else:
             show_popup("Launch the driver first!")
 
-    def collect_start(self):
-        worker = Worker(self.collect_single)
-        self.threadpool.start(worker)
-
-    def collect_stop(self):
+    def collect_thread_stop(self):
         self.collecting = False
 
     def export(self):

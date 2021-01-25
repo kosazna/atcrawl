@@ -3,9 +3,9 @@
 from atcrawl.utilities.elements import *
 
 
-antallaktika_standby = Standby(LAUNCH=4,
-                               COLLECT=1,
-                               TIMEOUT=8)
+antallaktika_standby = Standby(LAUNCH=3,
+                               COLLECT=1.5,
+                               TIMEOUT=5)
 
 antallaktika_properties = ['article_no',
                            'retail_price',
@@ -57,6 +57,6 @@ antallaktika_site_map = {'product': product,
                          'poldprice': poldprice,
                          'pnewprice': pnewprice,
                          'pstock': pstock,
-                         'bt_next': bt_next,
-                         'bt_cookies': bt_cookies,
-                         'bt_popup': bt_popup}
+                         'Next': bt_next,
+                         'Cookies': bt_cookies,
+                         'Popup': bt_popup}

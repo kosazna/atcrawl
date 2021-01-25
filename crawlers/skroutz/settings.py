@@ -3,7 +3,7 @@
 from atcrawl.utilities.elements import *
 
 
-skroutz_standby = Standby(LAUNCH=3,
+skroutz_standby = Standby(LAUNCH=2,
                           COLLECT=0.5,
                           TIMEOUT=8)
 

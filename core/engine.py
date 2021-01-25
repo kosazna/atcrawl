@@ -8,6 +8,8 @@ from atcrawl.utilities import *
 
 
 class CrawlEngine:
+    NAME = 'MainEngine'
+    PREFER_MODE = 'collect'
     DEFAULT_WAITS = Standby(LAUNCH=4,
                             COLLECT=1,
                             TIMEOUT=8)
@@ -100,6 +102,7 @@ class CrawlEngine:
             self.driver.get(self.url)
         else:
             self.driver.get(url)
+        self.products = []
         self.data = {k: list() for k in self.properties}
         self.collected_data = None
         self.transformed_data = None

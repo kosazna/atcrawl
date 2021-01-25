@@ -57,6 +57,7 @@ class SkroutzProductContainer:
 
 class Skroutz(CrawlEngine):
     NAME = "skroutz.gr"
+    PREFER_MODE = 'collect'
 
     def __init__(self, url: str = None, driver=None):
         super().__init__(url=url,
@@ -134,47 +135,42 @@ class Skroutz(CrawlEngine):
             self.data['shop'].append(obj.get_shop())
 
     def parse_page(self):
-        _elements = self.driver.find_elements(By.XPATH, sku.XPATH)
+        _elements = self.find_elements()
 
         self.parse(_elements)
 
-    def pre_collect(self):
-        self.click('Cookies')
-        self.find_filters()
-        self.scroll_down()
-        self.parse_page()
-
-    def pre_iterate(self):
-        self.click('Cookies')
-        self.find_filters()
-        self.scroll_down()
-        self.find_elements()
-
-    def collect(self, mode='all'):
-        if mode == 'all':
-            self.pre_collect()
-
-            while self.click('Next'):
-                sleep(self.standby.COLLECT)
-                self.scroll_down()
-                self.parse_page()
-        else:
-            sleep(self.standby.COLLECT)
+    def pre_collect(self, mode='collect'):
+        if mode == 'collect':
+            self.click('Cookies')
+            self.find_filters()
             self.scroll_down()
             self.parse_page()
-
-    def iterate(self, mode='all'):
-        if mode == 'all':
+        else:
             self.click('Cookies')
             self.find_filters()
             self.scroll_down()
             self.find_elements()
-            while self.click('Next'):
+
+    def collect(self, mode='collect', gather='all'):
+        if mode == 'collect':
+            if gather == 'all':
+
+                while self.click('Next'):
+                    sleep(self.standby.COLLECT)
+                    self.scroll_down()
+                    self.parse_page()
+            else:
                 sleep(self.standby.COLLECT)
                 self.scroll_down()
-                self.find_elements()
+                self.parse_page()
         else:
-            sleep(self.standby.COLLECT)
-            self.scroll_down()
-            sleep(self.standby.COLLECT)
-            self.find_elements()
+            if gather == 'all':
+                while self.click('Next'):
+                    sleep(self.standby.COLLECT)
+                    self.scroll_down()
+                    self.find_elements()
+            else:
+                sleep(self.standby.COLLECT)
+                self.scroll_down()
+                sleep(self.standby.COLLECT)
+                self.find_elements()

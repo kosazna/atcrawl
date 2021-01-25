@@ -2,7 +2,9 @@
 from atcrawl.utilities import *
 from atcrawl.crawlers.antallaktika.runner import antallaktika_run
 from atcrawl.crawlers.skroutz.runner import skroutz_run
+import warnings
 
+warnings.filterwarnings('ignore')
 
 if __name__ == "__main__":
     import sys

@@ -72,7 +72,7 @@ class Ui_CrawlerUI(object):
         self.line_1.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_1.setObjectName("line_1")
         self.bt_launch = QtWidgets.QToolButton(self.centralwidget)
-        self.bt_launch.setGeometry(QtCore.QRect(500, 110, 100, 30))
+        self.bt_launch.setGeometry(QtCore.QRect(560, 100, 100, 30))
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
         font.setPointSize(10)
@@ -100,7 +100,7 @@ class Ui_CrawlerUI(object):
 "")
         self.bt_collect.setObjectName("bt_collect")
         self.bt_export = QtWidgets.QToolButton(self.centralwidget)
-        self.bt_export.setGeometry(QtCore.QRect(670, 410, 100, 30))
+        self.bt_export.setGeometry(QtCore.QRect(670, 360, 100, 30))
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
         font.setPointSize(10)
@@ -163,7 +163,7 @@ class Ui_CrawlerUI(object):
         self.label_pct.setAlignment(QtCore.Qt.AlignCenter)
         self.label_pct.setObjectName("label_pct")
         self.in_folder = QtWidgets.QLineEdit(self.centralwidget)
-        self.in_folder.setGeometry(QtCore.QRect(90, 410, 471, 31))
+        self.in_folder.setGeometry(QtCore.QRect(90, 410, 641, 31))
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
         font.setPointSize(10)
@@ -198,7 +198,7 @@ class Ui_CrawlerUI(object):
         self.label_filename.setStyleSheet("")
         self.label_filename.setObjectName("label_filename")
         self.in_filename = QtWidgets.QLineEdit(self.centralwidget)
-        self.in_filename.setGeometry(QtCore.QRect(90, 360, 441, 31))
+        self.in_filename.setGeometry(QtCore.QRect(90, 360, 451, 31))
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
         font.setPointSize(10)
@@ -227,7 +227,7 @@ class Ui_CrawlerUI(object):
         self.label_export.setStyleSheet("")
         self.label_export.setObjectName("label_export")
         self.bt_terminate = QtWidgets.QToolButton(self.centralwidget)
-        self.bt_terminate.setGeometry(QtCore.QRect(670, 290, 100, 30))
+        self.bt_terminate.setGeometry(QtCore.QRect(670, 100, 100, 30))
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
         font.setPointSize(10)
@@ -240,20 +240,6 @@ class Ui_CrawlerUI(object):
 "border-radius:10px;\n"
 "")
         self.bt_terminate.setObjectName("bt_terminate")
-        self.bt_launch_collect = QtWidgets.QToolButton(self.centralwidget)
-        self.bt_launch_collect.setGeometry(QtCore.QRect(610, 110, 160, 30))
-        font = QtGui.QFont()
-        font.setFamily("Segoe UI")
-        font.setPointSize(10)
-        font.setBold(True)
-        font.setWeight(75)
-        self.bt_launch_collect.setFont(font)
-        self.bt_launch_collect.setStyleSheet("background-color: rgba(112, 112, 112, 0.8);\n"
-"color: rgb(0, 0, 0);\n"
-"border-width:10px;\n"
-"border-radius:10px;\n"
-"")
-        self.bt_launch_collect.setObjectName("bt_launch_collect")
         self.label_params = QtWidgets.QLabel(self.centralwidget)
         self.label_params.setGeometry(QtCore.QRect(10, 130, 121, 31))
         font = QtGui.QFont()
@@ -282,7 +268,7 @@ class Ui_CrawlerUI(object):
         self.line_3.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_3.setObjectName("line_3")
         self.check_export = QtWidgets.QCheckBox(self.centralwidget)
-        self.check_export.setGeometry(QtCore.QRect(650, 360, 121, 31))
+        self.check_export.setGeometry(QtCore.QRect(610, 260, 121, 31))
         font = QtGui.QFont()
         font.setFamily("Century Gothic")
         font.setPointSize(10)
@@ -334,7 +320,7 @@ class Ui_CrawlerUI(object):
 "")
         self.bt_stop_collect.setObjectName("bt_stop_collect")
         self.browse_folder = QtWidgets.QToolButton(self.centralwidget)
-        self.browse_folder.setGeometry(QtCore.QRect(570, 410, 31, 30))
+        self.browse_folder.setGeometry(QtCore.QRect(740, 410, 31, 30))
         self.browse_folder.setStyleSheet("background-color: rgb(255, 255, 255);\n"
 "border-width:4px;\n"
 "border-color:black;\n"
@@ -342,15 +328,15 @@ class Ui_CrawlerUI(object):
 "border-radius:10px;")
         self.browse_folder.setObjectName("browse_folder")
         self.list_type = QtWidgets.QComboBox(self.centralwidget)
-        self.list_type.setGeometry(QtCore.QRect(540, 360, 61, 31))
+        self.list_type.setGeometry(QtCore.QRect(550, 360, 61, 31))
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
         font.setPointSize(10)
         font.setBold(True)
         font.setWeight(75)
         self.list_type.setFont(font)
-        self.list_type.setStyleSheet("background-color: rgba(112, 112, 112, 0.8);\n"
-"color: rgb(0, 0, 0);\n"
+        self.list_type.setStyleSheet("background-color: rgba(0, 0, 0, 0.8);\n"
+"color: rgb(255, 255, 255);\n"
 "border-width:4px;\n"
 "border-color:black;\n"
 "border-radius:10px;")
@@ -386,7 +372,7 @@ class Ui_CrawlerUI(object):
         self.label_crawler.setStyleSheet("")
         self.label_crawler.setObjectName("label_crawler")
         self.label_items = QtWidgets.QLabel(self.centralwidget)
-        self.label_items.setGeometry(QtCore.QRect(10, 260, 71, 31))
+        self.label_items.setGeometry(QtCore.QRect(620, 290, 41, 31))
         font = QtGui.QFont()
         font.setFamily("Century Gothic")
         font.setPointSize(9)
@@ -397,7 +383,7 @@ class Ui_CrawlerUI(object):
         self.label_items.setStyleSheet("")
         self.label_items.setObjectName("label_items")
         self.count_items = QtWidgets.QLabel(self.centralwidget)
-        self.count_items.setGeometry(QtCore.QRect(90, 260, 81, 31))
+        self.count_items.setGeometry(QtCore.QRect(670, 290, 51, 31))
         font = QtGui.QFont()
         font.setFamily("Century Gothic")
         font.setPointSize(11)
@@ -406,6 +392,7 @@ class Ui_CrawlerUI(object):
         font.setWeight(75)
         self.count_items.setFont(font)
         self.count_items.setStyleSheet("")
+        self.count_items.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.count_items.setObjectName("count_items")
         CrawlerUI.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(CrawlerUI)
@@ -430,7 +417,6 @@ class Ui_CrawlerUI(object):
         self.label_filename.setText(_translate("CrawlerUI", "Filename"))
         self.label_export.setText(_translate("CrawlerUI", "Export"))
         self.bt_terminate.setText(_translate("CrawlerUI", "terminate"))
-        self.bt_launch_collect.setText(_translate("CrawlerUI", "launch and collect"))
         self.label_params.setText(_translate("CrawlerUI", "Parameters"))
         self.label_domain.setText(_translate("CrawlerUI", "Domain"))
         self.check_export.setText(_translate("CrawlerUI", "export on finish"))

@@ -38,6 +38,7 @@ class AntallaktikaOnlineProductContainer:
 
 class AntallaktikaOnline(CrawlEngine):
     NAME = "antallaktikaonline.gr"
+    PREFER_MODE = 'iterate'
 
     def __init__(self, url: str = None, driver=None):
         super().__init__(url=url,
@@ -95,8 +96,7 @@ class AntallaktikaOnline(CrawlEngine):
         self.transformed_data = self.transformed_data.drop_duplicates(
             subset=['article_no']).reset_index(drop=True)
 
-    def parse_page(self, method: str = 'lxml'):
-
+    def find_elements(self, method: str = 'lxml'):
         _soup = BeautifulSoup(self.driver.page_source, method)
         _tag = self.site_map['product'].TAG
         _class = self.site_map['product'].CLASS
@@ -106,7 +106,17 @@ class AntallaktikaOnline(CrawlEngine):
                                 element_class=_class,
                                 text=False)
 
-        for element in _elements:
+        self.products.extend(_elements)
+
+        return _elements
+
+    def parse(self, what=None):
+        if what is None:
+            to_parse = self.products
+        else:
+            to_parse = what
+
+        for element in to_parse:
             pb = AntallaktikaOnlineProductContainer(element, self.site_map)
 
             _article_no = pb.get('pid').strip('\n').split(':')[1].strip()
@@ -119,33 +129,65 @@ class AntallaktikaOnline(CrawlEngine):
             self.data['price_after_discount'].append(_after)
             self.data['availability'].append(_stock)
 
-    def collect_all_pages(self, accept_cookies=True):
-        if accept_cookies:
-            self.click('bt_cookies')
+    def parse_page(self, what=None):
+        _elements = self.find_elements()
 
-        self.parse_page()
+        self.parse(_elements)
 
-        try:
-            while self.click('bt_next'):
-                sleep(self.standby.COLLECT)
-                self.parse_page()
-        except ElementClickInterceptedException:
-            self.click('bt_popup')
-        finally:
-            while self.click('bt_next'):
-                sleep(self.standby.COLLECT)
-                self.parse_page()
-
-    def collect_single_page(self):
-        try:
+    def pre_collect(self, mode='iterate'):
+        if mode == 'collect':
+            self.click('Cookies')
+            sleep(self.standby.COLLECT)
+            self.scroll_down()
+            sleep(self.standby.COLLECT)
+            self.click('Popup')
             sleep(self.standby.COLLECT)
             self.parse_page()
-        except ElementClickInterceptedException:
-            self.click('bt_popup')
-        finally:
+        else:
+            self.click('Cookies')
             sleep(self.standby.COLLECT)
-            self.parse_page()
+            self.scroll_down()
+            sleep(self.standby.COLLECT)
+            self.click('Popup')
+            sleep(self.standby.COLLECT)
+            self.find_elements()
 
-    def pre_collect(self):
-        self.click('bt_cookies')
-        self.parse_page()
+    def collect(self, mode='iterate', gather='all'):
+        if mode == 'collect':
+            if gather == 'all':
+                is_finished = False
+
+                try:
+                    while self.click('Next'):
+                        sleep(self.standby.COLLECT)
+                        self.parse_page()
+                    is_finished = True
+                except ElementClickInterceptedException:
+                    self.click('Popup')
+                finally:
+                    if not is_finished:
+                        while self.click('Next'):
+                            sleep(self.standby.COLLECT)
+                            self.parse_page()
+            else:
+                sleep(self.standby.COLLECT)
+                self.parse_page()
+        else:
+            if gather == 'all':
+                is_finished = False
+
+                try:
+                    while self.click('Next'):
+                        sleep(self.standby.COLLECT)
+                        self.find_elements()
+                    is_finished = True
+                except ElementClickInterceptedException:
+                    self.click('Popup')
+                finally:
+                    if not is_finished:
+                        while self.click('Next'):
+                            sleep(self.standby.COLLECT)
+                            self.find_elements()
+            else:
+                sleep(self.standby.COLLECT)
+                self.find_elements()

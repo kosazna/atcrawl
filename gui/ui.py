@@ -76,7 +76,6 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         self.to_export = False
         self.collecting = False
         self.nitems = 0
-        # self.thread = {}
 
         self.worker = None
         self.threadpool = QThreadPool()
@@ -224,6 +223,15 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         self.brand = self.in_brand.text()
         return self.brand
 
+    def get_params(self):
+        _params = {'meta1': self.in_meta1.text(),
+                   'meta2': self.in_meta2.text(),
+                   'meta3': self.in_meta3.text(),
+                   'brand': self.get_brand(),
+                   'discount': self.get_discount()}
+
+        return _params
+
     def launch(self):
         self.url = self.in_url.text()
 
@@ -278,8 +286,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
                 _folder = self.get_folder()
                 _type = self.list_type.currentText()
 
-                self.crawler.transform(brand=self.get_brand(),
-                                       discount=self.get_discount())
+                self.crawler.transform(**self.get_params())
 
                 self.crawler.export(name=_name,
                                     folder=_folder,

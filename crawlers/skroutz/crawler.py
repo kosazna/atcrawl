@@ -95,6 +95,9 @@ class Skroutz(CrawlEngine):
                 pass
 
     def transform(self, discount: int = 0, **kwargs):
+        meta_desc = kwargs.get('meta1', '')
+        meta_seo = kwargs.get('meta2', '')
+
         _data = pd.DataFrame.from_dict(self.data)
         self.collected_data = _data.copy()
 

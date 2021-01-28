@@ -101,7 +101,7 @@ border-radius:10px;
      <rect>
       <x>10</x>
       <y>180</y>
-      <width>51</width>
+      <width>81</width>
       <height>31</height>
      </rect>
     </property>
@@ -221,9 +221,9 @@ border-radius:10px;
    <widget class="QLineEdit" name="in_brand">
     <property name="geometry">
      <rect>
-      <x>70</x>
+      <x>90</x>
       <y>180</y>
-      <width>371</width>
+      <width>351</width>
       <height>31</height>
      </rect>
     </property>
@@ -837,9 +837,9 @@ border-radius:10px;</string>
    <widget class="QLineEdit" name="in_meta1">
     <property name="geometry">
      <rect>
-      <x>70</x>
+      <x>90</x>
       <y>220</y>
-      <width>561</width>
+      <width>541</width>
       <height>31</height>
      </rect>
     </property>
@@ -865,7 +865,7 @@ border-radius:10px;</string>
      <rect>
       <x>10</x>
       <y>220</y>
-      <width>51</width>
+      <width>81</width>
       <height>31</height>
      </rect>
     </property>
@@ -890,7 +890,7 @@ border-radius:10px;</string>
      <rect>
       <x>10</x>
       <y>260</y>
-      <width>51</width>
+      <width>81</width>
       <height>31</height>
      </rect>
     </property>
@@ -913,9 +913,9 @@ border-radius:10px;</string>
    <widget class="QLineEdit" name="in_meta2">
     <property name="geometry">
      <rect>
-      <x>70</x>
+      <x>90</x>
       <y>260</y>
-      <width>561</width>
+      <width>541</width>
       <height>31</height>
      </rect>
     </property>
@@ -941,7 +941,7 @@ border-radius:10px;</string>
      <rect>
       <x>10</x>
       <y>300</y>
-      <width>51</width>
+      <width>81</width>
       <height>31</height>
      </rect>
     </property>
@@ -964,9 +964,9 @@ border-radius:10px;</string>
    <widget class="QLineEdit" name="in_meta3">
     <property name="geometry">
      <rect>
-      <x>70</x>
+      <x>90</x>
       <y>300</y>
-      <width>561</width>
+      <width>541</width>
       <height>31</height>
      </rect>
     </property>

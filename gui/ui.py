@@ -41,7 +41,7 @@ class WelcomeUI(Ui_WelcomeUI):
             self.ui = CrawlerUI()
             self.ui.set_crawler(crawler_map[name]())
             self.ui.set_auth(authorizer)
-            self.ui.mask_brand()
+            self.ui.apply_masks()
             self.ui.show()
         else:
             show_popup("You are not authorized",
@@ -89,7 +89,26 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         self.bt_export.clicked.connect(self.export)
         self.browse_folder.clicked.connect(self.folder)
 
-    def mask_brand(self):
+    def apply_masks(self):
+        if self.crawler.NAME == 'antallaktikaonline.gr':
+            self.in_meta1.setStyleSheet(
+                "background-color: rgba(112, 112, 112, 0.8);\n"
+                "border-width:4px;\n"
+                "border-color:black;\n"
+                "border-style:offset;\n"
+                "border-radius:10px;")
+            self.in_meta2.setStyleSheet(
+                "background-color: rgba(112, 112, 112, 0.8);\n"
+                "border-width:4px;\n"
+                "border-color:black;\n"
+                "border-style:offset;\n"
+                "border-radius:10px;")
+            self.in_meta3.setStyleSheet(
+                "background-color: rgba(112, 112, 112, 0.8);\n"
+                "border-width:4px;\n"
+                "border-color:black;\n"
+                "border-style:offset;\n"
+                "border-radius:10px;")
         if self.crawler.NAME == 'skroutz.gr':
             self.in_brand.setStyleSheet(
                 "background-color: rgba(112, 112, 112, 0.8);\n"
@@ -97,6 +116,15 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
                 "border-color:black;\n"
                 "border-style:offset;\n"
                 "border-radius:10px;")
+            self.in_meta3.setStyleSheet(
+                "background-color: rgba(112, 112, 112, 0.8);\n"
+                "border-width:4px;\n"
+                "border-color:black;\n"
+                "border-style:offset;\n"
+                "border-radius:10px;")
+
+            self.label_meta1.setText('Meta_Desc')
+            self.label_meta2.setText("Meta_SEO")
 
     def change_browser_status(self, status):
         if status == 'online':

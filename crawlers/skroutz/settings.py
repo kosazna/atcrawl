@@ -7,9 +7,9 @@ skroutz_standby = Standby(LAUNCH=2,
                           COLLECT=0.5,
                           TIMEOUT=8)
 
-skroutz_properties = ['img',
-                      'product',
-                      'price',
+skroutz_properties = ['image',
+                      'title',
+                      'retail_price',
                       'description',
                       'shop']
 

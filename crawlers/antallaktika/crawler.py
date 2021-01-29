@@ -71,7 +71,10 @@ class AntallaktikaOnline(CrawlEngine):
                 print("\nΗ διαδικασία σταμάτησε.\n")
                 return False
 
-    def transform(self, brand: str, discount: int = 0, **kwargs):
+    def transform(self, **kwargs):
+        brand = kwargs.get('brand', '')
+        discount = kwargs.get('discount', 0)
+
         _data = pd.DataFrame.from_dict(self.data)
         self.collected_data = _data.copy()
 

@@ -94,28 +94,48 @@ class Skroutz(CrawlEngine):
             except NoSuchElementException:
                 pass
 
-    def transform(self, discount: int = 0, **kwargs):
+    def transform(self, **kwargs):
         meta_desc = kwargs.get('meta1', '')
         meta_seo = kwargs.get('meta2', '')
+        brand = kwargs.get('brand', '')
+        discount = kwargs.get('discount', 0)
 
         _data = pd.DataFrame.from_dict(self.data)
         self.collected_data = _data.copy()
 
         discount_rate = (100 + discount) / 100
-
-        new_prices = (_data['price'].astype(
+        new_prices = (_data['retail_price'].astype(
             float) * discount_rate).round(2).astype('string')
         col_name = f'price_after_discount_{+discount}%'
         _data[col_name] = new_prices
 
-        _data['price'] = _data['price'].astype('string').str.replace('.', ',')
+        if len(self.filters) > 0:
+            if brand:
+                _data['brand'] = brand
+            else:
+                _data['brand'] = self.filters[0]
+
+            try:
+                _details = self.filters[1:]
+            except IndexError:
+                _details = []
+
+            _data['details'] = ', '.join(_details)
+        else:
+            _data['brand'] = brand
+            _data['details'] = ''
+
+        _data["meta_description"] = meta_desc + ' ' + _data['title']
+        _data["meta_seo"] = meta_seo + ' ' + _data['title']
+
+        _data['retail_price'] = _data['retail_price'].astype(
+            'string').str.replace('.', ',')
         _data[col_name] = _data[col_name].str.replace('.', ',')
 
-        for idx, sfilter in enumerate(self.filters, 1):
-            _col = f"filter_{idx}"
-            _data[_col] = [sfilter] * _data.shape[0]
-
-        self.transformed_data = _data
+        self.transformed_data = _data[['brand', 'title', 'description',
+                                       'meta_description', 'details',
+                                       'retail_price', 'shop', col_name,
+                                       'image', 'meta_seo']].copy()
 
     def find_elements(self):
         _elements = self.driver.find_elements(By.XPATH, sku.XPATH)
@@ -131,9 +151,9 @@ class Skroutz(CrawlEngine):
 
         for element in to_parse:
             obj = SkroutzProductContainer(element)
-            self.data['img'].append(obj.get_img())
-            self.data['product'].append(obj.get_name())
-            self.data['price'].append(obj.get_price())
+            self.data['image'].append(obj.get_img())
+            self.data['title'].append(obj.get_name())
+            self.data['retail_price'].append(obj.get_price())
             self.data['description'].append(obj.get_description())
             self.data['shop'].append(obj.get_shop())
 

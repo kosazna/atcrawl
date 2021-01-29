@@ -109,12 +109,6 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
                 "border-style:offset;\n"
                 "border-radius:10px;")
         if self.crawler.NAME == 'skroutz.gr':
-            self.in_brand.setStyleSheet(
-                "background-color: rgba(112, 112, 112, 0.8);\n"
-                "border-width:4px;\n"
-                "border-color:black;\n"
-                "border-style:offset;\n"
-                "border-radius:10px;")
             self.in_meta3.setStyleSheet(
                 "background-color: rgba(112, 112, 112, 0.8);\n"
                 "border-width:4px;\n"

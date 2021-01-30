@@ -39,8 +39,8 @@ pstock = Element(
 
 paginator = Element(
     NAME='paginator',
-    TAG='pagination',
-    CLASS='div')
+    TAG='div',
+    CLASS='pagination')
 
 bt_next = Element(
     NAME='bt_next',

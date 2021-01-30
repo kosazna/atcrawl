@@ -24,6 +24,7 @@ class CrawlEngine:
         self.properties = properties if properties is not None else list()
         self.standby = standby_times if standby_times is not None \
             else CrawlEngine.DEFAULT_WAITS
+        self.first_run = True
 
         self.data = {k: list() for k in self.properties}
         self.products = []
@@ -99,7 +100,7 @@ class CrawlEngine:
 
     def reset(self, url=None):
         if url is None:
-            self.driver.get(self.url)
+            pass
         else:
             self.driver.get(url)
         self.products = []

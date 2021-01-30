@@ -3,7 +3,7 @@
 from atcrawl.utilities.elements import *
 
 
-antallaktika_standby = Standby(LAUNCH=3,
+antallaktika_standby = Standby(LAUNCH=4,
                                COLLECT=1.5,
                                TIMEOUT=5)
 

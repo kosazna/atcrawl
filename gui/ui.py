@@ -68,6 +68,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         self.auth = None
 
         self.url = None
+        self.old_url = None
         self.brand = None
         self.discount = None
         self.file_name = None
@@ -228,6 +229,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
 
     def launch(self):
         self.url = self.in_url.text()
+        self.old_url = self.in_url.text()
 
         if self.url is not None and self.url != '':
             self.crawler.set_url(self.url)
@@ -244,6 +246,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
     def collect(self):
         self.change_crawler_status('running')
         self.collecting = True
+
         self.crawler.pre_collect()
 
         while self.collecting and self.crawler.click('Next'):
@@ -251,6 +254,8 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
 
         if self.crawler.NAME == "antallaktikaonline.gr":
             self.crawler.parse()
+
+        self.crawler.first_run = False
 
         self.count_items.setText(self.count_parsed())
         self.change_crawler_status('idle')
@@ -285,6 +290,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
                 self.crawler.export(name=_name,
                                     folder=_folder,
                                     export_type=_type)
+                self.to_export = False
             else:
                 show_popup("You are not authorized",
                            "Contact support",
@@ -296,7 +302,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         if self.driver_status:
             _url = self.in_url.text()
 
-            if self.url == _url:
+            if self.url == self.old_url:
                 self.crawler.reset()
             else:
                 self.crawler.reset(_url)

@@ -163,16 +163,26 @@ class Skroutz(CrawlEngine):
         self.parse(_elements)
 
     def pre_collect(self, mode='collect'):
-        if mode == 'collect':
-            self.click('Cookies')
-            self.find_filters()
-            self.scroll_down()
-            self.parse_page()
+        if self.first_run:
+            if mode == 'collect':
+                self.click('Cookies')
+                self.find_filters()
+                self.scroll_down()
+                self.parse_page()
+            else:
+                self.click('Cookies')
+                self.find_filters()
+                self.scroll_down()
+                self.find_elements()
         else:
-            self.click('Cookies')
-            self.find_filters()
-            self.scroll_down()
-            self.find_elements()
+            if mode == 'collect':
+                self.find_filters()
+                self.scroll_down()
+                self.parse_page()
+            else:
+                self.find_filters()
+                self.scroll_down()
+                self.find_elements()
 
     def collect(self, mode='collect', gather='all'):
         if mode == 'collect':

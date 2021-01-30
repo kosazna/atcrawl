@@ -138,22 +138,32 @@ class AntallaktikaOnline(CrawlEngine):
         self.parse(_elements)
 
     def pre_collect(self, mode='iterate'):
-        if mode == 'collect':
-            self.click('Cookies')
-            sleep(self.standby.COLLECT)
-            self.scroll_down()
-            sleep(self.standby.COLLECT)
-            self.click('Popup')
-            sleep(self.standby.COLLECT)
-            self.parse_page()
+        if self.first_run:
+            if mode == 'collect':
+                self.click('Cookies')
+                sleep(self.standby.COLLECT)
+                self.scroll_down()
+                sleep(self.standby.COLLECT)
+                self.click('Popup')
+                sleep(self.standby.COLLECT)
+                self.parse_page()
+            else:
+                self.click('Cookies')
+                sleep(self.standby.COLLECT)
+                self.scroll_down()
+                sleep(self.standby.COLLECT)
+                self.click('Popup')
+                sleep(self.standby.COLLECT)
+                self.find_elements()
         else:
-            self.click('Cookies')
-            sleep(self.standby.COLLECT)
-            self.scroll_down()
-            sleep(self.standby.COLLECT)
-            self.click('Popup')
-            sleep(self.standby.COLLECT)
-            self.find_elements()
+            if mode == 'collect':
+                self.scroll_down()
+                sleep(self.standby.COLLECT)
+                self.parse_page()
+            else:
+                self.scroll_down()
+                sleep(self.standby.COLLECT)
+                self.find_elements()
 
     def collect(self, mode='iterate', gather='all'):
         if mode == 'collect':

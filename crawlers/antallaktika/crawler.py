@@ -48,28 +48,34 @@ class AntallaktikaOnline(CrawlEngine):
         self.site_map = antallaktika_site_map
 
     def click(self, element: str):
+        if element == 'Next':
+            try:
+                self.driver.find_element(By.CLASS_NAME,
+                                         paginator.CLASS).find_element(
+                    By.CLASS_NAME, bt_next.CLASS).click()
+                return True
+            except NoSuchElementException as e:
+                print(e)
+                print("\nΟι σελίδες τελείωσαν.\n")
+                return False
+            except ElementClickInterceptedException as (e):
+                print(e)
+                print("\nΗ σελίδα δεν ανταποκρίθηκε.\n")
+                return False
 
-        try:
-            to_click = WebDriverWait(self.driver,
-                                     self.standby.TIMEOUT).until(
-                ec.element_to_be_clickable((By.CLASS_NAME,
-                                            self.site_map[element].CLASS)))
-
-            to_click.click()
-            return True
-        except (NoSuchElementException, TimeoutException):
+        elif element == 'Cookies':
+            self.driver.find_element(By.CLASS_NAME, bt_cookies.CLASS).click()
+        else:
             try:
                 to_click = WebDriverWait(self.driver,
                                          self.standby.TIMEOUT).until(
                     ec.element_to_be_clickable((By.CLASS_NAME,
-                                                self.site_map[element].CLASS)))
+                                                bt_popup.CLASS)))
 
                 to_click.click()
-                return True
-            except (NoSuchElementException, TimeoutException) as e:
+            except TimeoutException as e:
                 print(e)
-                print("\nΗ διαδικασία σταμάτησε.\n")
-                return False
+                pass
 
     def transform(self, **kwargs):
         brand = kwargs.get('brand', '')
@@ -119,18 +125,19 @@ class AntallaktikaOnline(CrawlEngine):
         else:
             to_parse = what
 
-        for element in to_parse:
-            pb = AntallaktikaOnlineProductContainer(element, self.site_map)
+        if to_parse:
+            for element in to_parse:
+                pb = AntallaktikaOnlineProductContainer(element, self.site_map)
 
-            _article_no = pb.get('pid').strip('\n').split(':')[1].strip()
-            _retail = fmtnumber(num_from_text(pb.get('poldprice', '-1.0')))
-            _after = fmtnumber(num_from_text(pb.get('pnewprice', '-1.0')))
-            _stock = pb.get('pstock')
+                _article_no = pb.get('pid').strip('\n').split(':')[1].strip()
+                _retail = fmtnumber(num_from_text(pb.get('poldprice', '-1.0')))
+                _after = fmtnumber(num_from_text(pb.get('pnewprice', '-1.0')))
+                _stock = pb.get('pstock')
 
-            self.data['article_no'].append(_article_no)
-            self.data['retail_price'].append(_retail)
-            self.data['price_after_discount'].append(_after)
-            self.data['availability'].append(_stock)
+                self.data['article_no'].append(_article_no)
+                self.data['retail_price'].append(_retail)
+                self.data['price_after_discount'].append(_after)
+                self.data['availability'].append(_stock)
 
     def parse_page(self, what=None):
         _elements = self.find_elements()
@@ -155,14 +162,11 @@ class AntallaktikaOnline(CrawlEngine):
                 self.click('Popup')
                 sleep(self.standby.COLLECT)
                 self.find_elements()
+            self.first_run = False
         else:
             if mode == 'collect':
-                self.scroll_down()
-                sleep(self.standby.COLLECT)
                 self.parse_page()
             else:
-                self.scroll_down()
-                sleep(self.standby.COLLECT)
                 self.find_elements()
 
     def collect(self, mode='iterate', gather='all'):
@@ -176,7 +180,10 @@ class AntallaktikaOnline(CrawlEngine):
                         self.parse_page()
                     is_finished = True
                 except ElementClickInterceptedException:
-                    self.click('Popup')
+                    if not is_finished:
+                        while self.click('Next'):
+                            sleep(self.standby.COLLECT)
+                            self.parse_page()
                 finally:
                     if not is_finished:
                         while self.click('Next'):
@@ -195,7 +202,10 @@ class AntallaktikaOnline(CrawlEngine):
                         self.find_elements()
                     is_finished = True
                 except ElementClickInterceptedException:
-                    self.click('Popup')
+                    if not is_finished:
+                        while self.click('Next'):
+                            sleep(self.standby.COLLECT)
+                            self.parse_page()
                 finally:
                     if not is_finished:
                         while self.click('Next'):

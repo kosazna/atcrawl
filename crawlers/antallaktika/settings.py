@@ -4,8 +4,8 @@ from atcrawl.utilities.elements import *
 
 
 antallaktika_standby = Standby(LAUNCH=4,
-                               COLLECT=1.5,
-                               TIMEOUT=5)
+                               COLLECT=1,
+                               TIMEOUT=3)
 
 antallaktika_properties = ['article_no',
                            'retail_price',
@@ -36,6 +36,11 @@ pstock = Element(
     NAME='pstock',
     TAG='span',
     CLASS='text_vers')
+
+paginator = Element(
+    NAME='paginator',
+    TAG='pagination',
+    CLASS='div')
 
 bt_next = Element(
     NAME='bt_next',

@@ -255,8 +255,6 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         if self.crawler.NAME == "antallaktikaonline.gr":
             self.crawler.parse()
 
-        self.crawler.first_run = False
-
         self.count_items.setText(self.count_parsed())
         self.change_crawler_status('idle')
         self.to_export = True

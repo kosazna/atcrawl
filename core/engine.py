@@ -118,11 +118,12 @@ class CrawlEngine:
         else:
             to_export = self.collected_data
 
-        if export_type == 'csv':
-            dst = Path(folder).joinpath(f'{name}.csv')
-            to_export.to_csv(dst, index=False, sep=';')
-            print(f"\n\nExported csv file at:\n    {dst}\n")
-        else:
-            dst = Path(folder).joinpath(f'{name}.xlsx')
-            to_export.to_excel(dst, index=False)
-            print(f"\n\nExported excel file at:\n    {dst}\n")
+        if to_export is not None:
+            if export_type == 'csv':
+                dst = Path(folder).joinpath(f'{name}.csv')
+                to_export.to_csv(dst, index=False, sep=';')
+                print(f"\n\nExported csv file at:\n    {dst}\n")
+            else:
+                dst = Path(folder).joinpath(f'{name}.xlsx')
+                to_export.to_excel(dst, index=False)
+                print(f"\n\nExported excel file at:\n    {dst}\n")

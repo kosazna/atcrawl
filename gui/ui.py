@@ -237,6 +237,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
 
             self.change_browser_status("online")
             self.change_crawler_status('idle')
+            self.collect_thread_start()
         else:
             show_popup("URL is not set. Launch cancelled!",
                        "Set the url and then launch.",

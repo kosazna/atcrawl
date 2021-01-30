@@ -58,7 +58,7 @@ class AntallaktikaOnline(CrawlEngine):
                 print(e)
                 print("\nΟι σελίδες τελείωσαν.\n")
                 return False
-            except ElementClickInterceptedException as (e):
+            except ElementClickInterceptedException as e:
                 print(e)
                 print("\nΗ σελίδα δεν ανταποκρίθηκε.\n")
                 return False

@@ -1,6 +1,17 @@
 # -*- coding: utf-8 -*-
 
 from pathlib import Path
+import json
+
+atcrawl_json = Path.home().joinpath("atcrawl_settings.json")
+
+try:
+    with open(atcrawl_json, encoding='utf8') as f:
+        settings = json.load(f)
+except FileNotFoundError:
+    settings = {'default_export': ''}
+    with open(atcrawl_json, encoding='utf8', mode='w') as f:
+        json.dump(settings, f)
 
 
 class Paths:
@@ -10,7 +21,7 @@ class Paths:
         self._chrome = self._userhome.joinpath("chromedriver.exe")
         self._firefox = self._userhome.joinpath("geckodriver.exe")
         self._cwd = Path.cwd()
-        self._default_export = "F:\\Λήψεις\\Terpos"
+        self._default_export = settings.get('default_export', '')
 
     def get_userhome(self) -> str:
         return str(self._userhome)

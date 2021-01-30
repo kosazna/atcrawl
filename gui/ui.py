@@ -266,8 +266,9 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
     def collect_thread_start(self):
         if self.driver_status:
             if self.auth.user_is_licensed():
-                worker = Worker(self.collect)
-                self.threadpool.start(worker)
+                # worker = Worker(self.collect)
+                # self.threadpool.start(worker)
+                self.collect()
             else:
                 show_popup("You are not authorized",
                            "Contact support",

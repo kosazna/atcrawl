@@ -300,7 +300,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         if self.driver_status:
             _url = self.in_url.text()
 
-            if self.url == self.old_url:
+            if _url == self.old_url:
                 self.crawler.reset()
             else:
                 self.crawler.reset(_url)

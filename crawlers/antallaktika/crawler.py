@@ -80,7 +80,7 @@ class AntallaktikaOnline(CrawlEngine):
     def transform(self, **kwargs):
         brand = kwargs.get('brand', '')
         discount = kwargs.get('discount', 0)
-        car = kwargs.get('car', '0')
+        car = kwargs.get('meta1', '0')
 
         _data = pd.DataFrame.from_dict(self.data)
         self.collected_data = _data.copy()

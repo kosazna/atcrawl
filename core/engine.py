@@ -25,6 +25,7 @@ class CrawlEngine:
         self.standby = standby_times if standby_times is not None \
             else CrawlEngine.DEFAULT_WAITS
         self.first_run = True
+        self.has_data = False
 
         self.data = {k: list() for k in self.properties}
         self.products = []

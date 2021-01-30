@@ -2,6 +2,7 @@
 
 from PyQt5.QtWidgets import QFileDialog, QMainWindow, QMessageBox
 from PyQt5.QtCore import pyqtSlot, QThreadPool
+import threading
 
 from atcrawl.gui.welcome_design import *
 from atcrawl.gui.crawler_design import *
@@ -75,11 +76,11 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         self.folder_name = None
         self.driver_status = False
         self.to_export = False
-        self.collecting = False
         self.nitems = 0
 
         self.worker = None
         self.threadpool = QThreadPool()
+        self.event_stop = threading.Event()
 
         self.bt_launch.clicked.connect(self.launch)
         self.bt_terminate.clicked.connect(self.terminate)
@@ -245,11 +246,10 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
 
     def collect(self):
         self.change_crawler_status('running')
-        self.collecting = True
-
+        self.event_stop.clear()
         self.crawler.pre_collect()
 
-        while self.collecting and self.crawler.click('Next'):
+        while not self.event_stop.is_set() and self.crawler.click('Next'):
             self.crawler.collect(gather='single')
 
         if self.crawler.NAME == "antallaktikaonline.gr":
@@ -257,10 +257,12 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
 
         self.count_items.setText(self.count_parsed())
         self.change_crawler_status('idle')
+        self.event_stop.set()
         self.to_export = True
         if self.check_export.isChecked():
             self.export()
 
+    @QtCore.pyqtSlot()
     def collect_thread_start(self):
         if self.driver_status:
             if self.auth.user_is_licensed():
@@ -273,8 +275,9 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         else:
             show_popup("Launch the driver first!")
 
+    @QtCore.pyqtSlot()
     def collect_thread_stop(self):
-        self.collecting = False
+        self.event_stop.set()
 
     def export(self):
         if self.to_export:
@@ -304,6 +307,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
                 self.crawler.reset()
             else:
                 self.crawler.reset(_url)
+                self.old_url = _url
 
             self.to_export = False
             self.count_items.setText(self.count_parsed())

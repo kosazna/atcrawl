@@ -80,6 +80,7 @@ class AntallaktikaOnline(CrawlEngine):
     def transform(self, **kwargs):
         brand = kwargs.get('brand', '')
         discount = kwargs.get('discount', 0)
+        car = kwargs.get('car', '0')
 
         _data = pd.DataFrame.from_dict(self.data)
         self.collected_data = _data.copy()
@@ -94,7 +95,8 @@ class AntallaktikaOnline(CrawlEngine):
         _data['retail_price'] = _data['retail_price'].astype(float).round(2)
         _data['price_after_discount'] = _data['price_after_discount'].astype(
             float).round(2)
-        _data.index += 1
+
+        _data['car'] = car
 
         _data['retail_price'] = _data['retail_price'].astype(
             'string').str.replace('.', ',')

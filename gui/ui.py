@@ -82,6 +82,8 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         self.threadpool = QThreadPool()
         self.event_stop = threading.Event()
 
+        self.in_folder.setText(paths.get_default_export())
+
         self.bt_launch.clicked.connect(self.launch)
         self.bt_terminate.clicked.connect(self.terminate)
         self.bt_collect.clicked.connect(self.collect_thread_start)
@@ -92,12 +94,6 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
 
     def apply_masks(self):
         if self.crawler.NAME == 'antallaktikaonline.gr':
-            self.in_meta1.setStyleSheet(
-                "background-color: rgba(112, 112, 112, 0.8);\n"
-                "border-width:4px;\n"
-                "border-color:black;\n"
-                "border-style:offset;\n"
-                "border-radius:10px;")
             self.in_meta2.setStyleSheet(
                 "background-color: rgba(112, 112, 112, 0.8);\n"
                 "border-width:4px;\n"
@@ -110,6 +106,8 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
                 "border-color:black;\n"
                 "border-style:offset;\n"
                 "border-radius:10px;")
+
+            self.label_meta1.setText("Car")
         if self.crawler.NAME == 'skroutz.gr':
             self.in_meta3.setStyleSheet(
                 "background-color: rgba(112, 112, 112, 0.8);\n"
@@ -266,9 +264,8 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
     def collect_thread_start(self):
         if self.driver_status:
             if self.auth.user_is_licensed():
-                # worker = Worker(self.collect)
-                # self.threadpool.start(worker)
-                self.collect()
+                worker = Worker(self.collect)
+                self.threadpool.start(worker)
             else:
                 show_popup("You are not authorized",
                            "Contact support",

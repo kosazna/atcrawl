@@ -10,6 +10,7 @@ class Paths:
         self._chrome = self._userhome.joinpath("chromedriver.exe")
         self._firefox = self._userhome.joinpath("geckodriver.exe")
         self._cwd = Path.cwd()
+        self._default_export = "F:\\Λήψεις\\Terpos"
 
     def get_userhome(self) -> str:
         return str(self._userhome)
@@ -22,6 +23,9 @@ class Paths:
 
     def get_cwd(self):
         return self._cwd
+
+    def get_default_export(self):
+        return self._default_export
 
 
 paths = Paths()

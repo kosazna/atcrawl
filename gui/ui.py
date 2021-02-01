@@ -94,6 +94,12 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
 
     def apply_masks(self):
         if self.crawler.NAME == 'antallaktikaonline.gr':
+            self.in_meta1.setStyleSheet(
+                "background-color: rgba(112, 112, 112, 0.8);\n"
+                "border-width:4px;\n"
+                "border-color:black;\n"
+                "border-style:offset;\n"
+                "border-radius:10px;")
             self.in_meta2.setStyleSheet(
                 "background-color: rgba(112, 112, 112, 0.8);\n"
                 "border-width:4px;\n"
@@ -107,17 +113,30 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
                 "border-style:offset;\n"
                 "border-radius:10px;")
 
-            self.label_meta1.setText("Car")
+            self.label_meta0.setText("Car")
         if self.crawler.NAME == 'skroutz.gr':
-            self.in_meta3.setStyleSheet(
-                "background-color: rgba(112, 112, 112, 0.8);\n"
-                "border-width:4px;\n"
-                "border-color:black;\n"
-                "border-style:offset;\n"
-                "border-radius:10px;")
+            self.label_meta0.setText('ID Category')
+            self.label_meta1.setText('Description')
+            self.label_meta2.setText('Meta Title SEO')
+            self.label_meta3.setText("Meta SEO")
 
-            self.label_meta1.setText('Meta_Desc')
-            self.label_meta2.setText("Meta_SEO")
+    def show_output(self, text=''):
+        self.output.setText(text)
+        self.status_browser.setStyleSheet(
+            "background-color: rgba(80, 244, 20, 0.8);\n"
+            "border-width:4px;\n"
+            "border-color:black;\n"
+            "border-style:offset;\n"
+            "border-radius:10px;")
+
+    def mask_output(self):
+        self.output.setText('')
+        self.status_browser.setStyleSheet(
+            "background-color: rgba(112, 112, 112, 0.8);\n"
+            "border-width:4px;\n"
+            "border-color:black;\n"
+            "border-style:offset;\n"
+            "border-radius:10px;")
 
     def change_browser_status(self, status):
         if status == 'online':
@@ -218,7 +237,8 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         return self.brand
 
     def get_params(self):
-        _params = {'meta1': self.in_meta1.text(),
+        _params = {'meta0': self.in_meta0.text(),
+                   'meta1': self.in_meta1.text(),
                    'meta2': self.in_meta2.text(),
                    'meta3': self.in_meta3.text(),
                    'brand': self.get_brand(),
@@ -251,6 +271,8 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         self.bt_reset.setEnabled(False)
 
         self.change_crawler_status('running')
+        self.mask_output()
+        
         self.event_stop.clear()
         self.crawler.pre_collect()
 
@@ -299,6 +321,10 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
                 self.crawler.export(name=_name,
                                     folder=_folder,
                                     export_type=_type)
+
+                _output = _folder + _name
+                self.show_output(_output)
+
                 self.to_export = False
             else:
                 show_popup("You are not authorized",

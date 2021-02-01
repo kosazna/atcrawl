@@ -237,6 +237,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
 
             self.change_browser_status("online")
             self.change_crawler_status('idle')
+            self.bt_launch.setEnabled(False)
 
             if self.check_launch_collect.isChecked():
                 self.collect_thread_start()
@@ -246,12 +247,18 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
                        QMessageBox.Critical)
 
     def collect(self):
+        self.bt_collect.setEnabled(False)
+        self.bt_reset.setEnabled(False)
+
         self.change_crawler_status('running')
         self.event_stop.clear()
         self.crawler.pre_collect()
 
         while not self.event_stop.is_set() and self.crawler.click('Next'):
             self.crawler.collect(gather='single')
+
+        self.bt_collect.setEnabled(True)
+        self.bt_reset.setEnabled(True)
 
         if self.crawler.NAME == "antallaktikaonline.gr":
             self.crawler.parse()
@@ -321,6 +328,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
             self.driver_status = False
             self.change_browser_status("offline")
             self.change_crawler_status("offline")
+            self.bt_launch.setEnabled(True)
         else:
             show_popup("Launch the driver first!")
 

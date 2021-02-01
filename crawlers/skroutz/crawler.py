@@ -133,7 +133,7 @@ class Skroutz(CrawlEngine):
         _data["meta_seo"] = meta_seo + ' ' + _data['title']
         _data['id_category'] = id_cat
         _data['extra_description'] = _data['title'] + ', ' + _data['misc']
-        _data['extra_description'] = _data['extra_description'].replace(
+        _data['extra_description'] = _data['extra_description'].str.replace(
             ', <NULL>', '')
 
         _data['retail_price'] = _data['retail_price'].astype(

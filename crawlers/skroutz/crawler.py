@@ -33,7 +33,7 @@ class SkroutzProductContainer:
         try:
             _d = self.element.find_elements(By.TAG_NAME,
                                             description.TAG)[description.LOC]
-            return _d.text
+            return _d.text if _d.text else '<NULL>'
         except IndexError:
             return description.DEFAULT
 
@@ -95,8 +95,10 @@ class Skroutz(CrawlEngine):
                 pass
 
     def transform(self, **kwargs):
-        meta_desc = kwargs.get('meta1', '')
-        meta_seo = kwargs.get('meta2', '')
+        id_cat = kwargs.get('meta0', '')
+        desc = kwargs.get('meta1', '')
+        meta_desc = kwargs.get('meta2', '')
+        meta_seo = kwargs.get('meta3', '')
         brand = kwargs.get('brand', '')
         discount = kwargs.get('discount', 0)
 
@@ -125,17 +127,25 @@ class Skroutz(CrawlEngine):
             _data['brand'] = brand
             _data['details'] = ''
 
-        _data["meta_description"] = meta_desc + ' ' + _data['title']
+        _data['article_no'] = ''
+        _data["description"] = desc + ' ' + _data['title']
+        _data["meta_title_seo"] = meta_desc + ' ' + _data['title']
         _data["meta_seo"] = meta_seo + ' ' + _data['title']
+        _data['id_category'] = id_cat
+        _data['extra_description'] = _data['title'] + ', ' + _data['misc']
+        _data['extra_description'] = _data['extra_description'].replace(
+            ', <NULL>', '')
 
         _data['retail_price'] = _data['retail_price'].astype(
             'string').str.replace('.', ',')
         _data[col_name] = _data[col_name].str.replace('.', ',')
 
-        self.transformed_data = _data[['brand', 'title', 'description',
-                                       'meta_description', 'details',
-                                       'retail_price', 'shop', col_name,
-                                       'image', 'meta_seo']].copy()
+        keep_cols = ['brand', 'article_no', 'title', 'description',
+                     'meta_title_seo', 'details', 'retail_price',
+                     col_name, 'id_category', 'image', 'meta_seo',
+                     'extra_description', 'shop']
+
+        self.transformed_data = _data[keep_cols].copy()
 
     def find_elements(self):
         _elements = self.driver.find_elements(By.XPATH, sku.XPATH)
@@ -154,7 +164,7 @@ class Skroutz(CrawlEngine):
             self.data['image'].append(obj.get_img())
             self.data['title'].append(obj.get_name())
             self.data['retail_price'].append(obj.get_price())
-            self.data['description'].append(obj.get_description())
+            self.data['misc'].append(obj.get_description())
             self.data['shop'].append(obj.get_shop())
 
     def parse_page(self):

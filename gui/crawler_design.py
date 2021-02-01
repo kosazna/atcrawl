@@ -35,10 +35,10 @@ class Ui_CrawlerUI(object):
         font.setPointSize(10)
         self.in_url.setFont(font)
         self.in_url.setStyleSheet("background-color: rgb(255, 255, 255);\n"
-"border-width:4px;\n"
-"border-color:black;\n"
-"border-style:offset;\n"
-"border-radius:10px;")
+                                  "border-width:4px;\n"
+                                  "border-color:black;\n"
+                                  "border-style:offset;\n"
+                                  "border-radius:10px;")
         self.in_url.setText("")
         self.in_url.setObjectName("in_url")
         self.bt_reset = QtWidgets.QToolButton(self.centralwidget)
@@ -49,11 +49,12 @@ class Ui_CrawlerUI(object):
         font.setBold(True)
         font.setWeight(75)
         self.bt_reset.setFont(font)
-        self.bt_reset.setStyleSheet("background-color: rgba(112, 112, 112, 0.8);\n"
-"color: rgb(0, 0, 0);\n"
-"border-width:10px;\n"
-"border-radius:10px;\n"
-"")
+        self.bt_reset.setStyleSheet(
+            "background-color: rgba(112, 112, 112, 0.8);\n"
+            "color: rgb(0, 0, 0);\n"
+            "border-width:10px;\n"
+            "border-radius:10px;\n"
+            "")
         self.bt_reset.setObjectName("bt_reset")
         self.label_brand = QtWidgets.QLabel(self.centralwidget)
         self.label_brand.setGeometry(QtCore.QRect(10, 120, 81, 31))
@@ -79,11 +80,12 @@ class Ui_CrawlerUI(object):
         font.setBold(True)
         font.setWeight(75)
         self.bt_launch.setFont(font)
-        self.bt_launch.setStyleSheet("background-color: rgba(112, 112, 112, 0.8);\n"
-"color: rgb(0, 0, 0);\n"
-"border-width:10px;\n"
-"border-radius:10px;\n"
-"")
+        self.bt_launch.setStyleSheet(
+            "background-color: rgba(112, 112, 112, 0.8);\n"
+            "color: rgb(0, 0, 0);\n"
+            "border-width:10px;\n"
+            "border-radius:10px;\n"
+            "")
         self.bt_launch.setObjectName("bt_launch")
         self.bt_collect = QtWidgets.QToolButton(self.centralwidget)
         self.bt_collect.setGeometry(QtCore.QRect(690, 170, 100, 30))
@@ -93,11 +95,12 @@ class Ui_CrawlerUI(object):
         font.setBold(True)
         font.setWeight(75)
         self.bt_collect.setFont(font)
-        self.bt_collect.setStyleSheet("background-color: rgba(112, 112, 112, 0.8);\n"
-"color: rgb(0, 0, 0);\n"
-"border-width:10px;\n"
-"border-radius:10px;\n"
-"")
+        self.bt_collect.setStyleSheet(
+            "background-color: rgba(112, 112, 112, 0.8);\n"
+            "color: rgb(0, 0, 0);\n"
+            "border-width:10px;\n"
+            "border-radius:10px;\n"
+            "")
         self.bt_collect.setObjectName("bt_collect")
         self.bt_export = QtWidgets.QToolButton(self.centralwidget)
         self.bt_export.setGeometry(QtCore.QRect(690, 390, 100, 30))
@@ -107,11 +110,12 @@ class Ui_CrawlerUI(object):
         font.setBold(True)
         font.setWeight(75)
         self.bt_export.setFont(font)
-        self.bt_export.setStyleSheet("background-color: rgba(112, 112, 112, 0.8);\n"
-"color: rgb(0, 0, 0);\n"
-"border-width:10px;\n"
-"border-radius:10px;\n"
-"")
+        self.bt_export.setStyleSheet(
+            "background-color: rgba(112, 112, 112, 0.8);\n"
+            "color: rgb(0, 0, 0);\n"
+            "border-width:10px;\n"
+            "border-radius:10px;\n"
+            "")
         self.bt_export.setObjectName("bt_export")
         self.in_brand = QtWidgets.QLineEdit(self.centralwidget)
         self.in_brand.setGeometry(QtCore.QRect(70, 120, 201, 31))
@@ -120,10 +124,10 @@ class Ui_CrawlerUI(object):
         font.setPointSize(10)
         self.in_brand.setFont(font)
         self.in_brand.setStyleSheet("background-color: rgb(255, 255, 255);\n"
-"border-width:4px;\n"
-"border-color:black;\n"
-"border-style:offset;\n"
-"border-radius:10px;")
+                                    "border-width:4px;\n"
+                                    "border-color:black;\n"
+                                    "border-style:offset;\n"
+                                    "border-radius:10px;")
         self.in_brand.setText("")
         self.in_brand.setObjectName("in_brand")
         self.label_discount = QtWidgets.QLabel(self.centralwidget)
@@ -144,10 +148,10 @@ class Ui_CrawlerUI(object):
         font.setPointSize(10)
         self.in_discount.setFont(font)
         self.in_discount.setStyleSheet("background-color: rgb(255, 255, 255);\n"
-"border-width:4px;\n"
-"border-color:black;\n"
-"border-style:offset;\n"
-"border-radius:10px;")
+                                       "border-width:4px;\n"
+                                       "border-color:black;\n"
+                                       "border-style:offset;\n"
+                                       "border-radius:10px;")
         self.in_discount.setText("")
         self.in_discount.setObjectName("in_discount")
         self.label_pct = QtWidgets.QLabel(self.centralwidget)
@@ -169,10 +173,10 @@ class Ui_CrawlerUI(object):
         font.setPointSize(10)
         self.in_folder.setFont(font)
         self.in_folder.setStyleSheet("background-color: rgb(255, 255, 255);\n"
-"border-width:4px;\n"
-"border-color:black;\n"
-"border-style:offset;\n"
-"border-radius:10px;")
+                                     "border-width:4px;\n"
+                                     "border-color:black;\n"
+                                     "border-style:offset;\n"
+                                     "border-radius:10px;")
         self.in_folder.setText("")
         self.in_folder.setObjectName("in_folder")
         self.label_folder = QtWidgets.QLabel(self.centralwidget)
@@ -204,10 +208,10 @@ class Ui_CrawlerUI(object):
         font.setPointSize(10)
         self.in_filename.setFont(font)
         self.in_filename.setStyleSheet("background-color: rgb(255, 255, 255);\n"
-"border-width:4px;\n"
-"border-color:black;\n"
-"border-style:offset;\n"
-"border-radius:10px;")
+                                       "border-width:4px;\n"
+                                       "border-color:black;\n"
+                                       "border-style:offset;\n"
+                                       "border-radius:10px;")
         self.in_filename.setText("")
         self.in_filename.setObjectName("in_filename")
         self.line_2 = QtWidgets.QFrame(self.centralwidget)
@@ -234,11 +238,12 @@ class Ui_CrawlerUI(object):
         font.setBold(True)
         font.setWeight(75)
         self.bt_terminate.setFont(font)
-        self.bt_terminate.setStyleSheet("background-color: rgba(112, 112, 112, 0.8);\n"
-"color: rgb(0, 0, 0);\n"
-"border-width:10px;\n"
-"border-radius:10px;\n"
-"")
+        self.bt_terminate.setStyleSheet(
+            "background-color: rgba(112, 112, 112, 0.8);\n"
+            "color: rgb(0, 0, 0);\n"
+            "border-width:10px;\n"
+            "border-radius:10px;\n"
+            "")
         self.bt_terminate.setObjectName("bt_terminate")
         self.label_params = QtWidgets.QLabel(self.centralwidget)
         self.label_params.setGeometry(QtCore.QRect(10, 90, 121, 21))
@@ -270,12 +275,13 @@ class Ui_CrawlerUI(object):
         font.setWeight(75)
         self.status_browser.setFont(font)
         self.status_browser.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.status_browser.setStyleSheet("background-color: rgba(253, 4, 50, 0.8);\n"
-"border-width:4px;\n"
-"border-color:black;\n"
-"color: rgb(0, 0, 0);\n"
-"border-style:offset;\n"
-"border-radius:10px;")
+        self.status_browser.setStyleSheet(
+            "background-color: rgba(253, 4, 50, 0.8);\n"
+            "border-width:4px;\n"
+            "border-color:black;\n"
+            "color: rgb(0, 0, 0);\n"
+            "border-style:offset;\n"
+            "border-radius:10px;")
         self.status_browser.setAlignment(QtCore.Qt.AlignCenter)
         self.status_browser.setObjectName("status_browser")
         self.label_status = QtWidgets.QLabel(self.centralwidget)
@@ -297,19 +303,21 @@ class Ui_CrawlerUI(object):
         font.setBold(True)
         font.setWeight(75)
         self.bt_stop_collect.setFont(font)
-        self.bt_stop_collect.setStyleSheet("background-color: rgba(112, 112, 112, 0.8);\n"
-"color: rgb(0, 0, 0);\n"
-"border-width:10px;\n"
-"border-radius:10px;\n"
-"")
+        self.bt_stop_collect.setStyleSheet(
+            "background-color: rgba(112, 112, 112, 0.8);\n"
+            "color: rgb(0, 0, 0);\n"
+            "border-width:10px;\n"
+            "border-radius:10px;\n"
+            "")
         self.bt_stop_collect.setObjectName("bt_stop_collect")
         self.browse_folder = QtWidgets.QToolButton(self.centralwidget)
         self.browse_folder.setGeometry(QtCore.QRect(620, 410, 31, 30))
-        self.browse_folder.setStyleSheet("background-color: rgb(255, 255, 255);\n"
-"border-width:4px;\n"
-"border-color:black;\n"
-"border-style:offset;\n"
-"border-radius:10px;")
+        self.browse_folder.setStyleSheet(
+            "background-color: rgb(255, 255, 255);\n"
+            "border-width:4px;\n"
+            "border-color:black;\n"
+            "border-style:offset;\n"
+            "border-radius:10px;")
         self.browse_folder.setObjectName("browse_folder")
         self.list_type = QtWidgets.QComboBox(self.centralwidget)
         self.list_type.setGeometry(QtCore.QRect(590, 370, 61, 30))
@@ -320,10 +328,10 @@ class Ui_CrawlerUI(object):
         font.setWeight(75)
         self.list_type.setFont(font)
         self.list_type.setStyleSheet("background-color: rgba(0, 0, 0, 0.8);\n"
-"color: rgb(255, 255, 255);\n"
-"border-width:4px;\n"
-"border-color:black;\n"
-"border-radius:10px;")
+                                     "color: rgb(255, 255, 255);\n"
+                                     "border-width:4px;\n"
+                                     "border-color:black;\n"
+                                     "border-radius:10px;")
         self.list_type.setObjectName("list_type")
         self.list_type.addItem("")
         self.list_type.addItem("")
@@ -336,12 +344,13 @@ class Ui_CrawlerUI(object):
         font.setWeight(75)
         self.status_crawler.setFont(font)
         self.status_crawler.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.status_crawler.setStyleSheet("background-color:rgba(253, 4, 50, 0.8);\n"
-"border-width:4px;\n"
-"border-color:black;\n"
-"color: rgb(0, 0, 0);\n"
-"border-style:offset;\n"
-"border-radius:10px;")
+        self.status_crawler.setStyleSheet(
+            "background-color:rgba(253, 4, 50, 0.8);\n"
+            "border-width:4px;\n"
+            "border-color:black;\n"
+            "color: rgb(0, 0, 0);\n"
+            "border-style:offset;\n"
+            "border-radius:10px;")
         self.status_crawler.setAlignment(QtCore.Qt.AlignCenter)
         self.status_crawler.setObjectName("status_crawler")
         self.label_crawler = QtWidgets.QLabel(self.centralwidget)
@@ -385,10 +394,10 @@ class Ui_CrawlerUI(object):
         font.setPointSize(10)
         self.in_meta1.setFont(font)
         self.in_meta1.setStyleSheet("background-color: rgb(255, 255, 255);\n"
-"border-width:4px;\n"
-"border-color:black;\n"
-"border-style:offset;\n"
-"border-radius:10px;")
+                                    "border-width:4px;\n"
+                                    "border-color:black;\n"
+                                    "border-style:offset;\n"
+                                    "border-radius:10px;")
         self.in_meta1.setText("")
         self.in_meta1.setObjectName("in_meta1")
         self.label_meta1 = QtWidgets.QLabel(self.centralwidget)
@@ -420,10 +429,10 @@ class Ui_CrawlerUI(object):
         font.setPointSize(10)
         self.in_meta2.setFont(font)
         self.in_meta2.setStyleSheet("background-color: rgb(255, 255, 255);\n"
-"border-width:4px;\n"
-"border-color:black;\n"
-"border-style:offset;\n"
-"border-radius:10px;")
+                                    "border-width:4px;\n"
+                                    "border-color:black;\n"
+                                    "border-style:offset;\n"
+                                    "border-radius:10px;")
         self.in_meta2.setText("")
         self.in_meta2.setObjectName("in_meta2")
         self.label_meta3 = QtWidgets.QLabel(self.centralwidget)
@@ -444,10 +453,10 @@ class Ui_CrawlerUI(object):
         font.setPointSize(10)
         self.in_meta3.setFont(font)
         self.in_meta3.setStyleSheet("background-color: rgb(255, 255, 255);\n"
-"border-width:4px;\n"
-"border-color:black;\n"
-"border-style:offset;\n"
-"border-radius:10px;")
+                                    "border-width:4px;\n"
+                                    "border-color:black;\n"
+                                    "border-style:offset;\n"
+                                    "border-radius:10px;")
         self.in_meta3.setText("")
         self.in_meta3.setObjectName("in_meta3")
         self.check_launch_collect = QtWidgets.QCheckBox(self.centralwidget)
@@ -478,10 +487,10 @@ class Ui_CrawlerUI(object):
         font.setPointSize(10)
         self.in_meta0.setFont(font)
         self.in_meta0.setStyleSheet("background-color: rgb(255, 255, 255);\n"
-"border-width:4px;\n"
-"border-color:black;\n"
-"border-style:offset;\n"
-"border-radius:10px;")
+                                    "border-width:4px;\n"
+                                    "border-color:black;\n"
+                                    "border-style:offset;\n"
+                                    "border-radius:10px;")
         self.in_meta0.setText("")
         self.in_meta0.setObjectName("in_meta0")
         self.output = QtWidgets.QLineEdit(self.centralwidget)
@@ -490,11 +499,12 @@ class Ui_CrawlerUI(object):
         font.setFamily("Segoe UI")
         font.setPointSize(10)
         self.output.setFont(font)
-        self.output.setStyleSheet("background-color: rgba(112, 112, 112, 0.8);\n"
-"border-width:4px;\n"
-"border-color:black;\n"
-"border-style:offset;\n"
-"border-radius:10px;")
+        self.output.setStyleSheet(
+            "background-color: rgba(112, 112, 112, 0.8);\n"
+            "border-width:4px;\n"
+            "border-color:black;\n"
+            "border-style:offset;\n"
+            "border-radius:10px;")
         self.output.setText("")
         self.output.setObjectName("output")
         CrawlerUI.setCentralWidget(self.centralwidget)
@@ -535,12 +545,14 @@ class Ui_CrawlerUI(object):
         self.label_meta1.setText(_translate("CrawlerUI", "Meta1"))
         self.label_meta2.setText(_translate("CrawlerUI", "Meta2"))
         self.label_meta3.setText(_translate("CrawlerUI", "Meta3"))
-        self.check_launch_collect.setText(_translate("CrawlerUI", "launch and collect"))
+        self.check_launch_collect.setText(
+            _translate("CrawlerUI", "launch and collect"))
         self.label_meta0.setText(_translate("CrawlerUI", "Meta0"))
 
 
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     CrawlerUI = QtWidgets.QMainWindow()
     ui = Ui_CrawlerUI()

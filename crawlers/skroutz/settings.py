@@ -10,7 +10,7 @@ skroutz_standby = Standby(LAUNCH=2,
 skroutz_properties = ['image',
                       'title',
                       'retail_price',
-                      'description',
+                      'misc',
                       'shop']
 
 filters = Element(

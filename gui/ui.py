@@ -122,7 +122,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
 
     def show_output(self, text=''):
         self.output.setText(text)
-        self.status_browser.setStyleSheet(
+        self.output.setStyleSheet(
             "background-color: rgba(80, 244, 20, 0.8);\n"
             "border-width:4px;\n"
             "border-color:black;\n"
@@ -131,7 +131,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
 
     def mask_output(self):
         self.output.setText('')
-        self.status_browser.setStyleSheet(
+        self.output.setStyleSheet(
             "background-color: rgba(112, 112, 112, 0.8);\n"
             "border-width:4px;\n"
             "border-color:black;\n"
@@ -272,7 +272,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
 
         self.change_crawler_status('running')
         self.mask_output()
-        
+
         self.event_stop.clear()
         self.crawler.pre_collect()
 
@@ -322,8 +322,9 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
                                     folder=_folder,
                                     export_type=_type)
 
-                _output = _folder + _name
-                self.show_output(_output)
+                _pre = "Generated file --> "
+                _output = _folder + '\\' + _name
+                self.show_output(_pre + _output)
 
                 self.to_export = False
             else:

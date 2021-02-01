@@ -123,7 +123,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
     def show_output(self, text=''):
         self.output.setText(text)
         self.output.setStyleSheet(
-            "background-color: rgba(80, 244, 20, 0.8);\n"
+            "background-color: rgba(85, 255, 127, 0.8);\n"
             "border-width:4px;\n"
             "border-color:black;\n"
             "border-style:offset;\n"
@@ -323,7 +323,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
                                     export_type=_type)
 
                 _pre = "Generated file --> "
-                _output = _folder + '\\' + _name
+                _output = _folder + '\\' + _name + f'.{_type}'
                 self.show_output(_pre + _output)
 
                 self.to_export = False
@@ -346,6 +346,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
 
             self.to_export = False
             self.count_items.setText(self.count_parsed())
+            self.mask_output()
         else:
             show_popup("Launch the driver first!")
 

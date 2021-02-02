@@ -68,8 +68,8 @@ class CrawlEngine:
     def set_url(self, url):
         self.url = url
 
-    def scroll_down(self):
-        scroll_down(self.driver)
+    def scroll_down(self, rate=1500):
+        scroll_down(self.driver, rate)
 
     def terminate(self):
         self.driver.close()

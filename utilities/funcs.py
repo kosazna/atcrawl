@@ -4,6 +4,10 @@ import re
 import time
 
 
+def one_time_scroll(driver, scrollby=1500):
+    driver.execute_script(f"window.scrollTo(0, {scrollby});")
+
+
 def scroll_down(driver, scrollby=1500, wait=0.1):
     max_y = driver.execute_script("return document.body.scrollHeight")
     go_y = scrollby

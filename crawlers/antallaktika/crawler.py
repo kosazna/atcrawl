@@ -151,7 +151,7 @@ class AntallaktikaOnline(CrawlEngine):
             if mode == 'collect':
                 self.click('Cookies')
                 sleep(self.standby.COLLECT)
-                self.scroll_down()
+                one_time_scroll(self.driver)
                 sleep(self.standby.COLLECT)
                 self.click('Popup')
                 sleep(self.standby.COLLECT)
@@ -159,7 +159,7 @@ class AntallaktikaOnline(CrawlEngine):
             else:
                 self.click('Cookies')
                 sleep(self.standby.COLLECT)
-                self.scroll_down()
+                one_time_scroll(self.driver)
                 sleep(self.standby.COLLECT)
                 self.click('Popup')
                 sleep(self.standby.COLLECT)

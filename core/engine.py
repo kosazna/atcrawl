@@ -48,13 +48,7 @@ class CrawlEngine:
     def find_elements(self, *args, **kwargs):
         pass
 
-    def iterate(self, *args, **kwargs):
-        pass
-
     def pre_collect(self, *args, **kwargs):
-        pass
-
-    def pre_iterate(self, *args, **kwargs):
         pass
 
     def click(self, *args, **kwargs):

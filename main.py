@@ -24,7 +24,7 @@ if __name__ == "__main__":
         elif process == '2':
             skroutz_run()
         else:
-            pass
+            print("Δεν έχεις πρόσβαση σε αυτό το crawler.")
     else:
         from atcrawl.gui import *
 

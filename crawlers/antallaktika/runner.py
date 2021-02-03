@@ -11,6 +11,7 @@ def antallaktika_run():
         brand = input("\nΓράψε το όνομα του brand:\n")
 
         discount = int(validate_input('discount'))
+        car = input("\nCar:\n")
 
         _filename = input("\nΓράψε το όνομα αποθήκευσης του αρχείου:\n")
         _folder = validate_path("\nΣε ποιο φάκελο θέλεις να αποθηκευτεί:\n")
@@ -22,18 +23,23 @@ def antallaktika_run():
 
         ao = None
 
+        params = {"brand": brand,
+                  "discount": discount,
+                  "meta0": car}
+
         try:
             ao = AntallaktikaOnline(url)
             ao.launch('Chrome', paths.get_chrome())
 
             print("\n\nCrawler is collecting the data...\n")
 
+            ao.pre_collect()
             ao.collect()
             ao.parse()
         except KeyboardInterrupt:
             print("\nProcess cancelled by user.\n")
         finally:
-            ao.transform(brand, discount)
+            ao.transform(**params)
             ao.export(filename, _folder, 'xlsx')
             sleep(4)
             ao.terminate()

@@ -1,5 +1,14 @@
 import pandas as pd
 from pathlib import Path
+import re
+
+
+def change_col(col_name):
+    new_col = re.sub(r"price_after_discount_\d+%",
+                     'price_after_discount_%',
+                     col_name)
+    return new_col
+
 
 while True:
     cwd = Path(input("Φάκελος αρχείων:\n"))
@@ -12,6 +21,9 @@ while True:
 
         for file in files:
             df = pd.read_excel(file)
+
+            new_cols = [change_col(col_name) for col_name in df.columns]
+            df.columns = new_cols
             to_concat.append(df)
 
         merged_df = pd.concat(to_concat)

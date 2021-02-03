@@ -26,10 +26,11 @@ def validate_input(text: str) -> str:
                          "(2) skroutz.gr\n"
                          "(3) tripadvisor.com\n"
                          "(4) booking.com\n"
-                         "(5) spitogatos.gr\n\n",
+                         "(5) spitogatos.gr\n\n"
+                         "(6) Ένωση αρχείων\n",
                'discount': "\nΠοσοστό έκπτωσης (%):\n"}
 
-    approved = {'action': ['1', '2', '3', '4', '5'],
+    approved = {'action': ['1', '2', '3', '4', '5', '6'],
                 'discount': list(map(str, range(-100, 101)))}
 
     user_action = input(console[text]).upper()

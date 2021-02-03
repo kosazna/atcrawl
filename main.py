@@ -2,6 +2,7 @@
 from atcrawl.utilities import *
 from atcrawl.crawlers.antallaktika.runner import antallaktika_run
 from atcrawl.crawlers.skroutz.runner import skroutz_run
+from atcrawl.merge import merge_run
 import warnings
 
 warnings.filterwarnings('ignore')
@@ -23,6 +24,8 @@ if __name__ == "__main__":
             antallaktika_run()
         elif process == '2':
             skroutz_run()
+        elif process == '6':
+            merge_run()
         else:
             print("\nΔεν έχεις πρόσβαση σε αυτό το crawler.\n")
     else:

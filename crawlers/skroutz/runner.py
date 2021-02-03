@@ -3,56 +3,70 @@
 from atcrawl.crawlers.skroutz import *
 
 
+def get_crawler_params():
+    url = input("\nΔώσε URL:\n")
+    brand = input("\nΓράψε το όνομα του brand:\n")
+    discount = int(validate_input('discount'))
+    id_category = input("\nID Category:\n")
+    desc = input('\nDescription:\n')
+    meta_title_seo = input('\nMeta Title SEO:\n')
+    meta_seo = input('\nMeta SEO:\n')
+
+    return {"url": url,
+            "brand": brand,
+            "discount": discount,
+            "meta0": id_category,
+            "meta1": desc,
+            "meta2": meta_title_seo,
+            "meta3": meta_seo}
+
+
+def get_export_params():
+    _filename = input("\nΓράψε το όνομα αποθήκευσης του αρχείου:\n")
+    folder = validate_path("\nΣε ποιο φάκελο θέλεις να αποθηκευτεί:\n")
+
+    if _filename == '':
+        filename = 'Collected Data'
+    else:
+        filename = _filename
+
+    return {"name": filename,
+            "folder": folder,
+            "export_type": '.xlsx'}
+
+
 def skroutz_run():
     authorizer = Authorize("skroutz.gr")
 
     if authorizer.user_is_licensed():
-        url = input("\nΔώσε URL:\n")
-        discount = int(validate_input('discount'))
+        crawler_params = get_crawler_params()
+        export_params = get_export_params()
 
-        _filename = input("\nΓράψε το όνομα αποθήκευσης του αρχείου:\n")
-        _folder = validate_path("\nΣε ποιο φάκελο θέλεις να αποθηκευτεί:\n")
-
-        if _filename == '':
-            filename = 'Collected Data'
-        else:
-            filename = _filename
-
-        sk = Skroutz(url)
+        sk = Skroutz(crawler_params['url'])
         sk.launch('Chrome', paths.get_chrome())
 
         while True:
             try:
                 log("\n\nCrawler is collecting the data...\n")
+
+                sk.pre_collect()
                 sk.collect()
             except KeyboardInterrupt:
-                print("\nProcess cancelled by user.\n")
+                log("\nProcess cancelled by user.\n")
             finally:
-                sk.transform(discount)
-                sk.export(filename, _folder, 'xlsx')
-                sleep(4)
+                sk.transform(**crawler_params)
+                sk.export(**export_params)
 
-            _continue = input(
-                "Θες να συλλέξεις και άλλα δεδομένα [y/n]\n").lower()
-            if _continue == 'y':
-                url = input("\nΔώσε URL:\n")
-                discount = int(validate_input('discount'))
-
-                _filename = input("\nΓράψε το όνομα αποθήκευσης του αρχείου:\n")
-                _folder = validate_path(
-                    "\nΣε ποιο φάκελο θέλεις να αποθηκευτεί:\n")
-
-                if _filename == '':
-                    filename = 'Collected Data'
-                else:
-                    filename = _filename
-
-                sk.reset(url)
+            continue_crawling = input("Θες να δώσεις άλλο URL? [y/n]\n").upper()
+            if continue_crawling == 'Y':
+                crawler_params = get_crawler_params()
+                export_params = get_export_params()
+                sk.reset(crawler_params['url'])
+                continue
             else:
                 sk.terminate()
                 break
-
     else:
-        print("\nΈχεις αποκλειστεί από την εφαρμογή. "
-              "Επικοινώνησε με τον κατασκευαστή.\n")
+        log("\nΈχεις αποκλειστεί από την εφαρμογή. "
+            "Επικοινώνησε με τον κατασκευαστή.\n")
         sleep(4)

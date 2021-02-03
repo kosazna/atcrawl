@@ -3,47 +3,64 @@
 from atcrawl.crawlers.antallaktika import *
 
 
+def get_crawler_params():
+    url = input("\nΔώσε URL:\n")
+    brand = input("\nΓράψε το όνομα του brand:\n")
+    discount = int(validate_input('discount'))
+    car = input("\nCar:\n")
+
+    return {"url": url,
+            "brand": brand,
+            "discount": discount,
+            "meta0": car}
+
+
+def get_export_params():
+    _filename = input("\nΓράψε το όνομα αποθήκευσης του αρχείου:\n")
+    folder = validate_path("\nΣε ποιο φάκελο θέλεις να αποθηκευτεί:\n")
+
+    if _filename == '':
+        filename = 'Collected Data'
+    else:
+        filename = _filename
+
+    return {"name": filename,
+            "folder": folder,
+            "export_type": '.xlsx'}
+
+
 def antallaktika_run():
     authorizer = Authorize("antallaktikaonline.gr")
-
     if authorizer.user_is_licensed():
-        url = input("\nΔώσε URL:\n")
-        brand = input("\nΓράψε το όνομα του brand:\n")
+        crawler_params = get_crawler_params()
+        export_params = get_export_params()
 
-        discount = int(validate_input('discount'))
-        car = input("\nCar:\n")
+        ao = AntallaktikaOnline(crawler_params['url'])
+        ao.launch('Chrome', paths.get_chrome())
 
-        _filename = input("\nΓράψε το όνομα αποθήκευσης του αρχείου:\n")
-        _folder = validate_path("\nΣε ποιο φάκελο θέλεις να αποθηκευτεί:\n")
+        while True:
+            try:
+                log("\n\nCrawler is collecting the data...\n")
 
-        if _filename == '':
-            filename = 'Collected Data'
-        else:
-            filename = _filename
+                ao.pre_collect()
+                ao.collect()
+                ao.parse()
+            except KeyboardInterrupt:
+                log("\nProcess cancelled by user.\n")
+            finally:
+                ao.transform(**crawler_params)
+                ao.export(**export_params)
 
-        ao = None
-
-        params = {"brand": brand,
-                  "discount": discount,
-                  "meta0": car}
-
-        try:
-            ao = AntallaktikaOnline(url)
-            ao.launch('Chrome', paths.get_chrome())
-
-            print("\n\nCrawler is collecting the data...\n")
-
-            ao.pre_collect()
-            ao.collect()
-            ao.parse()
-        except KeyboardInterrupt:
-            print("\nProcess cancelled by user.\n")
-        finally:
-            ao.transform(**params)
-            ao.export(filename, _folder, 'xlsx')
-            sleep(4)
-            ao.terminate()
+            _continue = input("\nΘες να δώσεις άλλο URL? [y/n]\n").upper()
+            if _continue == 'Y':
+                crawler_params = get_crawler_params()
+                export_params = get_export_params()
+                ao.reset(crawler_params['url'])
+                continue
+            else:
+                ao.terminate()
+                break
     else:
-        print("\nΈχεις αποκλειστεί από την εφαρμογή. "
-              "Επικοινώνησε με τον κατασκευαστή.\n")
+        log("\nΈχεις αποκλειστεί από την εφαρμογή. "
+            "Επικοινώνησε με τον κατασκευαστή.\n")
         sleep(4)

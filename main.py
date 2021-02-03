@@ -12,7 +12,7 @@ if __name__ == "__main__":
     try:
         mode = str(sys.argv[1])
     except IndexError:
-        mode = "GUI"
+        mode = "CMD"
 
     if mode == 'CMD':
         log(f"atCrawl utilities\n")
@@ -24,7 +24,7 @@ if __name__ == "__main__":
         elif process == '2':
             skroutz_run()
         else:
-            print("Δεν έχεις πρόσβαση σε αυτό το crawler.")
+            print("\nΔεν έχεις πρόσβαση σε αυτό το crawler.\n")
     else:
         from atcrawl.gui import *
 

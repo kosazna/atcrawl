@@ -117,8 +117,8 @@ class CrawlEngine:
             if export_type == 'csv':
                 dst = Path(folder).joinpath(f'{name}.csv')
                 to_export.to_csv(dst, index=False, sep=';')
-                print(f"\n\nExported csv file at:\n    {dst}\n")
+                print(f"\nExported csv file at:\n -> {dst}\n")
             else:
                 dst = Path(folder).joinpath(f'{name}.xlsx')
                 to_export.to_excel(dst, index=False)
-                print(f"\n\nExported excel file at:\n    {dst}\n")
+                print(f"\nExported excel file at:\n -> {dst}\n")

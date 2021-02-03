@@ -8,7 +8,7 @@ def validate_path(text: str) -> (None, Path):
     user_path = input(text)
 
     if user_path == "":
-        return paths.get_cwd()
+        return paths.get_default_export()
     else:
         path = Path(user_path.strip('"'))
 

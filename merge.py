@@ -4,7 +4,7 @@ import re
 
 
 def change_col(col_name):
-    new_col = re.sub(r"price_after_discount_\d+%",
+    new_col = re.sub(r"price_after_discount_[-]*\d+%",
                      'price_after_discount_%',
                      col_name)
     return new_col

@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from typing import Union
 from atcrawl.utilities.display import *
 from atcrawl.utilities.paths import *
 
 
-def validate_path(text: str) -> (None, Path):
+def validate_path(text: str) -> Union[None, Path]:
     user_path = input(text)
 
     if user_path == "":

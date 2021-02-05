@@ -27,7 +27,7 @@ def validate_input(text: str) -> str:
                          "(3) tripadvisor.com\n"
                          "(4) booking.com\n"
                          "(5) spitogatos.gr\n\n"
-                         "(6) Ένωση αρχείων\n",
+                         "(6) Ένωση αρχείων\n\n",
                'discount': "\nΠοσοστό έκπτωσης (%):\n"}
 
     approved = {'action': ['1', '2', '3', '4', '5', '6'],

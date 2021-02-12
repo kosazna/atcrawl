@@ -1,16 +1,22 @@
 {
-	"aznavouridis.k": {
-		"antallaktikaonline.gr": true,
-		"skroutz.gr": true,
-		"tripadvisor.com": true,
-		"booking.com": true,
-		"spitogatos.gr": true
-	},
-	"nikos": {
-		"antallaktikaonline.gr": true,
-		"skroutz.gr": true,
-		"tripadvisor.com": false,
-		"booking.com": false,
-		"spitogatos.gr": false
-	}
+  "aznavouridis.k": {
+    "antallaktikaonline.gr": true,
+    "skroutz.gr": true,
+    "tripadvisor.com": true,
+    "booking.com": true,
+    "spitogatos.gr": true,
+    "merge_run": true,
+    "filter_run": true,
+    "sort_run": true
+  },
+  "nikos": {
+    "antallaktikaonline.gr": true,
+    "skroutz.gr": true,
+    "tripadvisor.com": false,
+    "booking.com": false,
+    "spitogatos.gr": false,
+    "merge_run": true,
+    "filter_run": true,
+    "sort_run": true
+  }
 }

@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-from atcrawl.utilities import *
+import warnings
+
 from atcrawl.crawlers.antallaktika.runner import antallaktika_run
 from atcrawl.crawlers.skroutz.runner import skroutz_run
-from atcrawl.merge import merge_run
-import warnings
+from atcrawl.merge import merge_run, change_col_values, sort_na
+from atcrawl.utilities import *
 
 warnings.filterwarnings('ignore')
 
@@ -26,6 +27,10 @@ if __name__ == "__main__":
             skroutz_run()
         elif process == '6':
             merge_run()
+        elif process == '7':
+            change_col_values()
+        elif process == '8':
+            sort_na()
         else:
             print("\nΔεν έχεις πρόσβαση σε αυτό το crawler.\n")
     else:

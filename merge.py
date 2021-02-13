@@ -102,6 +102,8 @@ def filter_run():
     if authorizer.user_is_licensed():
         while True:
             _path = input("\nΔώσε το αρχείο:\n")
+            print("\nΦόρτωση αρχείου...\n")
+
             file2mod = Path(clean_path(_path))
 
             df = pd.read_excel(file2mod)
@@ -119,6 +121,8 @@ def filter_run():
             save_suffix = ".xlsx"
             save_name = f"{save_base_name}{save_suffix}"
             save_filepath = file2mod.parent.joinpath(save_name)
+
+            print("\nΕπεξεργασία αρχείου...\n")
 
             df.loc[df[col_src].str.contains(
                 pattern, regex=True, na=False), col_dst] = new_value
@@ -148,6 +152,8 @@ def sort_run():
     if authorizer.user_is_licensed():
         while True:
             _path = input("\nΔώσε το αρχείο:\n")
+            print("\nΦόρτωση αρχείου...\n")
+
             file2mod = Path(clean_path(_path))
 
             df = pd.read_excel(file2mod)
@@ -159,6 +165,8 @@ def sort_run():
             save_suffix = ".xlsx"
             save_name = f"{save_base_name}{save_suffix}"
             save_filepath = file2mod.parent.joinpath(save_name)
+
+            print("\nΕπεξεργασία αρχείου...\n")
 
             k = df[col_src].apply(str).apply(
                 lambda x: "<NULL>" if x.isspace() else x.strip())

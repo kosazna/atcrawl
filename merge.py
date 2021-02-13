@@ -22,9 +22,9 @@ def pick_column(dataframe, kind):
     col_map = {str(idx): col for idx, col in enumerate(dataframe.columns, 1)}
 
     if kind == 'filter':
-        print("Διάλεξε σε ποιά στήλη θες να εφαρμόσεις το φίλτρο:\n")
+        print("\nΔιάλεξε σε ποιά στήλη θες να εφαρμόσεις το φίλτρο:\n")
     else:
-        print("Διάλεξε σε ποιά στήλη θες να αλλάξεις τιμή:\n")
+        print("\nΔιάλεξε σε ποιά στήλη θες να αλλάξεις τιμή:\n")
 
     for key, value in col_map.items():
         print(f"({key}) - {value}")
@@ -69,12 +69,12 @@ def merge_run():
                 to_add_col = input("Θες να προσθέσεις στήλη? [y/n]\n").upper()
 
                 if to_add_col == 'Y':
-                    col_name = input("Όνομα στήλης:\n")
-                    col_value = input("Τιμή στήλης:\n")
+                    col_name = input("\nΌνομα στήλης:\n")
+                    col_value = input("\nΤιμή στήλης:\n")
 
                     merged_df[col_name] = col_value
 
-                save_base_name = input("Όνομα αποθήκευσης αρχείου:\n")
+                save_base_name = input("\nΌνομα αποθήκευσης αρχείου:\n")
                 save_suffix = ".xlsx"
                 save_name = f"{save_base_name}{save_suffix}"
                 save_filepath = cwd.joinpath(save_name)
@@ -101,7 +101,7 @@ def filter_run():
 
     if authorizer.user_is_licensed():
         while True:
-            _path = input("Δώσε το αρχείο:\n")
+            _path = input("\nΔώσε το αρχείο:\n")
             file2mod = Path(clean_path(_path))
 
             df = pd.read_excel(file2mod)
@@ -109,13 +109,13 @@ def filter_run():
             col_src = pick_column(df, 'filter')
             col_dst = pick_column(df, 'values')
 
-            pattern = input("Ποιό είναι το φίλτρο:\n")
+            pattern = input("\nΠοιό είναι το φίλτρο:\n")
 
-            new_value = input("Ποιά είναι η νέα τιμή:\n")
+            new_value = input("\nΠοιά είναι η νέα τιμή:\n")
 
-            rest_value = input("Οι υπόλοιπες γραμμές τι τιμή να πάρουν:\n")
+            rest_value = input("\nΟι υπόλοιπες γραμμές τι τιμή να πάρουν:\n")
 
-            save_base_name = input("Όνομα αποθήκευσης αρχείου:\n")
+            save_base_name = input("\nΌνομα αποθήκευσης αρχείου:\n")
             save_suffix = ".xlsx"
             save_name = f"{save_base_name}{save_suffix}"
             save_filepath = file2mod.parent.joinpath(save_name)
@@ -147,7 +147,7 @@ def sort_run():
 
     if authorizer.user_is_licensed():
         while True:
-            _path = input("Δώσε το αρχείο:\n")
+            _path = input("\nΔώσε το αρχείο:\n")
             file2mod = Path(clean_path(_path))
 
             df = pd.read_excel(file2mod)
@@ -155,7 +155,7 @@ def sort_run():
             col_src = pick_column(df, 'filter')
             print(col_src)
 
-            save_base_name = input("Όνομα αποθήκευσης αρχείου:\n")
+            save_base_name = input("\nΌνομα αποθήκευσης αρχείου:\n")
             save_suffix = ".xlsx"
             save_name = f"{save_base_name}{save_suffix}"
             save_filepath = file2mod.parent.joinpath(save_name)

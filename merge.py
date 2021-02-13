@@ -14,6 +14,10 @@ def change_col(col_name):
     return new_col
 
 
+def clean_path(path_str):
+    return path_str.strip('"')
+
+
 def pick_column(dataframe, kind):
     col_map = {str(idx): col for idx, col in enumerate(dataframe.columns, 1)}
 
@@ -97,7 +101,8 @@ def filter_run():
 
     if authorizer.user_is_licensed():
         while True:
-            file2mod = Path(input("Δώσε το αρχείο:\n"))
+            _path = input("Δώσε το αρχείο:\n")
+            file2mod = Path(clean_path(_path))
 
             df = pd.read_excel(file2mod)
 
@@ -142,7 +147,8 @@ def sort_run():
 
     if authorizer.user_is_licensed():
         while True:
-            file2mod = Path(input("Δώσε το αρχείο:\n"))
+            _path = input("Δώσε το αρχείο:\n")
+            file2mod = Path(clean_path(_path))
 
             df = pd.read_excel(file2mod)
 

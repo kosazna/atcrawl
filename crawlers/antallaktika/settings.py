@@ -10,7 +10,8 @@ antallaktika_standby = Standby(LAUNCH=4,
 antallaktika_properties = ['article_no',
                            'retail_price',
                            'price_after_discount',
-                           'availability']
+                           'availability',
+                           'img']
 
 product = Element(
     NAME='product',
@@ -57,11 +58,18 @@ bt_popup = Element(
     TAG='a',
     CLASS='popup-box-selector__close')
 
+img = Element(
+    NAME='img',
+    TAG='div',
+    CLASS='listing-parent-pkw',
+    ATTRIBUTE='src')
+
 antallaktika_site_map = {'product': product,
                          'pid': pid,
                          'poldprice': poldprice,
                          'pnewprice': pnewprice,
                          'pstock': pstock,
+                         'img': img,
                          'Next': bt_next,
                          'Cookies': bt_cookies,
                          'Popup': bt_popup}

@@ -35,6 +35,16 @@ class AntallaktikaOnlineProductContainer:
             return default
         return _element
 
+    def get_img(self, element: str, default: str = '') -> str:
+        _element = parse(soup=self._soup,
+                         element_tag=self.site_map[element].TAG,
+                         element_class=self.site_map[element].CLASS,
+                         text=False).find('img')
+
+        if _element is None:
+            return default
+        return _element[self.site_map[element].ATTRIBUTE]
+
 
 class AntallaktikaOnline(CrawlEngine):
     NAME = "antallaktikaonline.gr"
@@ -96,7 +106,7 @@ class AntallaktikaOnline(CrawlEngine):
         _data['price_after_discount'] = _data['price_after_discount'].astype(
             float).round(2)
 
-        _data['car'] = car
+        _data.insert(6, 'car', car)
 
         _data['retail_price'] = _data['retail_price'].astype(
             'string').str.replace('.', ',')
@@ -135,11 +145,13 @@ class AntallaktikaOnline(CrawlEngine):
                 _retail = fmtnumber(num_from_text(pb.get('poldprice', '-1.0')))
                 _after = fmtnumber(num_from_text(pb.get('pnewprice', '-1.0')))
                 _stock = pb.get('pstock')
+                _img = pb.get_img('img')
 
                 self.data['article_no'].append(_article_no)
                 self.data['retail_price'].append(_retail)
                 self.data['price_after_discount'].append(_after)
                 self.data['availability'].append(_stock)
+                self.data['img'].append(_img)
 
     def parse_page(self, what=None):
         _elements = self.find_elements()

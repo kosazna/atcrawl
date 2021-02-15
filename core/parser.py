@@ -30,9 +30,7 @@ def parse(soup: BeautifulSoup,
         content = None
 
     if content:
-        if text:
-            return content.text
-        return content
+        return content.text if text else content
     return None
 
 
@@ -65,7 +63,5 @@ def multi_parse(soup: BeautifulSoup,
         content = None
 
     if content:
-        if text:
-            return [i.text for i in content]
-        return content
+        return [i.text for i in content] if text else content
     return list()

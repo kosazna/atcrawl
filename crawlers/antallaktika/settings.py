@@ -21,22 +21,33 @@ product = Element(
 pid = Element(
     NAME='pid',
     TAG='div',
-    CLASS='nr')
+    CLASS='nr',
+    DEFAULT='')
 
 poldprice = Element(
     NAME='poldprice',
     TAG='div',
-    CLASS='old_price promo')
+    CLASS='old_price promo',
+    DEFAULT='-1.0')
 
 pnewprice = Element(
     NAME='pnewprice',
     TAG='div',
-    CLASS='price')
+    CLASS='price',
+    DEFAULT='-1.0')
 
 pstock = Element(
     NAME='pstock',
     TAG='span',
-    CLASS='text_vers')
+    CLASS='text_vers',
+    DEFAULT='')
+
+img = Element(
+    NAME='img',
+    TAG='div',
+    CLASS='listing-parent-pkw',
+    DEFAULT='',
+    ATTRIBUTE='src')
 
 paginator = Element(
     NAME='paginator',
@@ -57,19 +68,3 @@ bt_popup = Element(
     NAME='bt_popup',
     TAG='a',
     CLASS='popup-box-selector__close')
-
-img = Element(
-    NAME='img',
-    TAG='div',
-    CLASS='listing-parent-pkw',
-    ATTRIBUTE='src')
-
-antallaktika_site_map = {'product': product,
-                         'pid': pid,
-                         'poldprice': poldprice,
-                         'pnewprice': pnewprice,
-                         'pstock': pstock,
-                         'img': img,
-                         'Next': bt_next,
-                         'Cookies': bt_cookies,
-                         'Popup': bt_popup}

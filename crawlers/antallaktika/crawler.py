@@ -21,29 +21,49 @@ from atcrawl.crawlers.antallaktika.settings import *
 
 
 class AntallaktikaOnlineProductContainer:
-    def __init__(self, soup: BeautifulSoup, site_map: dict):
+    def __init__(self, soup: BeautifulSoup):
         self._soup = soup
-        self.site_map = site_map
 
-    def get(self, element: str, default: str = '') -> str:
-        _element = parse(soup=self._soup,
-                         element_tag=self.site_map[element].TAG,
-                         element_class=self.site_map[element].CLASS,
-                         text=True)
+    def get_name(self) -> str:
+        _name = parse(self._soup, pid.TAG, pid.CLASS, text=True)
 
-        if _element is None:
-            return default
-        return _element
+        if _name:
+            try:
+                _title = _name.strip('\n').split(':')[1].strip()
+            except IndexError:
+                return 'IndexErrorName'
+            else:
+                return _title
+        return pid.DEFAULT
 
-    def get_img(self, element: str, default: str = '') -> str:
-        _element = parse(soup=self._soup,
-                         element_tag=self.site_map[element].TAG,
-                         element_class=self.site_map[element].CLASS,
-                         text=False).find('img')
+    def get_old_price(self) -> str:
+        _price = parse(self._soup, poldprice.TAG, poldprice.CLASS, text=True)
 
-        if _element is None:
-            return default
-        return _element[self.site_map[element].ATTRIBUTE]
+        if _price:
+            return fmtnumber(num_from_text(_price))
+        return poldprice.DEFAULT
+
+    def get_new_price(self) -> str:
+        _price = parse(self._soup, pnewprice.TAG, pnewprice.CLASS, text=True)
+
+        if _price:
+            return fmtnumber(num_from_text(_price))
+        return pnewprice.DEFAULT
+
+    def get_stock(self) -> str:
+        _stock = parse(self._soup, pstock.TAG, pstock.CLASS, text=True)
+
+        if _stock:
+            return _stock
+        return pstock.DEFAULT
+
+    def get_img(self) -> str:
+        _element = parse(self._soup, img.TAG, img.CLASS, text=False)
+
+        if _element:
+            _img = _element.find('img')
+            return _img[img.ATTRIBUTE] if _img else 'NoImage'
+        return img.DEFAULT
 
 
 class AntallaktikaOnline(CrawlEngine):
@@ -55,7 +75,6 @@ class AntallaktikaOnline(CrawlEngine):
                          driver=driver,
                          properties=antallaktika_properties,
                          standby_times=antallaktika_standby)
-        self.site_map = antallaktika_site_map
 
     def click(self, element: str):
         if element == 'Next':
@@ -119,8 +138,8 @@ class AntallaktikaOnline(CrawlEngine):
 
     def find_elements(self, method: str = 'lxml'):
         _soup = BeautifulSoup(self.driver.page_source, method)
-        _tag = self.site_map['product'].TAG
-        _class = self.site_map['product'].CLASS
+        _tag = product.TAG
+        _class = product.CLASS
 
         _elements = multi_parse(soup=_soup,
                                 element_tag=_tag,
@@ -139,13 +158,13 @@ class AntallaktikaOnline(CrawlEngine):
 
         if to_parse:
             for element in to_parse:
-                pb = AntallaktikaOnlineProductContainer(element, self.site_map)
+                pb = AntallaktikaOnlineProductContainer(element)
 
-                _article_no = pb.get('pid').strip('\n').split(':')[1].strip()
-                _retail = fmtnumber(num_from_text(pb.get('poldprice', '-1.0')))
-                _after = fmtnumber(num_from_text(pb.get('pnewprice', '-1.0')))
-                _stock = pb.get('pstock')
-                _img = pb.get_img('img')
+                _article_no = pb.get_name()
+                _retail = pb.get_old_price()
+                _after = pb.get_new_price()
+                _stock = pb.get_stock()
+                _img = pb.get_img()
 
                 self.data['article_no'].append(_article_no)
                 self.data['retail_price'].append(_retail)

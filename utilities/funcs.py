@@ -66,6 +66,7 @@ def fmtnumber(number: list):
         single number
     """
     if len(number) > 1:
-        return '.'.join(number)
+        nums = [num.replace('.', '').replace(',', '') for num in number]
+        return '.'.join(nums)
     else:
-        return number[0]
+        return number[0].replace('.', '').replace(',', '')

@@ -9,7 +9,8 @@
 
 import pandas as pd
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import (NoSuchElementException,
+                                        StaleElementReferenceException)
 
 from atcrawl.core.engine import *
 from atcrawl.crawlers.skroutz.settings import *
@@ -20,7 +21,10 @@ class SkroutzProductContainer:
         self.element = element
 
     def get_img(self):
-        _img = self.element.find_element(By.TAG_NAME, img.TAG)
+        try:
+            _img = self.element.find_element(By.TAG_NAME, img.TAG)
+        except StaleElementReferenceException:
+            return ''
 
         return _img.get_attribute(img.ATTRIBUTE)
 

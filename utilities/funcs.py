@@ -70,3 +70,15 @@ def fmtnumber(number: list):
         return '.'.join(nums)
     else:
         return number[0].replace('.', '').replace(',', '')
+
+def find_iksodes(text):
+    try:
+        return re.findall(r'\d+W-\d+', text)[0]
+    except IndexError:
+        return ''
+
+def find_litres(text):
+    try:
+        return re.findall(r'\d+[Llt]+', text)[0].replace('lt', 'L')
+    except IndexError:
+        return ''

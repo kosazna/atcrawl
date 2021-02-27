@@ -11,6 +11,7 @@ def get_crawler_params():
     desc = input('\nDescription:\n')
     meta_title_seo = input('\nMeta Title SEO:\n')
     meta_seo = input('\nMeta SEO:\n')
+    ladia = input('\nΠρόκειται για λάδια? [y/n]\n').upper()
 
     return {"url": url,
             "brand": brand,
@@ -18,7 +19,8 @@ def get_crawler_params():
             "meta0": id_category,
             "meta1": desc,
             "meta2": meta_title_seo,
-            "meta3": meta_seo}
+            "meta3": meta_seo,
+            "meta4": ladia}
 
 
 def get_export_params():

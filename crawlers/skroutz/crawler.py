@@ -105,6 +105,8 @@ class Skroutz(CrawlEngine):
         meta_seo = kwargs.get('meta3', '')
         brand = kwargs.get('brand', '')
         discount = kwargs.get('discount', 0)
+        ladia = kwargs.get('meta4', 'N')
+        
 
         _data = pd.DataFrame.from_dict(self.data)
         self.collected_data = _data.copy()
@@ -121,15 +123,27 @@ class Skroutz(CrawlEngine):
             else:
                 _data['brand'] = self.filters[0]
 
-            try:
-                _details = self.filters[1:]
-            except IndexError:
-                _details = []
+            if ladia == "Y":
+                iksodes = _data['title'].apply(find_iksodes)
+                litra = _data['title'].apply(find_litres)
 
-            _data['details'] = ', '.join(_details)
+                _data['details'] = "Ιξώδες: " + iksodes + ", Χωρητικότητα (lt): " + litra
+            else:
+                try:
+                    _details = self.filters[1:]
+                except IndexError:
+                    _details = []
+
+                _data['details'] = ', '.join(_details)
         else:
             _data['brand'] = brand
-            _data['details'] = ''
+            if ladia == "Y":
+                iksodes = _data['title'].apply(find_iksodes)
+                litra = _data['title'].apply(find_litres)
+
+                _data['details'] = "Ιξώδες: " + iksodes + ", Χωρητικότητα (lt): " + litra
+            else:
+                _data['details'] = ''
 
         _data['article_no'] = ''
         _data["description"] = desc + ' ' + _data['title']

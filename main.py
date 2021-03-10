@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import warnings
 
-from atcrawl.crawlers.antallaktika.runner import antallaktika_run
-from atcrawl.crawlers.skroutz.runner import skroutz_run
+from atcrawl.crawlers.antallaktika.cli import antallaktika_run
+from atcrawl.crawlers.skroutz.cli import skroutz_run
 from atcrawl.merge import merge_run, filter_run, sort_run
 from atcrawl.utilities import *
 

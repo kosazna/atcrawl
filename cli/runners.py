@@ -1,137 +1,37 @@
-from os import path
-import pandas as pd
-from pathlib import Path
-import re
-from time import sleep
-import requests
-import shutil
-import os
-import concurrent.futures
-import random
-import string
-from unidecode import unidecode
-from atcrawl.utilities.paths import paths
+# -*- coding: utf-8 -*-
 
+from atcrawl.utilities.funcs import *
+from atcrawl.utilities.paths import paths
 from atcrawl.utilities.display import *
 from atcrawl.utilities.auth import Authorize
-
-
-def change_col(col_name):
-    new_col = re.sub(r"price_after_discount_[-]*\d+%",
-                     'price_after_discount_%',
-                     col_name)
-    return new_col
-
-
-def clean_path(path_str):
-    return path_str.strip('"')
-
-
-def pick_column(dataframe, kind):
-    col_map = {str(idx): col for idx, col in enumerate(dataframe.columns, 1)}
-
-    if kind == 'filter':
-        print("\nΔιάλεξε σε ποιά στήλη θες να εφαρμόσεις το φίλτρο:\n")
-    elif kind == 'image_name':
-        print("\nΔιάλεξε σε ποιά στήλη βρίσκεται το όνομα της εικόνας:\n")
-    elif kind == 'image_url':
-        print("\nΔιάλεξε σε ποιά στήλη το url της εικόνας:\n")
-    else:
-        print("\nΔιάλεξε σε ποιά στήλη θες να αλλάξεις τιμή:\n")
-
-    for key, value in col_map.items():
-        print(f"({key}) - {value}")
-
-    choice = input("\n")
-
-    if choice not in col_map.keys() and choice not in col_map.values():
-        dataframe[choice] = ''
-        return choice
-
-    return col_map[choice]
-
-
-def strip_whitespace(dataframe):
-    for col in dataframe.columns:
-        if dataframe[col].dtype == 'O':
-            dataframe[col] = dataframe[col].str.strip()
-
-def random_str(k=32):
-    return ''.join(random.choices(string.ascii_letters + string.digits, k=k))
-
-
-def clean_name(text):
-    s = re.sub('[%s]' % re.escape(string.punctuation + ' '), '_', text)
-    s = re.sub('_{2,}', '_', s).strip().strip('_')
-    s = unidecode(s)
-
-    return s
-
-
-def download_image(url, destination, save_name=None):
-    r = requests.get(url, stream=True)
-    url_file = url.split("/")[-1]
-    ext = os.path.splitext(url_file)[1]
-    
-    if ext:
-        _ext = ext
-    else:
-        _ext = '.jpg'
-
-    if save_name is None:
-        basename = random_str()
-        filename = f"{basename}{_ext}"
-    elif save_name == 'original':
-        if ext:
-            filename = url_file
-        else:
-            filename = f"{url_file}{_ext}"
-    else:
-        basename = save_name
-        filename = f"{basename}{_ext}"
-
-    dst = os.path.join(destination, filename)
-
-    if r.status_code == 200:
-        r.raw.decode_content = True
-        with open(dst, 'wb') as f:
-            shutil.copyfileobj(r.raw, f)
-            print(f"Saved -> {filename}")
-    else:
-        print(f"Request failed -> {url}")
-
-def download_images(urls, destination, save_names):
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        for url, name in zip(urls, save_names):
-            if pd.isna(name):
-                _name = 'original'
-            else:
-                _name = name
-            executor.submit(download_image, url, destination, _name)
 
 
 def download_images_run():
     authorizer = Authorize("img_downloader")
 
     if authorizer.user_is_licensed():
-            _path = input("\nΔώσε το αρχείο:\n")
-            print("\nΦόρτωση αρχείου...\n")
+        _path = input("\nΔώσε το αρχείο:\n")
+        print("\nΦόρτωση αρχείου...\n")
 
-            file2mod = Path(clean_path(_path))
+        file2mod = Path(clean_path(_path))
 
-            df = pd.read_excel(file2mod)
+        df = pd.read_excel(file2mod)
 
-            col_name = pick_column(df, 'image_name')
-            col_url = pick_column(df, 'image_url')
+        col_name = pick_column(df, 'image_name')
+        col_url = pick_column(df, 'image_url')
 
-            _dst = input("\nΠου να αποθηκευτούν οι εικόνες\n")
+        _dst = input("\nΠου να αποθηκευτούν οι εικόνες\n")
 
-            if _dst:
-                dst = Path(clean_path(_dst))
-            else:
-                dst = paths.get_images_export()
+        if _dst:
+            dst = Path(clean_path(_dst))
+        else:
+            dst = paths.get_images_export()
 
-            download_images(df[col_url], dst, df[col_name])
+        download_images(df[col_url], dst, df[col_name])
+    else:
+        log("\nΈχεις αποκλειστεί από την εφαρμογή. "
+            "Επικοινώνησε με τον κατασκευαστή.\n")
+        time.sleep(4)
 
 
 def merge_run():
@@ -183,7 +83,7 @@ def merge_run():
     else:
         log("\nΈχεις αποκλειστεί από την εφαρμογή. "
             "Επικοινώνησε με τον κατασκευαστή.\n")
-        sleep(4)
+        time.sleep(4)
 
 
 def filter_run():
@@ -233,7 +133,7 @@ def filter_run():
     else:
         log("\nΈχεις αποκλειστεί από την εφαρμογή. "
             "Επικοινώνησε με τον κατασκευαστή.\n")
-        sleep(4)
+        time.sleep(4)
 
 
 def sort_run():
@@ -283,4 +183,4 @@ def sort_run():
     else:
         log("\nΈχεις αποκλειστεί από την εφαρμογή. "
             "Επικοινώνησε με τον κατασκευαστή.\n")
-        sleep(4)
+        time.sleep(4)

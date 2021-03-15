@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import warnings
 
+from atcrawl.cli import *
 from atcrawl.crawlers.antallaktika.cli import antallaktika_run
 from atcrawl.crawlers.skroutz.cli import skroutz_run
-from atcrawl.utils import merge_run, filter_run, sort_run, download_images_run
 from atcrawl.utilities import *
 
 warnings.filterwarnings('ignore')

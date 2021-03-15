@@ -1,28 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from pathlib import Path
-import json
-
-atcrawl_json = Path.home().joinpath("atcrawl_settings.json")
-
-try:
-    with open(atcrawl_json, encoding='utf8') as f:
-        settings = json.load(f)
-except FileNotFoundError:
-    settings = {'default_export': '', 'images_export': ''}
-    with open(atcrawl_json, encoding='utf8', mode='w') as f:
-        json.dump(settings, f)
+from atcrawl.settings import *
 
 
 class Paths:
     def __init__(self):
         self._userhome = Path.home()
         self._atcrawl = self._userhome.joinpath(".atcrawl")
-        self._chrome = self._userhome.joinpath("chromedriver.exe")
-        self._firefox = self._userhome.joinpath("geckodriver.exe")
+        self._chrome = self._atcrawl.joinpath("chromedriver.exe")
+        self._firefox = self._atcrawl.joinpath("geckodriver.exe")
         self._cwd = Path.cwd()
-        self._default_export = settings.get('default_export', '')
-        self._images_export = settings.get('images_export')
+        self._default_export = USER_SETTINGS.get('default_export', '')
+        self._images_export = USER_SETTINGS.get('images_export', '')
 
     def get_userhome(self) -> str:
         return str(self._userhome)
@@ -38,7 +27,7 @@ class Paths:
 
     def get_default_export(self):
         return self._default_export
-    
+
     def get_images_export(self):
         return self._images_export
 

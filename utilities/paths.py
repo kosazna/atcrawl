@@ -9,7 +9,7 @@ try:
     with open(atcrawl_json, encoding='utf8') as f:
         settings = json.load(f)
 except FileNotFoundError:
-    settings = {'default_export': ''}
+    settings = {'default_export': '', 'images_export': ''}
     with open(atcrawl_json, encoding='utf8', mode='w') as f:
         json.dump(settings, f)
 
@@ -22,6 +22,7 @@ class Paths:
         self._firefox = self._userhome.joinpath("geckodriver.exe")
         self._cwd = Path.cwd()
         self._default_export = settings.get('default_export', '')
+        self._images_export = settings.get('images_export')
 
     def get_userhome(self) -> str:
         return str(self._userhome)
@@ -37,6 +38,9 @@ class Paths:
 
     def get_default_export(self):
         return self._default_export
+    
+    def get_images_export(self):
+        return self._images_export
 
 
 paths = Paths()

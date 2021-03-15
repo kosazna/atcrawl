@@ -3,7 +3,7 @@ import warnings
 
 from atcrawl.crawlers.antallaktika.cli import antallaktika_run
 from atcrawl.crawlers.skroutz.cli import skroutz_run
-from atcrawl.merge import merge_run, filter_run, sort_run
+from atcrawl.utils import merge_run, filter_run, sort_run, download_images_run
 from atcrawl.utilities import *
 
 warnings.filterwarnings('ignore')
@@ -31,8 +31,10 @@ if __name__ == "__main__":
             filter_run()
         elif process == '8':
             sort_run()
+        elif process == '9':
+            download_images_run()
         else:
-            print("\nΔεν έχεις πρόσβαση σε αυτό το crawler.\n")
+            print("\nΔεν έχεις πρόσβαση σε αυτή τη λειτουργία\n")
     else:
         from atcrawl.gui import *
 

@@ -7,9 +7,10 @@
     "spitogatos.gr": true,
     "merge_run": true,
     "filter_run": true,
-    "sort_run": true
+    "sort_run": true,
+    "img_downloader": true
   },
-  "nikos": {
+  "terpos": {
     "antallaktikaonline.gr": true,
     "skroutz.gr": true,
     "tripadvisor.com": false,
@@ -17,6 +18,7 @@
     "spitogatos.gr": false,
     "merge_run": true,
     "filter_run": true,
-    "sort_run": true
+    "sort_run": true,
+    "img_downloader": true
   }
 }

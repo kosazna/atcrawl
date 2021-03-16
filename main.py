@@ -14,9 +14,9 @@ if __name__ == "__main__":
     try:
         mode = str(sys.argv[1])
     except IndexError:
-        mode = "CMD"
+        mode = "CLI"
 
-    if mode == 'CMD':
+    if mode == 'CLI':
         log(f"atCrawl utilities\n")
 
         process = validate_input('action')

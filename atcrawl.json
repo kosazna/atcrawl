@@ -8,7 +8,8 @@
     "merge_run": true,
     "filter_run": true,
     "sort_run": true,
-    "img_downloader": true
+    "img_downloader": true,
+    "split_file": true
   },
   "terpos": {
     "antallaktikaonline.gr": true,
@@ -19,6 +20,7 @@
     "merge_run": true,
     "filter_run": true,
     "sort_run": true,
-    "img_downloader": true
+    "img_downloader": true,
+    "split_file": true
   }
 }

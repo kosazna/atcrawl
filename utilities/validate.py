@@ -23,18 +23,19 @@ def validate_path(text: str) -> Union[None, Path]:
 
 def validate_input(text: str) -> str:
     console = {'action': "\nΔιάλεξε crawler:\n----------------\n"
-                         "(1) antallaktikaonline.gr\n"
-                         "(2) skroutz.gr\n"
-                         "(3) tripadvisor.com\n"
-                         "(4) booking.com\n"
-                         "(5) spitogatos.gr\n\n"
-                         "(6) Ένωση αρχείων\n"
-                         "(7) Αλλαγή τιμής σε στήλη\n"
-                         "(8) Σορτάρισμα αρχείου\n"
-                         "(9) Κατέβασμα εικόνων\n\n",
+                         "(1)  antallaktikaonline.gr\n"
+                         "(2)  skroutz.gr\n"
+                         "(3)  tripadvisor.com\n"
+                         "(4)  booking.com\n"
+                         "(5)  spitogatos.gr\n\n"
+                         "(6)  Ένωση αρχείων\n"
+                         "(7)  Αλλαγή τιμής σε στήλη\n"
+                         "(8)  Σορτάρισμα αρχείου\n"
+                         "(9)  Κατέβασμα εικόνων\n"
+                         "(10) Κόψιμο αρχείου",
                'discount': "\nΠοσοστό έκπτωσης (%):\n"}
 
-    approved = {'action': ['1', '2', '3', '4', '5', '6', '7', '8', '9'],
+    approved = {'action': ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
                 'discount': list(map(str, range(-100, 101)))}
 
     user_action = input(console[text]).upper()

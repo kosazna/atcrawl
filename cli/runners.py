@@ -5,6 +5,29 @@ from atcrawl.utilities.paths import paths
 from atcrawl.utilities.display import *
 from atcrawl.utilities.auth import Authorize
 
+def split_file_run():
+    authorizer = Authorize("split_file")
+
+    if authorizer.user_is_licensed():
+        _path = input("\nΔώσε το αρχείο:\n")
+        print("\nΦόρτωση αρχείου...\n")
+
+        file2mod = Path(clean_path(_path))
+
+        _k = int(input("\nΑνά πόσα να σπάσει?\n"))
+
+        _dst = input("\nΠου να αποθηκευτούν τα αρχεία\n")
+
+        if _dst:
+            dst = clean_path(_dst)
+        else:
+            dst = str(file2mod.parent)
+
+        split_file(file2mod, dst, _k)
+    else:
+        log("\nΈχεις αποκλειστεί από την εφαρμογή. "
+            "Επικοινώνησε με τον κατασκευαστή.\n")
+        time.sleep(4)
 
 def download_images_run():
     authorizer = Authorize("img_downloader")

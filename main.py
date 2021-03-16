@@ -33,6 +33,8 @@ if __name__ == "__main__":
             sort_run()
         elif process == '9':
             download_images_run()
+        elif process == '10':
+            split_file_run()
         else:
             print("\nΔεν έχεις πρόσβαση σε αυτή τη λειτουργία\n")
     else:

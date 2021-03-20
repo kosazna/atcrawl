@@ -11,7 +11,8 @@ antallaktika_properties = ['article_no',
                            'retail_price',
                            'price_after_discount',
                            'availability',
-                           'img']
+                           'img',
+                           'description']
 
 product = Element(
     NAME='product',

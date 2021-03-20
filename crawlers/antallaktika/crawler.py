@@ -193,12 +193,20 @@ class AntallaktikaOnline(CrawlEngine):
                 _after = pb.get_new_price()
                 _stock = pb.get_stock()
                 _img = pb.get_img()
+                _description1 = pb.get_recycler()
+                _description2 = pb.get_kit()
+
+                if _description1 and _description2:
+                    _description = f"{_description1}|{_description1}"
+                else:
+                    _description = _description1 if _description1 else _description2
 
                 self.data['article_no'].append(_article_no)
                 self.data['retail_price'].append(_retail)
                 self.data['price_after_discount'].append(_after)
                 self.data['availability'].append(_stock)
                 self.data['img'].append(_img)
+                self.data['description'].append(_description)
 
     def parse_page(self, what=None):
         _elements = self.find_elements()

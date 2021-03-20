@@ -49,6 +49,18 @@ img = Element(
     DEFAULT='',
     ATTRIBUTE='src')
 
+recycler = Element(
+    NAME='recycler',
+    TAG='div',
+    CLASS='recycle_container',
+    DEFAULT='')
+
+kit = Element(
+    NAME='kit',
+    TAG='ul',
+    CLASS='autopart_kit_list',
+    DEFAULT='')
+
 paginator = Element(
     NAME='paginator',
     TAG='div',

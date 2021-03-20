@@ -8,6 +8,7 @@
 
 
 import pandas as pd
+from unicodedata import normalize
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.by import By
@@ -23,6 +24,19 @@ from atcrawl.crawlers.antallaktika.settings import *
 class AntallaktikaOnlineProductContainer:
     def __init__(self, soup: BeautifulSoup):
         self._soup = soup
+
+    @classmethod
+    def from_selenium_driver(cls, driver, idx=0):
+        _soup = BeautifulSoup(driver.page_source, 'lxml')
+        _tag = product.TAG
+        _class = product.CLASS
+
+        _elements = multi_parse(soup=_soup,
+                                element_tag=_tag,
+                                element_class=_class,
+                                text=False)
+
+        return cls(_elements[idx])
 
     def get_name(self) -> str:
         _name = parse(self._soup, pid.TAG, pid.CLASS, text=True)
@@ -64,6 +78,20 @@ class AntallaktikaOnlineProductContainer:
             _img = _element.find('img')
             return _img[img.ATTRIBUTE] if _img else 'NoImage'
         return img.DEFAULT
+
+    def get_recycler(self) -> str:
+        _element = parse(self._soup, recycler.TAG, recycler.CLASS, text=True)
+
+        if _element:
+            return normalize("NFKD", _element.strip())
+        return recycler.DEFAULT
+
+    def get_kit(self) -> str:
+        _element = parse(self._soup, kit.TAG, kit.CLASS, text=True)
+
+        if _element:
+            return clean_kit(_element)
+        return kit.DEFAULT
 
 
 class AntallaktikaOnline(CrawlEngine):

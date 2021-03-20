@@ -110,6 +110,7 @@ def load_user_settings(settings_file):
 
     return settings
 
+
 def split_file(filepath, destination, k=2000):
     basename = Path(filepath).stem
 
@@ -172,6 +173,7 @@ def strip_whitespace(dataframe):
         if dataframe[col].dtype == 'O':
             dataframe[col] = dataframe[col].str.strip()
 
+
 def random_str(k=32):
     return ''.join(random.choices(string.ascii_letters + string.digits, k=k))
 
@@ -184,11 +186,18 @@ def clean_name(text):
     return s
 
 
+def remove_overspace(text):
+    return re.sub(' {2,}', ' ', text)
+
+def clean_kit(text):
+    return remove_overspace(text.replace('\n', ' ').strip()).replace('; ', ';')
+
+
 def download_image(url, destination, save_name=None):
     r = requests.get(url, stream=True)
     url_file = url.split("/")[-1]
     ext = os.path.splitext(url_file)[1]
-    
+
     if ext:
         _ext = ext
     else:
@@ -215,6 +224,7 @@ def download_image(url, destination, save_name=None):
             print(f"Saved -> {filename}")
     else:
         print(f"Request failed -> {url}")
+
 
 def download_images(urls, destination, save_names):
     with concurrent.futures.ThreadPoolExecutor() as executor:

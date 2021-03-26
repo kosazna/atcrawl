@@ -20,7 +20,7 @@ class Paths:
         return str(self._chrome)
 
     def get_firefox(self) -> str:
-        return str(self._chrome)
+        return str(self._firefox)
 
     def get_cwd(self):
         return self._cwd

@@ -1,23 +1,38 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5.QtWidgets import QFileDialog, QMainWindow, QMessageBox
-from PyQt5.QtCore import pyqtSlot, QThreadPool
-import threading
+from PyQt5.QtWidgets import QFileDialog, QMainWindow
+from PyQt5.QtCore import QThreadPool
 
 from atcrawl.gui.welcome_design import *
 from atcrawl.gui.crawler_design import *
 from atcrawl.crawlers import *
 
+from atcrawl.gui.qutils import *
 
-def show_popup(main_text, info='', icon=QMessageBox.Information):
-    msg = QMessageBox()
-    msg.setWindowTitle("atCrawl Dialog")
-    msg.setText(main_text)
-    msg.setIcon(icon)
-    msg.setStandardButtons(QMessageBox.Ok)
-    msg.setDefaultButton(QMessageBox.Ok)
-    msg.setInformativeText(info)
-    msg.exec_()
+blue = "rgba(13, 110, 253, 0.8)"
+green = "rgba(80, 244, 20, 0.8)"
+green_output = "rgba(85, 255, 127, 0.8)"
+red = "rgba(253, 4, 50, 0.8)"
+grey = "rgba(112, 112, 112, 0.8)"
+yellow = "rgba(208, 243, 33, 0.8)"
+
+
+def make_stylesheet(color):
+    _stylesheet = (f"background-color: {color};\n"
+                   "border-width:4px;\n"
+                   "border-color:black;\n"
+                   "border-style:offset;\n"
+                   "border-radius:10px;")
+    return _stylesheet
+
+
+def make_bt_stylesheet(color):
+    _stylesheet = (f"background-color: {color};\n"
+                   "color: rgb(0, 0, 0);\n"
+                   "border-width:10px;"
+                   "border-radius:10px;")
+
+    return _stylesheet
 
 
 class WelcomeUI(Ui_WelcomeUI):
@@ -49,18 +64,6 @@ class WelcomeUI(Ui_WelcomeUI):
                        "Contact support")
 
 
-class Worker(QtCore.QRunnable):
-    def __init__(self, fn, *args, **kwargs):
-        super().__init__()
-        self.fn = fn
-        self.args = args
-        self.kwargs = kwargs
-
-    @pyqtSlot()
-    def run(self):
-        self.fn(*self.args, **self.kwargs)
-
-
 class CrawlerUI(QMainWindow, Ui_CrawlerUI):
     def __init__(self):
         QMainWindow.__init__(self)
@@ -77,115 +80,72 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         self.driver_status = False
         self.to_export = False
         self.nitems = 0
+        self.stopped = True
 
         self.worker = None
         self.threadpool = QThreadPool()
-        self.event_stop = threading.Event()
 
         self.in_folder.setText(paths.get_default_export())
 
         self.bt_launch.clicked.connect(self.launch)
         self.bt_terminate.clicked.connect(self.terminate)
-        self.bt_collect.clicked.connect(self.collect_thread_start)
-        self.bt_stop_collect.clicked.connect(self.collect_thread_stop)
+        self.bt_collect.clicked.connect(self.start_collecting)
+        self.bt_stop_collect.clicked.connect(self.stop_collecting)
         self.bt_reset.clicked.connect(self.reset)
         self.bt_export.clicked.connect(self.export)
         self.browse_folder.clicked.connect(self.folder)
 
     def apply_masks(self):
         if self.crawler.NAME == 'antallaktikaonline.gr':
-            self.in_meta1.setStyleSheet(
-                "background-color: rgba(112, 112, 112, 0.8);\n"
-                "border-width:4px;\n"
-                "border-color:black;\n"
-                "border-style:offset;\n"
-                "border-radius:10px;")
-            self.in_meta2.setStyleSheet(
-                "background-color: rgba(112, 112, 112, 0.8);\n"
-                "border-width:4px;\n"
-                "border-color:black;\n"
-                "border-style:offset;\n"
-                "border-radius:10px;")
-            self.in_meta3.setStyleSheet(
-                "background-color: rgba(112, 112, 112, 0.8);\n"
-                "border-width:4px;\n"
-                "border-color:black;\n"
-                "border-style:offset;\n"
-                "border-radius:10px;")
+            stylesheet = make_stylesheet(grey)
+            self.in_meta1.setStyleSheet(stylesheet)
+            self.in_meta2.setStyleSheet(stylesheet)
+            self.in_meta3.setStyleSheet(stylesheet)
+            self.in_meta4.setStyleSheet(stylesheet)
 
             self.label_meta0.setText("Car")
+
         if self.crawler.NAME == 'skroutz.gr':
             self.label_meta0.setText('ID Category')
             self.label_meta1.setText('Description')
             self.label_meta2.setText('Meta Title SEO')
             self.label_meta3.setText("Meta SEO")
+            self.label_meta4.setText("Πρόκειται για Λάδια [Υ / Ν]")
 
-    def show_output(self, text=''):
-        self.output.setText(text)
-        self.output.setStyleSheet(
-            "background-color: rgba(85, 255, 127, 0.8);\n"
-            "border-width:4px;\n"
-            "border-color:black;\n"
-            "border-style:offset;\n"
-            "border-radius:10px;")
+    def mask_output(self, text=None):
+        if text is None:
+            display = ''
+            stylesheet = make_stylesheet(grey)
+        else:
+            display = text
+            stylesheet = make_stylesheet(green_output)
 
-    def mask_output(self):
-        self.output.setText('')
-        self.output.setStyleSheet(
-            "background-color: rgba(112, 112, 112, 0.8);\n"
-            "border-width:4px;\n"
-            "border-color:black;\n"
-            "border-style:offset;\n"
-            "border-radius:10px;")
+        self.output.setText(display)
+        self.output.setStyleSheet(stylesheet)
 
     def change_browser_status(self, status):
         if status == 'online':
-            self.status_browser.setText(status)
-            self.status_browser.setStyleSheet(
-                "background-color: rgba(80, 244, 20, 0.8);\n"
-                "border-width:4px;\n"
-                "border-color:black;\n"
-                "color: rgb(0, 0, 0);\n"
-                "border-style:offset;\n"
-                "border-radius:10px;")
+            stylesheet = make_stylesheet(green)
         else:
-            self.status_browser.setText(status)
-            self.status_browser.setStyleSheet(
-                "background-color: rgba(253, 4, 50, 0.8);\n"
-                "border-width:4px;\n"
-                "border-color:black;\n"
-                "color: rgb(0, 0, 0);\n"
-                "border-style:offset;\n"
-                "border-radius:10px;")
+            stylesheet = make_stylesheet(red)
+
+        self.status_browser.setText(status)
+        self.status_browser.setStyleSheet(stylesheet)
 
     def change_crawler_status(self, status):
         if status == 'running':
-            self.status_crawler.setText(status)
-            self.status_crawler.setStyleSheet(
-                "background-color: rgba(80, 244, 20, 0.8);\n"
-                "border-width:4px;\n"
-                "border-color:black;\n"
-                "color: rgb(0, 0, 0);\n"
-                "border-style:offset;\n"
-                "border-radius:10px;")
+            stylesheet = make_stylesheet(green)
         elif status == 'offline':
-            self.status_crawler.setText(status)
-            self.status_crawler.setStyleSheet(
-                "background-color: rgba(253, 4, 50, 0.8);\n"
-                "border-width:4px;\n"
-                "border-color:black;\n"
-                "color: rgb(0, 0, 0);\n"
-                "border-style:offset;\n"
-                "border-radius:10px;")
+            stylesheet = make_stylesheet(red)
         else:
-            self.status_crawler.setText(status)
-            self.status_crawler.setStyleSheet(
-                "background-color: rgba(208, 243, 33, 0.8);\n"
-                "border-width:4px;\n"
-                "border-color:black;\n"
-                "color: rgb(0, 0, 0);\n"
-                "border-style:offset;\n"
-                "border-radius:10px;")
+            stylesheet = make_stylesheet(yellow)
+
+        self.status_crawler.setText(status)
+        self.status_crawler.setStyleSheet(stylesheet)
+
+    def change_button_status(self, button, status, color):
+        button.setEnabled(status)
+        button.setStyleSheet(make_bt_stylesheet(color))
 
     def count_parsed(self):
         dd = self.crawler.data
@@ -241,10 +201,41 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
                    'meta1': self.in_meta1.text(),
                    'meta2': self.in_meta2.text(),
                    'meta3': self.in_meta3.text(),
+                   'meta4': self.in_meta4.text(),
                    'brand': self.get_brand(),
                    'discount': self.get_discount()}
 
         return _params
+
+    def mask_buttons(self, process):
+        if process == 'launched':
+            self.change_button_status(self.bt_launch, False, grey)
+            self.change_button_status(self.bt_collect, True, green)
+            self.change_button_status(self.bt_stop_collect, False, grey)
+            self.change_button_status(self.bt_reset, True, yellow)
+            self.change_button_status(self.bt_terminate, True, blue)
+            self.change_button_status(self.bt_export, False, grey)
+        elif process == 'collecting':
+            self.change_button_status(self.bt_launch, False, grey)
+            self.change_button_status(self.bt_collect, False, grey)
+            self.change_button_status(self.bt_stop_collect, True, red)
+            self.change_button_status(self.bt_reset, False, grey)
+            self.change_button_status(self.bt_terminate, False, grey)
+            self.change_button_status(self.bt_export, False, grey)
+        elif process == 'done_collecting':
+            self.change_button_status(self.bt_launch, False, grey)
+            self.change_button_status(self.bt_collect, False, grey)
+            self.change_button_status(self.bt_stop_collect, False, grey)
+            self.change_button_status(self.bt_reset, True, yellow)
+            self.change_button_status(self.bt_terminate, True, blue)
+            self.change_button_status(self.bt_export, True, green_output)
+        else:
+            self.change_button_status(self.bt_launch, True, blue)
+            self.change_button_status(self.bt_collect, False, grey)
+            self.change_button_status(self.bt_stop_collect, False, grey)
+            self.change_button_status(self.bt_reset, False, grey)
+            self.change_button_status(self.bt_terminate, False, grey)
+            self.change_button_status(self.bt_export, False, grey)
 
     def launch(self):
         self.url = self.in_url.text()
@@ -252,62 +243,55 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
 
         if self.url is not None and self.url != '':
             self.crawler.set_url(self.url)
-            self.crawler.launch('Chrome', paths.get_chrome())
+            self.crawler.launch('Firefox', paths.get_firefox())
             self.driver_status = True
 
             self.change_browser_status("online")
             self.change_crawler_status('idle')
-            self.bt_launch.setEnabled(False)
 
-            if self.check_launch_collect.isChecked():
-                self.collect_thread_start()
+            self.mask_buttons('launched')
         else:
             show_popup("URL is not set. Launch cancelled!",
                        "Set the url and then launch.",
                        QMessageBox.Critical)
 
-    def collect(self):
-        self.bt_collect.setEnabled(False)
-        self.bt_reset.setEnabled(False)
-
-        self.change_crawler_status('running')
-        self.mask_output()
-
-        self.event_stop.clear()
+    def collect(self, progress_callback):
         self.crawler.pre_collect()
-
-        while not self.event_stop.is_set() and self.crawler.click('Next'):
+        while not self.stopped and self.crawler.click('Next'):
             self.crawler.collect(gather='single')
 
-        self.bt_collect.setEnabled(True)
-        self.bt_reset.setEnabled(True)
+    def start_collecting(self):
+        self.stopped = False
+        self.change_crawler_status('running')
+        self.mask_output()
+        self.mask_buttons('collecting')
+
+        if self.crawler.NAME == "antallaktikaonline.gr":
+            self.crawler.first_run = False
+
+        self.run_threaded_process(self.collect, self.finished_collecting)
+
+    def finished_collecting(self):
+        self.stopped = True
 
         if self.crawler.NAME == "antallaktikaonline.gr":
             self.crawler.parse()
 
+        self.mask_buttons('done_collecting')
         self.count_items.setText(self.count_parsed())
         self.change_crawler_status('idle')
-        self.event_stop.set()
         self.to_export = True
         if self.check_export.isChecked():
             self.export()
 
-    @QtCore.pyqtSlot()
-    def collect_thread_start(self):
-        if self.driver_status:
-            if self.auth.user_is_licensed():
-                worker = Worker(self.collect)
-                self.threadpool.start(worker)
-            else:
-                show_popup("You are not authorized",
-                           "Contact support",
-                           QMessageBox.Information)
-        else:
-            show_popup("Launch the driver first!")
+    def stop_collecting(self):
+        self.stopped = True
+        return
 
-    @QtCore.pyqtSlot()
-    def collect_thread_stop(self):
-        self.event_stop.set()
+    def run_threaded_process(self, process, on_complete):
+        worker = Worker(process)
+        worker.signals.finished.connect(on_complete)
+        self.threadpool.start(worker)
 
     def export(self):
         if self.to_export:
@@ -324,7 +308,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
 
                 _pre = "Generated file --> "
                 _output = _folder + '\\' + _name + f'.{_type}'
-                self.show_output(_pre + _output)
+                self.mask_output(_pre + _output)
 
                 self.to_export = False
             else:
@@ -344,9 +328,11 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
                 self.crawler.reset(_url)
                 self.old_url = _url
 
+            self.threadpool.clear()
             self.to_export = False
             self.count_items.setText(self.count_parsed())
             self.mask_output()
+            self.mask_buttons('launched')
         else:
             show_popup("Launch the driver first!")
 
@@ -356,7 +342,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
             self.driver_status = False
             self.change_browser_status("offline")
             self.change_crawler_status("offline")
-            self.bt_launch.setEnabled(True)
+            self.mask_buttons('terminated')
         else:
             show_popup("Launch the driver first!")
 

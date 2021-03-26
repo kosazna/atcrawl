@@ -1,0 +1,63 @@
+1616771742090	geckodriver	INFO	Listening on 127.0.0.1:49501
+1616771745145	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\AZNAVO~1.K\\AppData\\Local\\Temp\\rust_mozprofileuM1CZB"
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1616771748150	Marionette	INFO	Listening on port 49510
+1616771748327	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1616771750499&cs=null, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1616771750499&cs=null, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1616771750499&cs=null, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1616771750499&cs=null, line 2: WebGL context was lost.
+1616771768734	Marionette	INFO	Stopped listening on port 49510
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+1616771953167	geckodriver	INFO	Listening on 127.0.0.1:49618
+1616771956228	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\AZNAVO~1.K\\AppData\\Local\\Temp\\rust_mozprofileqd7Vvv"
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1616771958835	Marionette	INFO	Listening on port 49626
+1616771958890	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1616771961165&cs=null, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1616771961165&cs=null, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1616771961165&cs=null, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1616771961165&cs=null, line 2: WebGL context was lost.
+console.log: WebExtensions: reset-default-search: No addons in our list are installed.
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+1616772610678	Marionette	INFO	Stopped listening on port 49626
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+ofile?" (new Error("", "(unknown module)"))
+1616772348375	Marionette	INFO	Listening on port 49784
+1616772348827	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1616772352332&cs=null, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1616772352332&cs=null, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1616772352332&cs=null, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1616772352332&cs=null, line 2: WebGL context was lost.
+
+###!!! [Child][MessageChannel] Error: (msgtype=0x6B0027,name=PNecko::Msg_RemoveRequestContext) Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+1616772425345	Marionette	INFO	Stopped listening on port 49784
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+1616772434522	geckodriver	INFO	Listening on 127.0.0.1:49870
+1616772437561	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\AZNAVO~1.K\\AppData\\Local\\Temp\\rust_mozprofileZoKSdz"
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1616772440872	Marionette	INFO	Listening on port 49879
+1616772441246	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1616772443929&cs=null, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1616772443929&cs=null, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1616772443929&cs=null, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1616772443929&cs=null, line 2: WebGL context was lost.
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+1616772480308	Marionette	INFO	Stopped listening on port 49879
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+

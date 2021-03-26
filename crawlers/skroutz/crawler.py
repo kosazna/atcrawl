@@ -83,14 +83,23 @@ class Skroutz(CrawlEngine):
     def click(self, element):
         if element == 'Next':
             try:
+                num_pages_xpath = npages.XPATH % 2
                 num_pages = len(self.driver.find_elements(By.XPATH,
-                                                          npages.XPATH))
-                bt_next_xpath = bt_next.XPATH % num_pages
+                                                          num_pages_xpath))
+                bt_next_xpath = bt_next.XPATH % (2, num_pages)
                 self.driver.find_element(By.XPATH, bt_next_xpath).click()
                 return True
             except NoSuchElementException:
-                print("\nΗ διαδικασία σταμάτησε.\n")
-                return False
+                try:
+                    num_pages_xpath = npages.XPATH % 3
+                    num_pages = len(self.driver.find_elements(By.XPATH,
+                                                              num_pages_xpath))
+                    bt_next_xpath = bt_next.XPATH % (3, num_pages)
+                    self.driver.find_element(By.XPATH, bt_next_xpath).click()
+                    return True
+                except NoSuchElementException:
+                    print('Η διαδικασία σταμάτησε\n')
+                    return False
         elif element == 'Cookies':
             try:
                 self.driver.find_element(By.XPATH,
@@ -105,8 +114,7 @@ class Skroutz(CrawlEngine):
         meta_seo = kwargs.get('meta3', '')
         brand = kwargs.get('brand', '')
         discount = kwargs.get('discount', 0)
-        ladia = kwargs.get('meta4', 'N')
-        
+        ladia = kwargs.get('meta4', 'N').upper()
 
         _data = pd.DataFrame.from_dict(self.data)
         self.collected_data = _data.copy()
@@ -127,7 +135,8 @@ class Skroutz(CrawlEngine):
                 iksodes = _data['title'].apply(find_iksodes)
                 litra = _data['title'].apply(find_litres)
 
-                _data['details'] = "Ιξώδες: " + iksodes + ", Χωρητικότητα (lt): " + litra
+                _data['details'] = "Ιξώδες: " + iksodes + \
+                    ", Χωρητικότητα (lt): " + litra
             else:
                 try:
                     _details = self.filters[1:]
@@ -141,7 +150,8 @@ class Skroutz(CrawlEngine):
                 iksodes = _data['title'].apply(find_iksodes)
                 litra = _data['title'].apply(find_litres)
 
-                _data['details'] = "Ιξώδες: " + iksodes + ", Χωρητικότητα (lt): " + litra
+                _data['details'] = "Ιξώδες: " + iksodes + \
+                    ", Χωρητικότητα (lt): " + litra
             else:
                 _data['details'] = ''
 

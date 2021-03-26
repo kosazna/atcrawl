@@ -32,7 +32,7 @@ npages = Element(
     TAG=None,
     CLASS=None,
     ID=None,
-    XPATH='//*[@id="categories_show"]/div[1]/main/section/div[2]/div/ol/li')
+    XPATH='//*[@id="categories_show"]/div[1]/main/section/div[%s]/div/ol/li')
 
 bt_next = Element(
     NAME='bt_next',
@@ -40,7 +40,7 @@ bt_next = Element(
     CLASS='icon next-arrow',
     ID=None,
     XPATH='//*[@id="categories_show"]'
-          '/div[1]/main/section/div[2]/div/ol/li[%s]/a')
+          '/div[1]/main/section/div[%s]/div/ol/li[%s]/a')
 
 bt_cookies = Element(
     NAME='bt_cookies',

@@ -84,7 +84,7 @@ class CrawlEngine:
             chrome_options.add_argument("--start-maximized")
             self.driver = webdriver.Chrome(executable, options=chrome_options)
         elif browser == 'Firefox':
-            self.driver = webdriver.Firefox(executable)
+            self.driver = webdriver.Firefox(executable_path=executable)
             self.driver.maximize_window()
         else:
             print(f'Browser not supported: {browser}')

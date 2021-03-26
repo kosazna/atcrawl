@@ -14,7 +14,8 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import (NoSuchElementException,
                                         TimeoutException,
-                                        ElementClickInterceptedException)
+                                        ElementClickInterceptedException,
+                                        ElementNotInteractableException)
 
 from atcrawl.core.parser import *
 from atcrawl.core.engine import *
@@ -121,7 +122,10 @@ class AntallaktikaOnline(CrawlEngine):
                 return False
 
         elif element == 'Cookies':
-            self.driver.find_element(By.CLASS_NAME, bt_cookies.CLASS).click()
+            try:
+                self.driver.find_element(By.CLASS_NAME, bt_cookies.CLASS).click()
+            except ElementClickInterceptedException as e:
+                pass
         else:
             try:
                 to_click = WebDriverWait(self.driver,
@@ -132,6 +136,8 @@ class AntallaktikaOnline(CrawlEngine):
                 to_click.click()
             except TimeoutException as e:
                 print(e)
+                pass
+            except ElementClickInterceptedException as e:
                 pass
 
     def transform(self, **kwargs):

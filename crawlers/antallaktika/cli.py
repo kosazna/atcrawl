@@ -36,7 +36,7 @@ def antallaktika_run():
         export_params = get_export_params()
 
         ao = AntallaktikaOnline(crawler_params['url'])
-        ao.launch('Chrome', paths.get_chrome())
+        ao.launch('Firefox', paths.get_firefox())
 
         while True:
             try:

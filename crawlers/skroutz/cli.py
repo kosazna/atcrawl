@@ -45,7 +45,7 @@ def skroutz_run():
         export_params = get_export_params()
 
         sk = Skroutz(crawler_params['url'])
-        sk.launch('Chrome', paths.get_chrome())
+        sk.launch('Firefox', paths.get_firefox())
 
         while True:
             try:

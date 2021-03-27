@@ -3,3 +3,4 @@ chromedriver.exe
 debug.log
 *.pyc
 settings.json
+geckodriver.log

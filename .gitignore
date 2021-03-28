@@ -4,3 +4,4 @@ debug.log
 *.pyc
 settings.json
 geckodriver.log
+./tests

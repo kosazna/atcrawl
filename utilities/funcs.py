@@ -12,7 +12,60 @@ from pathlib import Path
 
 import pandas as pd
 import requests
+from bs4 import BeautifulSoup
+from fake_useragent import UserAgent
 from unidecode import unidecode
+
+ua = UserAgent()
+
+def get_headers(browser):
+    if browser == 'firefox':
+        _headers = {
+            "User-Agent": f"{ua.firefox}",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.5",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Referer": "https://www.google.com/",
+            "DNT": "1",
+            "Connection": "keep-alive",
+            "Upgrade-Insecure-Requests": "1"
+        }
+    else:
+        _headers = {
+            "Connection": "keep-alive",
+            "Upgrade-Insecure-Requests": "1",
+            "User-Agent": f"{ua.chrome}",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+            "Sec-Fetch-Site": "same-origin",
+            "Sec-Fetch-Mode": "navigate",
+            "Sec-Fetch-User": "?1",
+            "Sec-Fetch-Dest": "document",
+            "Referer": "https://www.google.com/",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Accept-Language": "en-US,en;q=0.9"
+        }
+
+    return _headers
+
+
+def request_soup(url, browser='firefox'):
+    headers = get_headers(browser)
+
+    _r = requests.get(url, headers=headers)
+    _soup = BeautifulSoup(_r.text, 'lxml')
+
+    return _soup
+
+
+def remove_years(text):
+    return re.sub(r'\(\d*/*\d{4}-\d*/*\d{4}\)', '', text).strip()
+
+
+def extract_years(text):
+    try:
+        return re.findall(r'\(\d*/*\d{4}-\d*/*\d{4}\)', text)[-1].strip('()')
+    except IndexError:
+        return ''
 
 
 def one_time_scroll(driver, scrollby=1500):

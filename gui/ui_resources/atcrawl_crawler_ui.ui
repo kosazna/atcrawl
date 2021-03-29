@@ -62,7 +62,7 @@
 border-width:4px;
 border-color:black;
 border-style:offset;
-border-radius:10px;</string>
+border-radius:5px;</string>
     </property>
     <property name="text">
      <string/>
@@ -89,7 +89,7 @@ border-radius:10px;</string>
      <string notr="true">background-color: rgba(112, 112, 112, 0.8);
 color: rgb(0, 0, 0);
 border-width:10px;
-border-radius:10px;
+border-radius:5px;
 </string>
     </property>
     <property name="text">
@@ -155,7 +155,7 @@ border-radius:10px;
      <string notr="true">background-color: rgba(13, 110, 253, 0.8);
 color: rgb(0, 0, 0);
 border-width:10px;
-border-radius:10px;
+border-radius:5px;
 </string>
     </property>
     <property name="text">
@@ -183,7 +183,7 @@ border-radius:10px;
      <string notr="true">background-color: rgba(112, 112, 112, 0.8);
 color: rgb(0, 0, 0);
 border-width:10px;
-border-radius:10px;
+border-radius:5px;
 </string>
     </property>
     <property name="text">
@@ -211,7 +211,7 @@ border-radius:10px;
      <string notr="true">background-color: rgba(112, 112, 112, 0.8);
 color: rgb(0, 0, 0);
 border-width:10px;
-border-radius:10px;
+border-radius:5px;
 </string>
     </property>
     <property name="text">
@@ -221,7 +221,7 @@ border-radius:10px;
    <widget class="QLineEdit" name="in_brand">
     <property name="geometry">
      <rect>
-      <x>70</x>
+      <x>60</x>
       <y>120</y>
       <width>201</width>
       <height>31</height>
@@ -238,7 +238,7 @@ border-radius:10px;
 border-width:4px;
 border-color:black;
 border-style:offset;
-border-radius:10px;</string>
+border-radius:5px;</string>
     </property>
     <property name="text">
      <string/>
@@ -247,7 +247,7 @@ border-radius:10px;</string>
    <widget class="QLabel" name="label_discount">
     <property name="geometry">
      <rect>
-      <x>290</x>
+      <x>280</x>
       <y>120</y>
       <width>71</width>
       <height>31</height>
@@ -272,7 +272,7 @@ border-radius:10px;</string>
    <widget class="QLineEdit" name="in_discount">
     <property name="geometry">
      <rect>
-      <x>360</x>
+      <x>350</x>
       <y>120</y>
       <width>50</width>
       <height>31</height>
@@ -289,7 +289,7 @@ border-radius:10px;</string>
 border-width:4px;
 border-color:black;
 border-style:offset;
-border-radius:10px;</string>
+border-radius:5px;</string>
     </property>
     <property name="text">
      <string/>
@@ -298,7 +298,7 @@ border-radius:10px;</string>
    <widget class="QLabel" name="label_pct">
     <property name="geometry">
      <rect>
-      <x>410</x>
+      <x>400</x>
       <y>120</y>
       <width>21</width>
       <height>31</height>
@@ -343,7 +343,7 @@ border-radius:10px;</string>
 border-width:4px;
 border-color:black;
 border-style:offset;
-border-radius:10px;</string>
+border-radius:5px;</string>
     </property>
     <property name="text">
      <string/>
@@ -419,7 +419,7 @@ border-radius:10px;</string>
 border-width:4px;
 border-color:black;
 border-style:offset;
-border-radius:10px;</string>
+border-radius:5px;</string>
     </property>
     <property name="text">
      <string/>
@@ -484,7 +484,7 @@ border-radius:10px;</string>
      <string notr="true">background-color: rgba(112, 112, 112, 0.8);
 color: rgb(0, 0, 0);
 border-width:10px;
-border-radius:10px;
+border-radius:5px;
 </string>
     </property>
     <property name="text">
@@ -519,7 +519,7 @@ border-radius:10px;
    <widget class="QCheckBox" name="check_export">
     <property name="geometry">
      <rect>
-      <x>350</x>
+      <x>360</x>
       <y>50</y>
       <width>141</width>
       <height>31</height>
@@ -580,14 +580,14 @@ border-radius:10px;</string>
      <rect>
       <x>10</x>
       <y>50</y>
-      <width>51</width>
+      <width>61</width>
       <height>30</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <family>Century Gothic</family>
-      <pointsize>9</pointsize>
+      <pointsize>10</pointsize>
       <weight>50</weight>
       <italic>false</italic>
       <bold>false</bold>
@@ -621,7 +621,7 @@ border-radius:10px;</string>
      <string notr="true">background-color: rgba(112, 112, 112, 0.8);
 color: rgb(0, 0, 0);
 border-width:10px;
-border-radius:10px;
+border-radius:5px;
 </string>
     </property>
     <property name="text">
@@ -631,7 +631,7 @@ border-radius:10px;
    <widget class="QToolButton" name="browse_folder">
     <property name="geometry">
      <rect>
-      <x>620</x>
+      <x>630</x>
       <y>510</y>
       <width>31</width>
       <height>30</height>
@@ -651,7 +651,7 @@ border-radius:10px;</string>
    <widget class="QComboBox" name="list_type">
     <property name="geometry">
      <rect>
-      <x>590</x>
+      <x>600</x>
       <y>470</y>
       <width>61</width>
       <height>30</height>
@@ -670,7 +670,7 @@ border-radius:10px;</string>
 color: rgb(255, 255, 255);
 border-width:4px;
 border-color:black;
-border-radius:10px;</string>
+border-radius:5px;</string>
     </property>
     <item>
      <property name="text">
@@ -686,7 +686,7 @@ border-radius:10px;</string>
    <widget class="QLineEdit" name="status_crawler">
     <property name="geometry">
      <rect>
-      <x>230</x>
+      <x>240</x>
       <y>50</y>
       <width>90</width>
       <height>30</height>
@@ -720,7 +720,7 @@ border-radius:10px;</string>
    <widget class="QLabel" name="label_crawler">
     <property name="geometry">
      <rect>
-      <x>170</x>
+      <x>180</x>
       <y>50</y>
       <width>61</width>
       <height>30</height>
@@ -729,7 +729,7 @@ border-radius:10px;</string>
     <property name="font">
      <font>
       <family>Century Gothic</family>
-      <pointsize>9</pointsize>
+      <pointsize>10</pointsize>
       <weight>50</weight>
       <italic>false</italic>
       <bold>false</bold>
@@ -745,8 +745,8 @@ border-radius:10px;</string>
    <widget class="QLabel" name="label_items">
     <property name="geometry">
      <rect>
-      <x>690</x>
-      <y>120</y>
+      <x>530</x>
+      <y>50</y>
       <width>41</width>
       <height>31</height>
      </rect>
@@ -770,9 +770,9 @@ border-radius:10px;</string>
    <widget class="QLabel" name="count_items">
     <property name="geometry">
      <rect>
-      <x>740</x>
-      <y>120</y>
-      <width>61</width>
+      <x>580</x>
+      <y>50</y>
+      <width>81</width>
       <height>31</height>
      </rect>
     </property>
@@ -800,7 +800,7 @@ border-radius:10px;</string>
      <rect>
       <x>10</x>
       <y>190</y>
-      <width>641</width>
+      <width>651</width>
       <height>31</height>
      </rect>
     </property>
@@ -815,7 +815,7 @@ border-radius:10px;</string>
 border-width:4px;
 border-color:black;
 border-style:offset;
-border-radius:10px;</string>
+border-radius:5px;</string>
     </property>
     <property name="text">
      <string/>
@@ -876,7 +876,7 @@ border-radius:10px;</string>
      <rect>
       <x>10</x>
       <y>260</y>
-      <width>641</width>
+      <width>651</width>
       <height>31</height>
      </rect>
     </property>
@@ -891,7 +891,7 @@ border-radius:10px;</string>
 border-width:4px;
 border-color:black;
 border-style:offset;
-border-radius:10px;</string>
+border-radius:5px;</string>
     </property>
     <property name="text">
      <string/>
@@ -927,7 +927,7 @@ border-radius:10px;</string>
      <rect>
       <x>10</x>
       <y>330</y>
-      <width>641</width>
+      <width>651</width>
       <height>31</height>
      </rect>
     </property>
@@ -942,7 +942,7 @@ border-radius:10px;</string>
 border-width:4px;
 border-color:black;
 border-style:offset;
-border-radius:10px;</string>
+border-radius:5px;</string>
     </property>
     <property name="text">
      <string/>
@@ -976,9 +976,9 @@ border-radius:10px;</string>
    <widget class="QLineEdit" name="in_meta0">
     <property name="geometry">
      <rect>
-      <x>560</x>
+      <x>580</x>
       <y>120</y>
-      <width>91</width>
+      <width>81</width>
       <height>31</height>
      </rect>
     </property>
@@ -993,7 +993,7 @@ border-radius:10px;</string>
 border-width:4px;
 border-color:black;
 border-style:offset;
-border-radius:10px;</string>
+border-radius:5px;</string>
     </property>
     <property name="text">
      <string/>
@@ -1035,7 +1035,7 @@ border-radius:10px;</string>
      <rect>
       <x>10</x>
       <y>400</y>
-      <width>641</width>
+      <width>651</width>
       <height>31</height>
      </rect>
     </property>
@@ -1050,7 +1050,7 @@ border-radius:10px;</string>
 border-width:4px;
 border-color:black;
 border-style:offset;
-border-radius:10px;</string>
+border-radius:5px;</string>
     </property>
     <property name="text">
      <string/>
@@ -1079,6 +1079,30 @@ border-radius:10px;</string>
     </property>
     <property name="text">
      <string>Meta4</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="meta_check">
+    <property name="geometry">
+     <rect>
+      <x>690</x>
+      <y>120</y>
+      <width>101</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Century Gothic</family>
+      <pointsize>10</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>MetaCheck</string>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
     </property>
    </widget>
   </widget>

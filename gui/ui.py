@@ -17,20 +17,20 @@ grey = "rgba(112, 112, 112, 0.8)"
 yellow = "rgba(208, 243, 33, 0.8)"
 
 
-def make_stylesheet(color):
+def make_stylesheet(color, radius=5):
     _stylesheet = (f"background-color: {color};\n"
                    "border-width:4px;\n"
                    "border-color:black;\n"
                    "border-style:offset;\n"
-                   "border-radius:10px;")
+                   f"border-radius:{radius}px;")
     return _stylesheet
 
 
-def make_bt_stylesheet(color):
+def make_bt_stylesheet(color, radius=5):
     _stylesheet = (f"background-color: {color};\n"
                    "color: rgb(0, 0, 0);\n"
                    "border-width:10px;"
-                   "border-radius:10px;")
+                   f"border-radius:{radius}px;")
 
     return _stylesheet
 
@@ -102,43 +102,46 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
             self.in_meta2.setStyleSheet(stylesheet)
             self.in_meta3.setStyleSheet(stylesheet)
             self.in_meta4.setStyleSheet(stylesheet)
+            self.meta_check.setText("")
 
             self.label_meta0.setText("Car")
 
         if self.crawler.NAME == 'skroutz.gr':
+            stylesheet = make_stylesheet(grey)
+            self.in_meta4.setStyleSheet(stylesheet)
             self.label_meta0.setText('ID Category')
             self.label_meta1.setText('Description')
             self.label_meta2.setText('Meta Title SEO')
             self.label_meta3.setText("Meta SEO")
-            self.label_meta4.setText("Πρόκειται για Λάδια [Υ / Ν]")
+            self.meta_check.setText("Λάδια")
 
     def mask_output(self, text=None):
         if text is None:
             display = ''
-            stylesheet = make_stylesheet(grey)
+            stylesheet = make_stylesheet(grey, radius=10)
         else:
             display = text
-            stylesheet = make_stylesheet(green_output)
+            stylesheet = make_stylesheet(green_output, radius=10)
 
         self.output.setText(display)
         self.output.setStyleSheet(stylesheet)
 
     def change_browser_status(self, status):
         if status == 'online':
-            stylesheet = make_stylesheet(green)
+            stylesheet = make_stylesheet(green, radius=10)
         else:
-            stylesheet = make_stylesheet(red)
+            stylesheet = make_stylesheet(red, radius=10)
 
         self.status_browser.setText(status)
         self.status_browser.setStyleSheet(stylesheet)
 
     def change_crawler_status(self, status):
         if status == 'running':
-            stylesheet = make_stylesheet(green)
+            stylesheet = make_stylesheet(green, radius=10)
         elif status == 'offline':
-            stylesheet = make_stylesheet(red)
+            stylesheet = make_stylesheet(red, radius=10)
         else:
-            stylesheet = make_stylesheet(yellow)
+            stylesheet = make_stylesheet(yellow, radius=10)
 
         self.status_crawler.setText(status)
         self.status_crawler.setStyleSheet(stylesheet)
@@ -256,9 +259,14 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
                        QMessageBox.Critical)
 
     def collect(self, progress_callback):
+        npage = 1
         self.crawler.pre_collect()
+        progress_callback.emit(f"Collecting page {npage}")
         while not self.stopped and self.crawler.click('Next'):
+            npage += 1
+            progress_callback.emit(f"Collecting page {npage}")
             self.crawler.collect(gather='single')
+        progress_callback.emit(f"Pages Finished")
 
     def start_collecting(self):
         self.stopped = False
@@ -269,7 +277,12 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         if self.crawler.NAME == "antallaktikaonline.gr":
             self.crawler.first_run = False
 
-        self.run_threaded_process(self.collect, self.finished_collecting)
+        self.run_threaded_process(self.collect,
+                                  self.collecting_updates,
+                                  self.finished_collecting)
+
+    def collecting_updates(self, text):
+        self.mask_output(text)
 
     def finished_collecting(self):
         self.stopped = True
@@ -288,9 +301,10 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         self.stopped = True
         return
 
-    def run_threaded_process(self, process, on_complete):
+    def run_threaded_process(self, process, on_update, on_complete):
         worker = Worker(process)
         worker.signals.finished.connect(on_complete)
+        worker.signals.progress.connect(on_update)
         self.threadpool.start(worker)
 
     def export(self):

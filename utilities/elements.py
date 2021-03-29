@@ -12,6 +12,7 @@ class Element:
     ID: Union[str, None] = None
     XPATH: Union[str, None] = None
     ATTRIBUTE: Union[str, None] = None
+    SUB: Union[str, None] = None
     LOC: Union[int, None] = None
     DEFAULT: Union[str, None] = None
 

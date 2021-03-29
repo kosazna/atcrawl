@@ -188,9 +188,14 @@ def extract_product_info(url, brand, models):
 
 def get_all_info(data):
     info = []
+    cnt = 0
     for key in data.keys():
         for url in data[key]['products'].values():
             info.append(extract_product_info(url, key, data[key]['models']))
+        cnt += 1
+
+        if cnt == 2:
+            return info
 
     return info
 
@@ -234,15 +239,18 @@ class RellasAmortiser:
             json.dump(self.brands, f, indent=2, ensure_ascii=False)
 
 
-    def tranform(self):
-        df = pd.DataFrame(self.data)
+    def tranform(self, filepath):
+        self.data = pd.DataFrame(self.raw)
+
+        self.data.to_excel(filepath)
 
     def export(self):
         pass
 
 
 
-path = "C:\\Users\\aznavouridis.k\\Desktop\\Terpos\\rellas.json"
+path = "C:\\Users\\aznavouridis.k\\Desktop\\Terpos\\rellas.xlsx"
 amortiser = RellasAmortiser("https://www.rellasamortiser.gr/el/831-amortiser")
 amortiser.collect_brands()
-amortiser.export(path)
+amortiser.collect_product_info()
+amortiser.tranform(path)

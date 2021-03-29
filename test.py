@@ -3,17 +3,59 @@ from bs4 import BeautifulSoup
 import re
 from fake_useragent import UserAgent
 import json
+import pandas as pd
 
-headers = {
-    "User-Agent": f"{UserAgent().firefox}",
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-    "Accept-Language": "en-US,en;q=0.5",
-    "Accept-Encoding": "gzip, deflate, br",
-    "Referer": "https://www.google.com/",
-    "DNT": "1",
-    "Connection": "keep-alive",
-    "Upgrade-Insecure-Requests": "1"
-}
+ua = UserAgent()
+
+
+def get_headers(browser):
+    if browser == 'firefox':
+        _headers = {
+            "User-Agent": f"{ua.firefox}",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.5",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Referer": "https://www.google.com/",
+            "DNT": "1",
+            "Connection": "keep-alive",
+            "Upgrade-Insecure-Requests": "1"
+        }
+    else:
+        _headers = {
+            "Connection": "keep-alive",
+            "Upgrade-Insecure-Requests": "1",
+            "User-Agent": f"{ua.chrome}",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+            "Sec-Fetch-Site": "same-origin",
+            "Sec-Fetch-Mode": "navigate",
+            "Sec-Fetch-User": "?1",
+            "Sec-Fetch-Dest": "document",
+            "Referer": "https://www.google.com/",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Accept-Language": "en-US,en;q=0.9"
+        }
+
+    return _headers
+
+
+def request_soup(url, browser='firefox'):
+    headers = get_headers(browser)
+
+    _r = requests.get(url, headers=headers)
+    _soup = BeautifulSoup(_r.text, 'lxml')
+
+    return _soup
+
+
+def remove_years(text):
+    return re.sub(r'\(\d*/*\d{4}-\d*/*\d{4}\)', '', text).strip()
+
+
+def extract_years(text):
+    try:
+        return re.findall(r'\(\d*/*\d{4}-\d*/*\d{4}\)', text)[-1].strip('()')
+    except IndexError:
+        return ''
 
 
 def num_from_text(text):
@@ -47,8 +89,7 @@ def fmtnumber(number: list):
 
 
 def get_brands(url):
-    r = requests.get(url)
-    soup = BeautifulSoup(r.text, 'lxml')
+    soup = request_soup(url)
     rows = soup.find("div", {"class": "span9"}).find_all(
         "div", {"class": "row-fluid"})
     brand_row = []
@@ -65,9 +106,8 @@ def get_brands(url):
 
 
 def get_products(url):
-    r = requests.get(url)
     base_url = url.split('/e')[0]
-    soup = BeautifulSoup(r.text, 'lxml')
+    soup = soup = request_soup(url)
 
     products = {}
 
@@ -94,8 +134,7 @@ def get_products(url):
 
 
 def get_models(url):
-    r = requests.get(url)
-    soup = BeautifulSoup(r.text, 'lxml')
+    soup = request_soup(url)
 
     subcategories = soup.find_all('div', {'id': 'subcategories'})
     models = []
@@ -108,8 +147,7 @@ def get_models(url):
 
 
 def get_product_details(url):
-    r = requests.get(url)
-    soup = BeautifulSoup(r.text, 'lxml')
+    soup = request_soup(url)
 
     product_name = soup.find('div', {'class': 'product-name'}).find('h2').text
     sku = soup.find('span', {'class': 'editable'}).text
@@ -120,16 +158,54 @@ def get_product_details(url):
     return product_name, price, sku
 
 
+def extract_product_info(url, brand, models):
+    info = {}
+    product_name, price, sku = get_product_details(url)
+
+    for model in models:
+        if model in product_name:
+            correct_model = model
+
+    year = extract_years(product_name)
+
+    details = f"Μοντέλο: {correct_model}, Χρονολογία: {year}"
+
+    info['brand'] = brand
+    info['article_no'] = ''
+    info['title'] = product_name
+    info['description'] = sku
+    info['meta_title_seo'] = ''
+    info['details'] = details
+    info['retail_price'] = price
+    info['price_after_discount'] = 0.0
+    info['id_category'] = ''
+    info['image'] = ''
+    info['meta_seo'] = ''
+    info['extra_description'] = ''
+
+    return info
+
+
+def get_all_info(data):
+    info = []
+    for key in data.keys():
+        for url in data[key]['products'].values():
+            info.append(extract_product_info(url, key, data[key]['models']))
+
+    return info
+
+
 class RellasAmortiser:
     def __init__(self, url) -> None:
         self.url = url
         self.base_url = url.split('/e')[0]
-        self.content = requests.get(url, headers=headers)
-        self.soup = BeautifulSoup(self.content.text, 'lxml')
+        self.soup = request_soup(url)
 
         self.brands = {}
+        self.raw = None
+        self.data = None
 
-    def get_brands(self):
+    def collect_brands(self):
         rows = self.soup.find("div", {"class": "span9"}).find_all(
             "div", {"class": "row-fluid"})
         brand_row = []
@@ -146,12 +222,27 @@ class RellasAmortiser:
                                            'models': brand_models,
                                            'products': brand_products}
 
-    def export(self, filepath):
+        for key in self.brands.keys():
+            models = list(map(remove_years, self.brands[key]['models']))
+            self.brands[key]['models'] = models
+
+    def collect_product_info(self):
+        self.raw = get_all_info(self.brands)
+
+    def export_json(self, filepath):
         with open(filepath, 'w', encoding='utf8') as f:
             json.dump(self.brands, f, indent=2, ensure_ascii=False)
 
 
+    def tranform(self):
+        df = pd.DataFrame(self.data)
+
+    def export(self):
+        pass
+
+
+
 path = "C:\\Users\\aznavouridis.k\\Desktop\\Terpos\\rellas.json"
 amortiser = RellasAmortiser("https://www.rellasamortiser.gr/el/831-amortiser")
-amortiser.get_brands()
+amortiser.collect_brands()
 amortiser.export(path)

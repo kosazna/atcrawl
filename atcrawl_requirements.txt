@@ -1,6 +1,0 @@
-pandas
-numpy
-openpyxl
-xlrd
-pyqt5
-pypiwin32

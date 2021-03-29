@@ -1,8 +1,0 @@
-pandas
-beautifulsoup4
-selenium
-lxml
-openpyxl
-unidecode
-xlrd
-pyqt5

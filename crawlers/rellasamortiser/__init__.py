@@ -1,0 +1,1 @@
+from atcrawl.crawlers.rellasamortiser.crawler import *

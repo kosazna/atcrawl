@@ -13,7 +13,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_WelcomeUI(object):
     def setupUi(self, WelcomeUI):
         WelcomeUI.setObjectName("WelcomeUI")
-        WelcomeUI.resize(400, 500)
+        WelcomeUI.resize(400, 600)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/layers/static/main_layer.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         WelcomeUI.setWindowIcon(icon)
@@ -72,7 +72,7 @@ class Ui_WelcomeUI(object):
         self.bt_antallaktika.setObjectName("bt_antallaktika")
         self.bt_tripadvisor = QtWidgets.QToolButton(self.centralwidget)
         self.bt_tripadvisor.setEnabled(True)
-        self.bt_tripadvisor.setGeometry(QtCore.QRect(90, 250, 221, 50))
+        self.bt_tripadvisor.setGeometry(QtCore.QRect(90, 320, 221, 50))
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
         font.setPointSize(12)
@@ -106,7 +106,7 @@ class Ui_WelcomeUI(object):
         self.header.setObjectName("header")
         self.bt_spitogatos = QtWidgets.QToolButton(self.centralwidget)
         self.bt_spitogatos.setEnabled(True)
-        self.bt_spitogatos.setGeometry(QtCore.QRect(90, 390, 221, 50))
+        self.bt_spitogatos.setGeometry(QtCore.QRect(90, 460, 221, 50))
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
         font.setPointSize(12)
@@ -129,7 +129,7 @@ class Ui_WelcomeUI(object):
         self.bt_spitogatos.setObjectName("bt_spitogatos")
         self.bt_booking = QtWidgets.QToolButton(self.centralwidget)
         self.bt_booking.setEnabled(True)
-        self.bt_booking.setGeometry(QtCore.QRect(90, 320, 221, 50))
+        self.bt_booking.setGeometry(QtCore.QRect(90, 390, 221, 50))
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
         font.setPointSize(12)
@@ -150,9 +150,32 @@ class Ui_WelcomeUI(object):
         self.bt_booking.setAutoRaise(True)
         self.bt_booking.setArrowType(QtCore.Qt.NoArrow)
         self.bt_booking.setObjectName("bt_booking")
+        self.bt_rellas = QtWidgets.QToolButton(self.centralwidget)
+        self.bt_rellas.setEnabled(True)
+        self.bt_rellas.setGeometry(QtCore.QRect(90, 250, 221, 50))
+        font = QtGui.QFont()
+        font.setFamily("Segoe UI")
+        font.setPointSize(12)
+        font.setBold(False)
+        font.setUnderline(False)
+        font.setWeight(50)
+        font.setStrikeOut(False)
+        font.setKerning(True)
+        self.bt_rellas.setFont(font)
+        self.bt_rellas.setStyleSheet("background-color: qlineargradient(spread:pad, x1:0, y1:0.5, x2:1, y2:0.5, stop:0 rgba(13, 5, 81, 255), stop:1 rgba(36, 176, 189, 255));\n"
+"color: rgb(255, 255, 255);\n"
+"border-width:10px;\n"
+"border-radius:20px;\n"
+"")
+        self.bt_rellas.setCheckable(False)
+        self.bt_rellas.setPopupMode(QtWidgets.QToolButton.InstantPopup)
+        self.bt_rellas.setToolButtonStyle(QtCore.Qt.ToolButtonFollowStyle)
+        self.bt_rellas.setAutoRaise(True)
+        self.bt_rellas.setArrowType(QtCore.Qt.NoArrow)
+        self.bt_rellas.setObjectName("bt_rellas")
         WelcomeUI.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(WelcomeUI)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 400, 21))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 400, 26))
         self.menubar.setObjectName("menubar")
         WelcomeUI.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(WelcomeUI)
@@ -175,6 +198,7 @@ class Ui_WelcomeUI(object):
 "<p align=\"right\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt; font-style:italic; color:#dadada;\">atCrawl Services</span></p></body></html>"))
         self.bt_spitogatos.setText(_translate("WelcomeUI", "spitogatos.gr"))
         self.bt_booking.setText(_translate("WelcomeUI", "booking.com"))
+        self.bt_rellas.setText(_translate("WelcomeUI", "rellasamortiser.gr"))
 
 
 if __name__ == "__main__":

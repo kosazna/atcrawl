@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from crawlers.rellasamortiser.crawler import RellasAmortiserBrand
 from PyQt5.QtWidgets import QFileDialog, QMainWindow
 from PyQt5.QtCore import QThreadPool
 
@@ -50,6 +51,8 @@ class WelcomeUI(Ui_WelcomeUI):
             lambda: self.init_crawler("tripadvisor.com"))
         self.bt_spitogatos.clicked.connect(
             lambda: self.init_crawler("spitogatos.gr"))
+        self.bt_rellas.clicked.connect(
+            lambda: self.init_crawler("rellasamortiser.gr"))
 
     def init_crawler(self, name):
         authorizer = Authorize(name)
@@ -114,6 +117,18 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
             self.label_meta2.setText('Meta Title SEO')
             self.label_meta3.setText("Meta SEO")
             self.meta_check.setText("Λάδια")
+
+        if self.crawler.NAME == 'rellasamortiser.gr':
+            stylesheet = make_stylesheet(grey)
+            self.in_meta3.setStyleSheet(stylesheet)
+            self.in_meta4.setStyleSheet(stylesheet)
+ 
+            self.label_meta0.setText('ID Category')
+            self.label_meta1.setText('Meta Title SEO')
+            self.label_meta2.setText("Meta SEO")
+            self.meta_check.setText("Μάρκα")
+            self.mask_buttons('launched')
+            self.change_button_status(self.bt_terminate, False, grey)
 
     def mask_output(self, text=None):
         if text is None:
@@ -259,14 +274,23 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
                        QMessageBox.Critical)
 
     def collect(self, progress_callback):
-        npage = 1
-        self.crawler.pre_collect()
-        progress_callback.emit(f"Collecting page {npage}")
-        while not self.stopped and self.crawler.click('Next'):
-            npage += 1
+        if self.crawler.NAME != 'rellasamortiser.gr':
+            npage = 1
+            self.crawler.pre_collect()
             progress_callback.emit(f"Collecting page {npage}")
-            self.crawler.collect(gather='single')
-        progress_callback.emit(f"Pages Finished")
+            while not self.stopped and self.crawler.click('Next'):
+                npage += 1
+                progress_callback.emit(f"Collecting page {npage}")
+                self.crawler.collect(gather='single')
+            progress_callback.emit(f"Pages Finished")
+        else:
+            if self.meta_check.isChecked():
+                self.crawler.pre_collect()
+                self.crawler.collect()
+                self.crawler.transform()
+            else:
+                self.crawler.pre_collect()
+                self.crawler.collect(**self.get_params())
 
     def start_collecting(self):
         self.stopped = False
@@ -276,6 +300,12 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
 
         if self.crawler.NAME == "antallaktikaonline.gr":
             self.crawler.first_run = False
+
+        if self.crawler.NAME == "rellasamortiser.gr":
+            if self.meta_check.isChecked():
+                self.crawler = RellasAmortiserBrand(self.in_url.text())
+            else:
+                self.crawler = RellasAmortiser(self.in_url.text())
 
         self.run_threaded_process(self.collect,
                                   self.collecting_updates,
@@ -291,7 +321,12 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
             self.crawler.parse()
 
         self.mask_buttons('done_collecting')
-        self.count_items.setText(self.count_parsed())
+
+        if self.crawler.NAME != 'rellasamortiser.gr':
+            self.count_items.setText(self.count_parsed())
+        else:
+            self.change_button_status(self.bt_terminate, False, grey)
+
         self.change_crawler_status('idle')
         self.to_export = True
         if self.check_export.isChecked():

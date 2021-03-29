@@ -3,9 +3,6 @@
 import pandas as pd
 from atcrawl.crawlers.rellasamortiser.settings import *
 from atcrawl.utilities import *
-import warnings
-
-warnings.filterwarnings('ignore')
 
 
 class RellasAmortiserBrand:
@@ -112,8 +109,10 @@ class RellasAmortiserBrand:
                                                              self.models)
             self.products.append(data)
 
-    def collect(self):
+    def pre_collect(self):
         self.collect_models()
+
+    def collect(self):
         self.collect_products()
         self.collect_product_details()
 
@@ -150,14 +149,19 @@ class RellasAmortiserBrand:
 class RellasAmortiser:
     ΝΑΜΕ = "rellasamortiser.gr"
 
-    def __init__(self, url) -> None:
+    def __init__(self, url='') -> None:
         self.url = url
-        self.base_url = url.split('/e')[0]
-        self.soup = request_soup(url)
+        self.base_url = url.split('/e')[0] if url else None
+        self.soup = request_soup(url) if url else None
 
         self.brand_urls = []
         self.dfs = []
         self.data = None
+
+    def set_url(self, url):
+        self.url = url
+        self.base_url = url.split('/e')[0]
+        self.soup = request_soup(url)
 
     def pre_collect(self):
         rows = self.soup.find(brand_row.TAG, {"class": brand_row.CLASS}).find_all(
@@ -172,23 +176,27 @@ class RellasAmortiser:
             for _brand in row_brand:
                 self.brand_urls.append(_brand.get(brand.ATTRIBUTE))
 
-    def collect(self, **kwargs):
+    def collect(self, transform_params):
         for url in self.brand_urls:
             rab = RellasAmortiserBrand(url)
             print(f'Collecting products for {rab.brand_name}...\n')
             rab.collect()
-            rab.transform(**kwargs)
+            rab.transform(**transform_params)
 
             if rab.data is not None:
                 self.dfs.append(rab.data)
 
-    def export(self, filepath):
+    def transform(self):
         if self.dfs:
             self.data = pd.concat(self.dfs)
-            self.data.to_excel(filepath, index=False)
 
-
-ra = RellasAmortiser("https://www.rellasamortiser.gr/el/831-amortiser")
-ra.pre_collect()
-ra.collect(meta0='2605', meta1='kostas', meta2='azna', discount=-20)
-ra.export("C:\\Users\\aznavouridis.k\\Desktop\\Terpos\\rellas.xlsx")
+    def export(self, name, folder, export_type):
+        if self.data:
+            if export_type == 'csv':
+                dst = Path(folder).joinpath(f'{name}.csv')
+                self.data.to_csv(dst, index=False, sep=';')
+                print(f"\nExported csv file at:\n -> {dst}\n")
+            else:
+                dst = Path(folder).joinpath(f'{name}.xlsx')
+                self.data.to_excel(dst, index=False)
+                print(f"\nExported excel file at:\n -> {dst}\n")

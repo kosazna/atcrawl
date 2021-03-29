@@ -6,7 +6,7 @@ from atcrawl.utilities import *
 
 
 class RellasAmortiserBrand:
-    ΝΑΜΕ = "rellasamortiser.gr"
+    NAME = "rellasamortiser.gr"
 
     def __init__(self, url) -> None:
         self.url = url
@@ -147,7 +147,7 @@ class RellasAmortiserBrand:
 
 
 class RellasAmortiser:
-    ΝΑΜΕ = "rellasamortiser.gr"
+    NAME = "rellasamortiser.gr"
 
     def __init__(self, url='') -> None:
         self.url = url

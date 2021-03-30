@@ -61,3 +61,82 @@ JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallakt
 
 ###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
 
+1617118666172	geckodriver	INFO	Listening on 127.0.0.1:63904
+1617118669195	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\AZNAVO~1.K\\AppData\\Local\\Temp\\rust_mozprofilecKFxvx"
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1617118672876	Marionette	INFO	Listening on port 63912
+1617118672912	Marionette	WARN	TLS certificate errors will be ignored for this session
+1617118710406	Marionette	INFO	Stopped listening on port 63912
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+1617118720771	geckodriver	INFO	Listening on 127.0.0.1:63991
+1617118723821	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\AZNAVO~1.K\\AppData\\Local\\Temp\\rust_mozprofilefobAdd"
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1617118726621	Marionette	INFO	Listening on port 63999
+1617118726997	Marionette	WARN	TLS certificate errors will be ignored for this session
+1617118773398	Marionette	INFO	Stopped listening on port 63999
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+1617118821499	geckodriver	INFO	Listening on 127.0.0.1:64091
+1617118824560	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\AZNAVO~1.K\\AppData\\Local\\Temp\\rust_mozprofile4pWdnv"
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1617118827488	Marionette	INFO	Listening on port 64099
+1617118827730	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118829947&cs=null, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118829947&cs=null, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118829947&cs=null, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118829947&cs=null, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118860213&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118860213&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118860213&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118860213&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118870991&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118870991&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118870991&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118870991&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118874574&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118874574&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118874574&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118874574&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118878517&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118878517&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118878517&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118878517&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118882216&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118882216&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118882216&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118882216&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118885749&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118885749&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118885749&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118885749&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118889864&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118889864&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118889864&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118889864&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118893777&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118893777&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118893777&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118893777&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118898031&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118898031&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118898031&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118898031&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118902378&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118902378&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118902378&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118902378&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118906120&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118906120&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118906120&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118906120&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118911033&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118911033&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118911033&cs=3888617005486597032, line 2: WebGL context was lost.
+JavaScript warning: https://emitter.kilometrix.de/static/kmtx.js?h=www.antallaktikaonline.gr&c=1617118911033&cs=3888617005486597032, line 2: WebGL context was lost.
+1617118923399	Marionette	INFO	Stopped listening on port 64099
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+

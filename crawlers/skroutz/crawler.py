@@ -114,7 +114,7 @@ class Skroutz(CrawlEngine):
         meta_seo = kwargs.get('meta3', '')
         brand = kwargs.get('brand', '')
         discount = kwargs.get('discount', 0)
-        ladia = kwargs.get('meta_check', False).upper()
+        ladia = kwargs.get('meta_check', False)
 
         _data = pd.DataFrame.from_dict(self.data)
         self.collected_data = _data.copy()

@@ -18,6 +18,7 @@ from unidecode import unidecode
 
 ua = UserAgent()
 
+
 def get_headers(browser):
     if browser == 'firefox':
         _headers = {
@@ -46,6 +47,10 @@ def get_headers(browser):
         }
 
     return _headers
+
+
+def get_user_agent(browser):
+    return ua.firefox if browser == 'firefox' else ua.chrome
 
 
 def request_soup(url, browser='firefox'):
@@ -241,6 +246,7 @@ def clean_name(text):
 
 def remove_overspace(text):
     return re.sub(' {2,}', ' ', text)
+
 
 def clean_kit(text):
     return remove_overspace(text.replace('\n', ' ').strip()).replace('; ', ';')

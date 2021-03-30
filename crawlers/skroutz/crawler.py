@@ -114,7 +114,7 @@ class Skroutz(CrawlEngine):
         meta_seo = kwargs.get('meta3', '')
         brand = kwargs.get('brand', '')
         discount = kwargs.get('discount', 0)
-        ladia = kwargs.get('meta4', 'N').upper()
+        ladia = kwargs.get('meta_check', False).upper()
 
         _data = pd.DataFrame.from_dict(self.data)
         self.collected_data = _data.copy()
@@ -131,7 +131,7 @@ class Skroutz(CrawlEngine):
             else:
                 _data['brand'] = self.filters[0]
 
-            if ladia == "Y":
+            if ladia:
                 iksodes = _data['title'].apply(find_iksodes)
                 litra = _data['title'].apply(find_litres)
 

@@ -11,11 +11,14 @@ from atcrawl.crawlers import *
 from atcrawl.gui.qutils import *
 
 blue = "rgba(13, 110, 253, 0.8)"
-green = "rgba(80, 244, 20, 0.8)"
-green_output = "rgba(85, 255, 127, 0.8)"
-red = "rgba(253, 4, 50, 0.8)"
-grey = "rgba(112, 112, 112, 0.8)"
-yellow = "rgba(208, 243, 33, 0.8)"
+green = "rgba(42, 214, 107, 0.8)"
+teal = "rgba(32, 201, 151, 0.8)"
+red = "rgba(239, 62, 79, 0.8)"
+grey = "rgba(108, 117, 125, 0.8)"
+yellow = "rgba(255, 193, 7, 0.8)"
+cyan = "rgba(13, 202, 240, 0.8)"
+orange = "rgba(253, 126, 20, 0.8)"
+dark = "rgba(33, 37, 41, 0.8)"
 
 
 def make_stylesheet(color, radius=5):
@@ -102,16 +105,22 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         if self.crawler.NAME == 'antallaktikaonline.gr':
             stylesheet = make_stylesheet(grey)
             self.in_meta1.setStyleSheet(stylesheet)
+            self.in_meta1.setEnabled(False)
             self.in_meta2.setStyleSheet(stylesheet)
+            self.in_meta2.setEnabled(False)
             self.in_meta3.setStyleSheet(stylesheet)
+            self.in_meta3.setEnabled(False)
             self.in_meta4.setStyleSheet(stylesheet)
+            self.in_meta4.setEnabled(False)
             self.meta_check.setText("")
+            self.meta_check.setEnabled(False)
 
             self.label_meta0.setText("Car")
 
         if self.crawler.NAME == 'skroutz.gr':
             stylesheet = make_stylesheet(grey)
             self.in_meta4.setStyleSheet(stylesheet)
+            self.in_meta4.setEnabled(False)
             self.label_meta0.setText('ID Category')
             self.label_meta1.setText('Description')
             self.label_meta2.setText('Meta Title SEO')
@@ -121,7 +130,9 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         if self.crawler.NAME == 'rellasamortiser.gr':
             stylesheet = make_stylesheet(grey)
             self.in_meta3.setStyleSheet(stylesheet)
+            self.in_meta3.setEnabled(False)
             self.in_meta4.setStyleSheet(stylesheet)
+            self.in_meta4.setEnabled(False)
  
             self.label_meta0.setText('ID Category')
             self.label_meta1.setText('Meta Title SEO')
@@ -136,7 +147,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
             stylesheet = make_stylesheet(grey, radius=10)
         else:
             display = text
-            stylesheet = make_stylesheet(green_output, radius=10)
+            stylesheet = make_stylesheet(teal, radius=10)
 
         self.output.setText(display)
         self.output.setStyleSheet(stylesheet)
@@ -166,8 +177,11 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         button.setStyleSheet(make_bt_stylesheet(color))
 
     def count_parsed(self):
-        dd = self.crawler.data
-        self.nitems = str(len(dd[list(dd.keys())[0]]))
+        if self.crawler.NAME != 'rellasamortiser.gr':
+            dd = self.crawler.data
+            self.nitems = str(len(dd[list(dd.keys())[0]]))
+        else:
+            self.nitems = str(self.crawler.data.shape[0])
         return self.nitems
 
     def set_crawler(self, crawler_obj):
@@ -220,40 +234,58 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
                    'meta2': self.in_meta2.text(),
                    'meta3': self.in_meta3.text(),
                    'meta4': self.in_meta4.text(),
+                   'meta_check': self.meta_check.isChecked(),
                    'brand': self.get_brand(),
                    'discount': self.get_discount()}
 
         return _params
 
     def mask_buttons(self, process):
-        if process == 'launched':
-            self.change_button_status(self.bt_launch, False, grey)
-            self.change_button_status(self.bt_collect, True, green)
-            self.change_button_status(self.bt_stop_collect, False, grey)
-            self.change_button_status(self.bt_reset, True, yellow)
-            self.change_button_status(self.bt_terminate, True, blue)
-            self.change_button_status(self.bt_export, False, grey)
-        elif process == 'collecting':
-            self.change_button_status(self.bt_launch, False, grey)
-            self.change_button_status(self.bt_collect, False, grey)
-            self.change_button_status(self.bt_stop_collect, True, red)
-            self.change_button_status(self.bt_reset, False, grey)
-            self.change_button_status(self.bt_terminate, False, grey)
-            self.change_button_status(self.bt_export, False, grey)
-        elif process == 'done_collecting':
-            self.change_button_status(self.bt_launch, False, grey)
-            self.change_button_status(self.bt_collect, False, grey)
-            self.change_button_status(self.bt_stop_collect, False, grey)
-            self.change_button_status(self.bt_reset, True, yellow)
-            self.change_button_status(self.bt_terminate, True, blue)
-            self.change_button_status(self.bt_export, True, green_output)
+        if self.crawler.NAME != 'rellasamortiser.gr':
+            if process == 'launched':
+                self.change_button_status(self.bt_launch, False, grey)
+                self.change_button_status(self.bt_collect, True, green)
+                self.change_button_status(self.bt_stop_collect, False, grey)
+                self.change_button_status(self.bt_reset, True, yellow)
+                self.change_button_status(self.bt_terminate, True, blue)
+                self.change_button_status(self.bt_export, False, grey)
+            elif process == 'collecting':
+                self.change_button_status(self.bt_launch, False, grey)
+                self.change_button_status(self.bt_collect, False, grey)
+                self.change_button_status(self.bt_stop_collect, True, red)
+                self.change_button_status(self.bt_reset, False, grey)
+                self.change_button_status(self.bt_terminate, False, grey)
+                self.change_button_status(self.bt_export, False, grey)
+            elif process == 'done_collecting':
+                self.change_button_status(self.bt_launch, False, grey)
+                self.change_button_status(self.bt_collect, False, grey)
+                self.change_button_status(self.bt_stop_collect, False, grey)
+                self.change_button_status(self.bt_reset, True, yellow)
+                self.change_button_status(self.bt_terminate, True, blue)
+                self.change_button_status(self.bt_export, True, cyan)
+            else:
+                self.change_button_status(self.bt_launch, True, blue)
+                self.change_button_status(self.bt_collect, False, grey)
+                self.change_button_status(self.bt_stop_collect, False, grey)
+                self.change_button_status(self.bt_reset, False, grey)
+                self.change_button_status(self.bt_terminate, False, grey)
+                self.change_button_status(self.bt_export, False, grey)
         else:
-            self.change_button_status(self.bt_launch, True, blue)
-            self.change_button_status(self.bt_collect, False, grey)
-            self.change_button_status(self.bt_stop_collect, False, grey)
-            self.change_button_status(self.bt_reset, False, grey)
-            self.change_button_status(self.bt_terminate, False, grey)
-            self.change_button_status(self.bt_export, False, grey)
+            if process == 'launched':
+                self.change_button_status(self.bt_launch, False, grey)
+                self.change_button_status(self.bt_collect, True, green)
+                self.change_button_status(self.bt_stop_collect, False, grey)
+                self.change_button_status(self.bt_export, False, grey)
+            elif process == 'collecting':
+                self.change_button_status(self.bt_launch, False, grey)
+                self.change_button_status(self.bt_collect, False, grey)
+                self.change_button_status(self.bt_stop_collect, True, red)
+                self.change_button_status(self.bt_export, False, grey)
+            elif process == 'done_collecting':
+                self.change_button_status(self.bt_launch, False, grey)
+                self.change_button_status(self.bt_collect, True, green)
+                self.change_button_status(self.bt_stop_collect, False, grey)
+                self.change_button_status(self.bt_export, True, cyan)
 
     def launch(self):
         self.url = self.in_url.text()
@@ -284,13 +316,19 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
                 self.crawler.collect(gather='single')
             progress_callback.emit(f"Pages Finished")
         else:
+            transform_params = self.get_params()
+            self.crawler.pre_collect()
             if self.meta_check.isChecked():
-                self.crawler.pre_collect()
+                progress_callback.emit("Collecting...")
                 self.crawler.collect()
-                self.crawler.transform()
             else:
-                self.crawler.pre_collect()
-                self.crawler.collect(**self.get_params())
+                npage = 1
+                while not self.stopped and self.crawler.next_url():
+                    current = f"Collecting -> {self.crawler.current_url}"
+                    total = f"URL {npage}/{self.crawler.total_urls}"
+                    progress_callback.emit(f"{total} | {current}")
+                    self.crawler.collect(transform_params, gather='single')
+                    npage += 1
 
     def start_collecting(self):
         self.stopped = False
@@ -302,6 +340,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
             self.crawler.first_run = False
 
         if self.crawler.NAME == "rellasamortiser.gr":
+            self.count_items.setText("0")
             if self.meta_check.isChecked():
                 self.crawler = RellasAmortiserBrand(self.in_url.text())
             else:
@@ -321,11 +360,6 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
             self.crawler.parse()
 
         self.mask_buttons('done_collecting')
-
-        if self.crawler.NAME != 'rellasamortiser.gr':
-            self.count_items.setText(self.count_parsed())
-        else:
-            self.change_button_status(self.bt_terminate, False, grey)
 
         self.change_crawler_status('idle')
         self.to_export = True
@@ -350,6 +384,8 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
                 _type = self.list_type.currentText()
 
                 self.crawler.transform(**self.get_params())
+
+                self.count_items.setText(self.count_parsed())
 
                 self.crawler.export(name=_name,
                                     folder=_folder,
@@ -379,9 +415,10 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
 
             self.threadpool.clear()
             self.to_export = False
-            self.count_items.setText(self.count_parsed())
+
             self.mask_output()
             self.mask_buttons('launched')
+            self.count_items.setText(self.count_parsed()) 
         else:
             show_popup("Launch the driver first!")
 

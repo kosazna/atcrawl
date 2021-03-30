@@ -141,9 +141,16 @@ class RellasAmortiserBrand:
 
             self.data = _data.copy()
 
-    def export(self, filepath):
-        if self.data:
-            self.data.to_excel(filepath, index=False)
+    def export(self, name, folder, export_type):
+        if self.data is not None:
+            if export_type == 'csv':
+                dst = Path(folder).joinpath(f'{name}.csv')
+                self.data.to_csv(dst, index=False, sep=';')
+                print(f"\nExported csv file at:\n -> {dst}\n")
+            else:
+                dst = Path(folder).joinpath(f'{name}.xlsx')
+                self.data.to_excel(dst, index=False)
+                print(f"\nExported excel file at:\n -> {dst}\n")
 
 
 class RellasAmortiser:
@@ -153,8 +160,10 @@ class RellasAmortiser:
         self.url = url
         self.base_url = url.split('/e')[0] if url else None
         self.soup = request_soup(url) if url else None
+        self.current_url = None
 
         self.brand_urls = []
+        self.total_urls = ''
         self.dfs = []
         self.data = None
 
@@ -175,23 +184,44 @@ class RellasAmortiser:
         for row_brand in _brand_urls:
             for _brand in row_brand:
                 self.brand_urls.append(_brand.get(brand.ATTRIBUTE))
+        
+        self.total_urls = str(len(self.brand_urls))
 
-    def collect(self, transform_params):
-        for url in self.brand_urls:
-            rab = RellasAmortiserBrand(url)
+    def collect(self, transform_params, gather='all'):
+        if gather == 'all':
+            for url in self.brand_urls:
+                rab = RellasAmortiserBrand(url)
+                print(f'Collecting products for {rab.brand_name}...\n')
+                rab.pre_collect()
+                rab.collect()
+                rab.transform(**transform_params)
+
+                if rab.data is not None:
+                    self.dfs.append(rab.data)
+        else:
+            rab = RellasAmortiserBrand(self.current_url)
             print(f'Collecting products for {rab.brand_name}...\n')
+            rab.pre_collect()
             rab.collect()
             rab.transform(**transform_params)
 
             if rab.data is not None:
                 self.dfs.append(rab.data)
 
-    def transform(self):
+    def next_url(self):
+        try:
+            self.current_url = self.brand_urls.pop(0)
+            return True
+        except IndexError:
+            return False
+
+
+    def transform(self, **kwargs):
         if self.dfs:
             self.data = pd.concat(self.dfs)
 
     def export(self, name, folder, export_type):
-        if self.data:
+        if self.data is not None:
             if export_type == 'csv':
                 dst = Path(folder).joinpath(f'{name}.csv')
                 self.data.to_csv(dst, index=False, sep=';')

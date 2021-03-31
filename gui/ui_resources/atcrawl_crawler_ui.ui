@@ -1108,6 +1108,31 @@ border-radius:5px;</string>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <tabstops>
+  <tabstop>in_url</tabstop>
+  <tabstop>check_export</tabstop>
+  <tabstop>meta_check</tabstop>
+  <tabstop>in_brand</tabstop>
+  <tabstop>in_discount</tabstop>
+  <tabstop>in_meta0</tabstop>
+  <tabstop>in_meta1</tabstop>
+  <tabstop>in_meta2</tabstop>
+  <tabstop>in_meta3</tabstop>
+  <tabstop>in_meta4</tabstop>
+  <tabstop>in_filename</tabstop>
+  <tabstop>in_folder</tabstop>
+  <tabstop>list_type</tabstop>
+  <tabstop>browse_folder</tabstop>
+  <tabstop>bt_launch</tabstop>
+  <tabstop>bt_collect</tabstop>
+  <tabstop>bt_stop_collect</tabstop>
+  <tabstop>bt_reset</tabstop>
+  <tabstop>bt_terminate</tabstop>
+  <tabstop>bt_export</tabstop>
+  <tabstop>output</tabstop>
+  <tabstop>status_browser</tabstop>
+  <tabstop>status_crawler</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

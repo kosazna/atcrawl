@@ -20,11 +20,6 @@ cyan = "rgba(13, 202, 240, 0.8)"
 orange = "rgba(253, 126, 20, 0.8)"
 dark = "rgba(33, 37, 41, 0.8)"
 
-# if hasattr(QtCore.Qt, 'AA_EnableHighDpiScaling'):
-#     QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
-
-# if hasattr(QtCore.Qt, 'AA_UseHighDpiPixmaps'):
-#     QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
 
 def make_stylesheet(color, radius=5):
     _stylesheet = (f"background-color: {color};\n"

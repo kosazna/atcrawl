@@ -530,6 +530,28 @@ class Ui_CrawlerUI(object):
 
         self.retranslateUi(CrawlerUI)
         QtCore.QMetaObject.connectSlotsByName(CrawlerUI)
+        CrawlerUI.setTabOrder(self.in_url, self.check_export)
+        CrawlerUI.setTabOrder(self.check_export, self.meta_check)
+        CrawlerUI.setTabOrder(self.meta_check, self.in_brand)
+        CrawlerUI.setTabOrder(self.in_brand, self.in_discount)
+        CrawlerUI.setTabOrder(self.in_discount, self.in_meta0)
+        CrawlerUI.setTabOrder(self.in_meta0, self.in_meta1)
+        CrawlerUI.setTabOrder(self.in_meta1, self.in_meta2)
+        CrawlerUI.setTabOrder(self.in_meta2, self.in_meta3)
+        CrawlerUI.setTabOrder(self.in_meta3, self.in_meta4)
+        CrawlerUI.setTabOrder(self.in_meta4, self.in_filename)
+        CrawlerUI.setTabOrder(self.in_filename, self.in_folder)
+        CrawlerUI.setTabOrder(self.in_folder, self.list_type)
+        CrawlerUI.setTabOrder(self.list_type, self.browse_folder)
+        CrawlerUI.setTabOrder(self.browse_folder, self.bt_launch)
+        CrawlerUI.setTabOrder(self.bt_launch, self.bt_collect)
+        CrawlerUI.setTabOrder(self.bt_collect, self.bt_stop_collect)
+        CrawlerUI.setTabOrder(self.bt_stop_collect, self.bt_reset)
+        CrawlerUI.setTabOrder(self.bt_reset, self.bt_terminate)
+        CrawlerUI.setTabOrder(self.bt_terminate, self.bt_export)
+        CrawlerUI.setTabOrder(self.bt_export, self.output)
+        CrawlerUI.setTabOrder(self.output, self.status_browser)
+        CrawlerUI.setTabOrder(self.status_browser, self.status_crawler)
 
     def retranslateUi(self, CrawlerUI):
         _translate = QtCore.QCoreApplication.translate

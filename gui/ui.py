@@ -138,6 +138,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
             self.label_meta1.setText('Meta Title SEO')
             self.label_meta2.setText("Meta SEO")
             self.meta_check.setText("Μάρκα")
+            self.meta_check.toggle()
             self.mask_buttons('launched')
             self.change_button_status(self.bt_terminate, False, grey)
 
@@ -228,6 +229,9 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         self.brand = self.in_brand.text()
         return self.brand
 
+    def get_model(self):
+        return self.in_model.text()
+
     def get_params(self):
         _params = {'meta0': self.in_meta0.text(),
                    'meta1': self.in_meta1.text(),
@@ -236,7 +240,8 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
                    'meta4': self.in_meta4.text(),
                    'meta_check': self.meta_check.isChecked(),
                    'brand': self.get_brand(),
-                   'discount': self.get_discount()}
+                   'discount': self.get_discount(),
+                   'model': self.get_model()}
 
         return _params
 

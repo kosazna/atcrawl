@@ -47,14 +47,13 @@ class RellasAmortiserBrand:
 
         year = extract_years(product_name)
 
-        details = f"Μοντέλο: {correct_model}, Χρονολογία: {year}"
-
         info['brand'] = brand_name
         info['article_no'] = ''
         info['title'] = product_name
-        info['description'] = sku
+        info['description'] = f'Γνήσιος κωδικός: {sku}'
         info['meta_title_seo'] = ''
-        info['details'] = details
+        info['model'] = correct_model
+        info['year'] = year
         info['retail_price'] = price
         info['price_after_discount'] = 0
         info['id_category'] = ''
@@ -121,11 +120,21 @@ class RellasAmortiserBrand:
         meta_desc = kwargs.get('meta1', '')
         meta_seo = kwargs.get('meta2', '')
         discount = kwargs.get('discount', 0)
+        brand = kwargs.get('brand', '')
+        model = kwargs.get('model', '')
 
         discount_rate = (100 + discount) / 100
 
         if self.products:
             _data = pd.DataFrame(self.products)
+
+            if brand:
+                _data['brand'] = brand
+
+            if model:
+                _data['model'] = model
+
+            _data['details'] = 'Μοντέλο: ' + _data['model'] + ', Χρονολογία: ' + _data['year']
 
             _data["meta_title_seo"] = meta_desc + ' ' + _data['title']
             _data["meta_seo"] = meta_seo + ' ' + _data['title']
@@ -139,7 +148,7 @@ class RellasAmortiserBrand:
             _data['price_after_discount'] = _data['price_after_discount'].str.replace(
                 '.', ',')
 
-            self.data = _data.copy()
+            self.data = _data[rellas_properties].copy()
 
     def export(self, name, folder, export_type):
         if self.data is not None:

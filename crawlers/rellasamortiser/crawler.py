@@ -39,20 +39,15 @@ class RellasAmortiserBrand:
 
         product_name, price, sku = RellasAmortiserBrand.get_product_details(url)
 
-        correct_model = ''
-
-        for model in models:
-            if model in product_name:
-                correct_model = model
-
         year = extract_years(product_name)
+        _model = remove_years(brand_name)
 
         info['brand'] = brand_name
         info['article_no'] = ''
         info['title'] = product_name
         info['description'] = f'Γνήσιος κωδικός: {sku}'
         info['meta_title_seo'] = ''
-        info['model'] = correct_model
+        info['model'] = _model
         info['year'] = year
         info['retail_price'] = price
         info['price_after_discount'] = 0
@@ -134,7 +129,8 @@ class RellasAmortiserBrand:
             if model:
                 _data['model'] = model
 
-            _data['details'] = 'Μοντέλο: ' + _data['model'] + ', Χρονολογία: ' + _data['year']
+            _data['details'] = 'Μοντέλο: ' + _data['model'] + \
+                ', Χρονολογία: ' + _data['year']
 
             _data["meta_title_seo"] = meta_desc + ' ' + _data['title']
             _data["meta_seo"] = meta_seo + ' ' + _data['title']
@@ -193,7 +189,7 @@ class RellasAmortiser:
         for row_brand in _brand_urls:
             for _brand in row_brand:
                 self.brand_urls.append(_brand.get(brand.ATTRIBUTE))
-        
+
         self.total_urls = str(len(self.brand_urls))
 
     def collect(self, transform_params, gather='all'):
@@ -223,7 +219,6 @@ class RellasAmortiser:
             return True
         except IndexError:
             return False
-
 
     def transform(self, **kwargs):
         if self.dfs:

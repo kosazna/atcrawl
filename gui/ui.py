@@ -137,7 +137,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
             self.label_meta0.setText('ID Category')
             self.label_meta1.setText('Meta Title SEO')
             self.label_meta2.setText("Meta SEO")
-            self.meta_check.setText("Μάρκα")
+            self.meta_check.setText("Χωρίς καρτέλες")
             self.meta_check.toggle()
             self.mask_buttons('launched')
             self.change_button_status(self.bt_terminate, False, grey)

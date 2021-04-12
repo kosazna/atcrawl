@@ -4,7 +4,7 @@ from atcrawl.utilities.elements import *
 
 
 gbg_standby = Standby(LAUNCH=4,
-                      COLLECT=1.5,
+                      COLLECT=2,
                       TIMEOUT=3)
 
 gbg_properties = ['brand',

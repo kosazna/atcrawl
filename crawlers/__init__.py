@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from crawlers.gbg.crawler import GBG
 from atcrawl.crawlers.antallaktika import *
 from atcrawl.crawlers.tripadvisor import *
 from atcrawl.crawlers.skroutz import *
@@ -11,5 +12,6 @@ crawler_map = {
     "tripadvisor.com": None,
     "booking.com": None,
     "spitogatos.gr": None,
-    "rellasamortiser.gr": RellasAmortiser
+    "rellasamortiser.gr": RellasAmortiser,
+    "gbg-eshop.gr" : GBG
 }

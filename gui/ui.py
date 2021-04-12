@@ -56,6 +56,8 @@ class WelcomeUI(Ui_WelcomeUI):
             lambda: self.init_crawler("spitogatos.gr"))
         self.bt_rellas.clicked.connect(
             lambda: self.init_crawler("rellasamortiser.gr"))
+        self.bt_gbg.clicked.connect(
+            lambda: self.init_crawler("gbg-eshop.gr"))
 
     def init_crawler(self, name):
         authorizer = Authorize(name)
@@ -133,7 +135,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
             self.in_meta3.setEnabled(False)
             self.in_meta4.setStyleSheet(stylesheet)
             self.in_meta4.setEnabled(False)
- 
+
             self.label_meta0.setText('ID Category')
             self.label_meta1.setText('Meta Title SEO')
             self.label_meta2.setText("Meta SEO")
@@ -141,6 +143,17 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
             self.meta_check.toggle()
             self.mask_buttons('launched')
             self.change_button_status(self.bt_terminate, False, grey)
+
+        if self.crawler.NAME == 'gbg-eshop.gr':
+            stylesheet = make_stylesheet(grey)
+            self.in_meta4.setStyleSheet(stylesheet)
+            self.in_meta4.setEnabled(False)
+            self.label_meta0.setText('ID Category')
+            self.label_meta1.setText('Meta Title SEO')
+            self.label_meta2.setText('Meta SEO')
+            self.label_meta3.setText("Χρονολογία")
+            self.meta_check.setText("")
+            self.meta_check.setEnabled(False)
 
     def mask_output(self, text=None):
         if text is None:
@@ -316,8 +329,16 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
             self.crawler.pre_collect()
             progress_callback.emit(f"Collecting page {npage}")
             while not self.stopped and self.crawler.click('Next'):
-                npage += 1
-                progress_callback.emit(f"Collecting page {npage}")
+                
+
+                if self.crawler.NAME == 'gbg-eshop.gr':
+                    _str = f"Collecting page {npage} of {self.crawler.nitems}"
+                    npage += 1
+                else:
+                    npage += 1
+                    _str = f"Collecting page {npage}"
+
+                progress_callback.emit(_str)
                 self.crawler.collect(gather='single')
             progress_callback.emit(f"Pages Finished")
         else:
@@ -390,7 +411,10 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
 
                 self.crawler.transform(**self.get_params())
 
-                self.count_items.setText(self.count_parsed())
+                if self.crawler.NAME != 'gbg-eshop.gr':
+                    self.count_items.setText(self.count_parsed())
+                else:
+                    self.count_items.setText(str(self.crawler.nitems))
 
                 self.crawler.export(name=_name,
                                     folder=_folder,
@@ -423,7 +447,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
 
             self.mask_output()
             self.mask_buttons('launched')
-            self.count_items.setText(self.count_parsed()) 
+            self.count_items.setText(self.count_parsed())
         else:
             show_popup("Launch the driver first!")
 

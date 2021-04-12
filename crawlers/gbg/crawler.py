@@ -24,9 +24,8 @@ from atcrawl.crawlers.gbg.settings import *
 
 
 class GBGProduct:
-    def __init__(self, url, retail, wholesale):
+    def __init__(self, url, wholesale):
         self.url = url
-        self.retail = retail
         self.wholesale = wholesale
         self.driver = None
         self.data = {}
@@ -61,25 +60,32 @@ class GBGProduct:
     def get_other_cars(self):
         try:
             _cars = self.driver.find_element(By.XPATH, other_cars.XPATH)
-            return _cars.text
+            if _cars.text:
+                _s = _cars.text.split('\n')
+                cars = ' | '.join(map(lambda x: x.strip(), _s))
+                return cars
+            return other_cars.DEFAULT
         except NoSuchElementException:
             return other_cars.DEFAULT
 
     def get_genuine_sku(self):
         try:
             _sku = self.driver.find_element(By.XPATH, genuine_sku.XPATH)
-            return _sku.text
+            if _sku.text:
+                _s = _sku.text.split(',')
+                skus = ', '.join(map(lambda x: x.strip(), _s))
+                return skus
+            return genuine_sku.DEFAULT
         except NoSuchElementException:
             return genuine_sku.DEFAULT
 
     def collect(self):
-        self.data['gbg_sku'] = self.get_sku()
-        self.data['product_name'] = self.get_name()
-        self.data['other_cars'] = self.get_other_cars()
-        self.data['genuine_sku'] = self.get_genuine_sku()
-        self.data['img'] = self.get_img()
-        self.data['retail'] = self.retail
-        self.data['wholesale'] = self.wholesale
+        self.data['article_no'] = self.get_sku()
+        self.data['title'] = self.get_name()
+        self.data['extra_description'] = self.get_other_cars()
+        self.data['description'] = self.get_genuine_sku()
+        self.data['image'] = self.get_img()
+        self.data['retail_price'] = self.wholesale
 
 
 class GBG(CrawlEngine):
@@ -94,25 +100,14 @@ class GBG(CrawlEngine):
         self.objects = []
         self.parsed = []
         self.current_obj = None
+        self.nitems = 0
 
     def get_link(self, xpath):
         try:
             _link = self.driver.find_element(By.XPATH, xpath)
-            return _link.text
+            return _link.get_attribute('href')
         except NoSuchElementException:
             return product_link.DEFAULT
-
-    def get_retail(self, xpath):
-        try:
-            _retail = self.driver.find_element(By.XPATH, xpath)
-
-            price = _retail.text
-
-            if price:
-                return float(fmtnumber(num_from_text(price)))
-            return retail_price.DEFAULT
-        except NoSuchElementException:
-            return retail_price.DEFAULT
 
     def get_wholesale(self, xpath):
         try:
@@ -128,17 +123,16 @@ class GBG(CrawlEngine):
 
     def pre_collect(self, *args, **kwargs):
         links_count = len(self.driver.find_elements(By.XPATH, nlinks.XPATH))
+        self.nitems = links_count
 
         for i in range(1, links_count+1):
             link_xpath = product_link.XPATH % i
-            retail_xapth = retail_price.XPATH % i
             wholesale_xpath = wholesale_price.XPATH % i
 
             link = self.get_link(link_xpath)
-            retail = self.get_retail(retail_xapth)
             wholesale = self.get_wholesale(wholesale_xpath)
 
-            gbgp = GBGProduct(link, retail, wholesale)
+            gbgp = GBGProduct(link, wholesale)
             self.objects.append(gbgp)
 
     def collect(self, *args, **kwargs):
@@ -156,8 +150,44 @@ class GBG(CrawlEngine):
 
     def transform(self, *args, **kwargs):
         id_cat = kwargs.get('meta0', '')
-        desc = kwargs.get('meta1', '')
-        meta_desc = kwargs.get('meta2', '')
-        meta_seo = kwargs.get('meta3', '')
+        meta_desc = kwargs.get('meta1', '')
+        meta_seo = kwargs.get('meta2', '')
         brand = kwargs.get('brand', '')
         discount = kwargs.get('discount', 0)
+        model = kwargs.get('model', '')
+        year = kwargs.get('meta3', '')
+
+        discount_rate = (100 + discount) / 100
+
+        if self.parsed:
+            _data = pd.DataFrame(self.parsed)
+            self.collected_data = _data.copy()
+
+            _data['brand'] = brand
+            _data['title'] =  _data['title'] + f' {brand}' + f' {model}' + f' {year}'
+            _data['description'] = 'Γνήσιος κωδικός: ' + _data['description']
+            _data['meta_title_seo'] = meta_desc + ' ' + _data['title']
+            _data['details'] = 'Μοντέλο: ' + model + ', Χρονολογία: ' + year
+            _data["meta_seo"] = meta_seo + ' ' + _data['title']
+            _data['id_category'] = id_cat
+
+            _data['price_after_discount'] = (_data['retail_price'].astype(
+                float) * discount_rate).round(2).astype('string')
+
+            _data['retail_price'] = _data['retail_price'].astype(
+                'string').str.replace('.', ',')
+
+            _data['price_after_discount'] = _data['price_after_discount'].str.replace(
+                '.', ',')
+
+            self.transformed_data = _data[gbg_properties].copy()
+    
+    def reset(self, url):
+        if url is None:
+            pass
+        else:
+            self.driver.get(url)
+        self.objects = []
+        self.parsed = []
+        self.current_obj = None
+        self.nitems = 0

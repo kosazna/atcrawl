@@ -1,0 +1,1 @@
+from atcrawl.crawlers.gbg.crawler import *

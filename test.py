@@ -1,33 +1,78 @@
-import os
-
-def countlines(start, lines=0, header=True, begin_start=None):
-    if header:
-        print('{:>10} |{:>10} | {:<20}'.format('ADDED', 'TOTAL', 'FILE'))
-        print('{:->11}|{:->11}|{:->20}'.format('', '', ''))
-
-    for thing in os.listdir(start):
-        thing = os.path.join(start, thing)
-        if os.path.isfile(thing):
-            if thing.endswith('.py'):
-                with open(thing, 'r', encoding='UTF-8') as f:
-                    newlines = f.readlines()
-                    newlines = len(newlines)
-                    lines += newlines
-
-                    if begin_start is not None:
-                        reldir_of_thing = '.' + thing.replace(begin_start, '')
-                    else:
-                        reldir_of_thing = '.' + thing.replace(start, '')
-
-                    print('{:>10} |{:>10} | {:<20}'.format(
-                            newlines, lines, reldir_of_thing))
+from dataclasses import dataclass, asdict, fields
+from typing import List, Union
+import pandas as pd
 
 
-    for thing in os.listdir(start):
-        thing = os.path.join(start, thing)
-        if os.path.isdir(thing):
-            lines = countlines(thing, lines, header=False, begin_start=start)
+def _get_types_from_template(dc_template) -> Union[dict, None]:
+    cast_map = {'str': 'string',
+                'int': 'int64',
+                'float': 'float64'}
 
-    return lines
+    if dc_template is not None:
+        dctypes = dc_template.__annotations__
+        dtypes = {}
+        for key, value in dctypes.items():
+            value_name = value.__name__
+            try:
+                dtypes[key] = cast_map[value_name]
+            except KeyError:
+                dtypes[key] = value_name
+        return dtypes
+    return None
 
-countlines("D:\\.temp\\.dev\\.aztool\\atcrawl")
+
+@dataclass
+class Item:
+    def asdict(self) -> dict:
+        return asdict(self)
+
+    def types(self) -> Union[dict, None]:
+        return _get_types_from_template(self)
+
+
+@dataclass
+class Item1(Item):
+    name: str
+    price: float
+    price1: int
+    is_ok: bool
+
+
+class ItemCollection:
+    def __init__(self, items: list = None) -> None:
+        self.items: list = items if items else list()
+        self.types: Union[dict, None] = items[0].types() if items else None
+        self.nitems: int = len(self.items)
+
+    def add(self, item: Item) -> None:
+        self.items.append(item.asdict())
+        self.nitems += 1
+        if self.types is None:
+            self.types = item.types()
+
+    def get_data(self) -> List[dict]:
+        return self.items
+
+    def get_types(self) -> Union[dict, None]:
+        return self.types
+
+
+class CollectionProcessor:
+    def __init__(self, collection: ItemCollection) -> None:
+        self.collection = collection.get_data()
+        self.types = collection.get_types()
+
+    def to_dataframe(self) -> pd.DataFrame:
+        df = pd.DataFrame(self.collection)
+        if self.types is not None:
+            df = df.astype(dtype=self.types)
+        return df
+
+
+# a = ItemCollection(template=Item)
+# print(a.get_types())
+
+a = Item1('kostas', 30.0, 25, True,)
+print(a.asdict())
+print(a.types())
+print(a)

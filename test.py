@@ -1,4 +1,4 @@
-from dataclasses import dataclass, asdict, fields
+from dataclasses import astuple, dataclass, asdict
 from typing import List, Union
 import pandas as pd
 
@@ -26,6 +26,9 @@ class Item:
     def asdict(self) -> dict:
         return asdict(self)
 
+    def astuple(self) -> tuple:
+        return astuple(self)
+
     def types(self) -> Union[dict, None]:
         return _get_types_from_template(self)
 
@@ -49,6 +52,11 @@ class ItemCollection:
         self.nitems += 1
         if self.types is None:
             self.types = item.types()
+
+    def clear(self) -> None:
+        self.items = []
+        self.types = None
+        self.nitems = 0
 
     def get_data(self) -> List[dict]:
         return self.items

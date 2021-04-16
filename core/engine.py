@@ -69,16 +69,6 @@ class CrawlEngine:
         self.driver.close()
 
     def launch(self, browser: str, executable: str):
-        """
-        Launches the browser to the specified url and waits 4 seconds
-        so that it can fully load.
-
-        :param browser: str
-            'Chrome' or 'Firefox"
-        :param executable: str
-            Path to executable webdriver
-        :return: None
-        """
         if browser == 'Chrome':
             chrome_options = Options()
             chrome_options.add_argument("--start-maximized")

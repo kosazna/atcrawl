@@ -4,7 +4,7 @@ from atcrawl.utilities.elements import *
 
 
 skroutz_standby = Standby(LAUNCH=2,
-                          COLLECT=1,
+                          COLLECT=1.5,
                           TIMEOUT=8)
 
 skroutz_properties = ['image',

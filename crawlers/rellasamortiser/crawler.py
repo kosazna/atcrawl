@@ -13,9 +13,8 @@ class RellasAmortiserBrand:
         self.base_url = url.split('/e')[0]
         self.soup = request_soup(url)
 
-        self.brand_name = self.get_brand_name()
+        self.model_title = self.get_model_name()
 
-        self.models = []
         self.product_links = {}
         self.products = []
         self.data = None
@@ -34,7 +33,7 @@ class RellasAmortiserBrand:
         return product_name, price, sku
 
     @staticmethod
-    def extract_product_info(url, brand_name, models):
+    def extract_product_info(url, brand_name):
         info = {}
 
         product_name, price, sku = RellasAmortiserBrand.get_product_details(url)
@@ -42,7 +41,7 @@ class RellasAmortiserBrand:
         year = extract_years(product_name)
         _model = remove_years(brand_name)
 
-        info['brand'] = brand_name
+        info['brand'] = ''
         info['article_no'] = ''
         info['title'] = product_name
         info['description'] = f'Γνήσιος κωδικός: {sku}'
@@ -54,26 +53,15 @@ class RellasAmortiserBrand:
         info['id_category'] = ''
         info['image'] = ''
         info['meta_seo'] = ''
-        info['extra_description'] = ''
+        info['extra_description'] = product_name
 
         return info
 
-    def get_brand_name(self):
+    def get_model_name(self):
         name = self.soup.find(brand_name.TAG, {'id': brand_name.ID}).find(
             brand_name.ATTRIBUTE).text.strip()
 
         return name
-
-    def collect_models(self):
-        soup = self.soup
-
-        subcategories = soup.find_all(models.TAG, {'id': models.ID})
-        for subcategory in subcategories:
-            _models = subcategory.find_all(
-                models.SUB.TAG, {"class": models.SUB.CLASS})
-
-            for model in _models:
-                self.models.append(remove_years(model.text.strip()))
 
     def collect_products(self):
         soup = self.soup
@@ -99,12 +87,8 @@ class RellasAmortiserBrand:
     def collect_product_details(self):
         for url in self.product_links.values():
             data = RellasAmortiserBrand.extract_product_info(url,
-                                                             self.brand_name,
-                                                             self.models)
+                                                             self.model_title)
             self.products.append(data)
-
-    def pre_collect(self):
-        self.collect_models()
 
     def collect(self):
         self.collect_products()
@@ -114,6 +98,7 @@ class RellasAmortiserBrand:
         id_cat = kwargs.get('meta0', '')
         meta_desc = kwargs.get('meta1', '')
         meta_seo = kwargs.get('meta2', '')
+        skroutz = kwargs.get('meta3', '')
         discount = kwargs.get('discount', 0)
         brand = kwargs.get('brand', '')
         model = kwargs.get('model', '')
@@ -132,6 +117,8 @@ class RellasAmortiserBrand:
             _data['details'] = 'Μοντέλο: ' + _data['model'] + \
                 ', Χρονολογία: ' + _data['year']
 
+            _data['skroutz'] = skroutz
+
             _data["meta_title_seo"] = meta_desc + ' ' + _data['title']
             _data["meta_seo"] = meta_seo + ' ' + _data['title']
             _data['id_category'] = id_cat
@@ -146,17 +133,6 @@ class RellasAmortiserBrand:
 
             self.data = _data[rellas_properties].copy()
 
-    def export(self, name, folder, export_type):
-        if self.data is not None:
-            if export_type == 'csv':
-                dst = Path(folder).joinpath(f'{name}.csv')
-                self.data.to_csv(dst, index=False, sep=';')
-                print(f"\nExported csv file at:\n -> {dst}\n")
-            else:
-                dst = Path(folder).joinpath(f'{name}.xlsx')
-                self.data.to_excel(dst, index=False)
-                print(f"\nExported excel file at:\n -> {dst}\n")
-
 
 class RellasAmortiser:
     NAME = "rellasamortiser.gr"
@@ -164,10 +140,12 @@ class RellasAmortiser:
     def __init__(self, url='') -> None:
         self.url = url
         self.base_url = url.split('/e')[0] if url else None
-        self.soup = request_soup(url) if url else None
+        # self.soup = request_soup(url) if url else None
         self.current_url = None
 
-        self.brand_urls = []
+        self.visit_urls = []
+
+        # self.brand_urls = []
         self.total_urls = ''
         self.dfs = []
         self.data = None
@@ -175,29 +153,38 @@ class RellasAmortiser:
     def set_url(self, url):
         self.url = url
         self.base_url = url.split('/e')[0]
-        self.soup = request_soup(url)
+        # self.soup = request_soup(url)
+
+    def _extract_links(self, url):
+        soup = request_soup(url)
+        links = []
+
+        subcategories = soup.find_all(models.TAG, {'id': models.ID})
+
+        if subcategories:
+            for subcategory in subcategories:
+                _models = subcategory.find_all(
+                    models.SUB.TAG, {"class": models.SUB.CLASS})
+
+            for i in _models:
+                model_link = i.find('a').get(models.SUB.ATTRIBUTE)
+                links.append(model_link)
+
+            for link in links:
+                self._extract_links(link)
+        else:
+            self.visit_urls.append(url)
 
     def pre_collect(self):
-        rows = self.soup.find(brand_row.TAG, {"class": brand_row.CLASS}).find_all(
-            brand_row.SUB.TAG, {"class": brand_row.SUB.CLASS})
+        self._extract_links(self.url)
 
-        _brand_urls = []
-
-        for row in rows:
-            _brand_urls.append(row.find_all(brand.TAG, {"class": brand.CLASS}))
-
-        for row_brand in _brand_urls:
-            for _brand in row_brand:
-                self.brand_urls.append(_brand.get(brand.ATTRIBUTE))
-
-        self.total_urls = str(len(self.brand_urls))
+        self.total_urls = str(len(self.visit_urls))
 
     def collect(self, transform_params, gather='all'):
         if gather == 'all':
-            for url in self.brand_urls:
+            for url in self.visit_urls:
                 rab = RellasAmortiserBrand(url)
-                print(f'Collecting products for {rab.brand_name}...\n')
-                rab.pre_collect()
+                print(f'Collecting products for {rab.model_title}...\n')
                 rab.collect()
                 rab.transform(**transform_params)
 
@@ -205,8 +192,7 @@ class RellasAmortiser:
                     self.dfs.append(rab.data)
         else:
             rab = RellasAmortiserBrand(self.current_url)
-            print(f'Collecting products for {rab.brand_name}...\n')
-            rab.pre_collect()
+            print(f'Collecting products for {rab.model_title}...\n')
             rab.collect()
             rab.transform(**transform_params)
 
@@ -215,7 +201,7 @@ class RellasAmortiser:
 
     def next_url(self):
         try:
-            self.current_url = self.brand_urls.pop(0)
+            self.current_url = self.visit_urls.pop(0)
             return True
         except IndexError:
             return False

@@ -116,31 +116,33 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
             self.in_meta4.setEnabled(False)
             self.meta_check.setText("")
             self.meta_check.setEnabled(False)
+            self.in_model.setStyleSheet(stylesheet)
+            self.in_model.setEnabled(False)
 
             self.label_meta0.setText("Car")
 
         if self.crawler.NAME == 'skroutz.gr':
             stylesheet = make_stylesheet(grey)
-            self.in_meta4.setStyleSheet(stylesheet)
-            self.in_meta4.setEnabled(False)
             self.label_meta0.setText('ID Category')
             self.label_meta1.setText('Description')
             self.label_meta2.setText('Meta Title SEO')
             self.label_meta3.setText("Meta SEO")
+            self.label_meta4.setText("Extra Description")
             self.meta_check.setText("Λάδια")
+            self.in_model.setStyleSheet(stylesheet)
+            self.in_model.setEnabled(False)
 
         if self.crawler.NAME == 'rellasamortiser.gr':
             stylesheet = make_stylesheet(grey)
-            self.in_meta3.setStyleSheet(stylesheet)
-            self.in_meta3.setEnabled(False)
             self.in_meta4.setStyleSheet(stylesheet)
             self.in_meta4.setEnabled(False)
 
             self.label_meta0.setText('ID Category')
             self.label_meta1.setText('Meta Title SEO')
             self.label_meta2.setText("Meta SEO")
-            self.meta_check.setText("Χωρίς καρτέλες")
-            self.meta_check.toggle()
+            self.label_meta3.setText("Skroutz")
+            self.meta_check.setText("")
+            self.meta_check.setEnabled(False)
             self.mask_buttons('launched')
             self.change_button_status(self.bt_terminate, False, grey)
 
@@ -191,12 +193,11 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
         button.setStyleSheet(make_bt_stylesheet(color))
 
     def count_parsed(self):
-        if self.crawler.NAME != 'rellasamortiser.gr':
-            dd = self.crawler.data
-            self.nitems = str(len(dd[list(dd.keys())[0]]))
-        else:
-            self.nitems = str(self.crawler.data.shape[0])
-        return self.nitems
+        try:
+            self.nitems = self.crawler.data.shape[0]
+        except AttributeError:
+            self.nitems = self.crawler.transformed_data.shape[0]
+        return str(self.nitems)
 
     def set_crawler(self, crawler_obj):
         self.crawler = crawler_obj
@@ -343,18 +344,17 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
             progress_callback.emit(f"Pages Finished")
         else:
             transform_params = self.get_params()
+            self.crawler.set_url(self.in_url.text())
             self.crawler.pre_collect()
-            if self.meta_check.isChecked():
-                progress_callback.emit("Collecting...")
-                self.crawler.collect()
-            else:
-                npage = 1
-                while not self.stopped and self.crawler.next_url():
-                    current = f"Collecting -> {self.crawler.current_url}"
-                    total = f"URL {npage}/{self.crawler.total_urls}"
-                    progress_callback.emit(f"{total} | {current}")
-                    self.crawler.collect(transform_params, gather='single')
-                    npage += 1
+
+            npage = 1
+
+            while not self.stopped and self.crawler.next_url():
+                current = f"Collecting -> {self.crawler.current_url}"
+                total = f"URL {npage}/{self.crawler.total_urls}"
+                progress_callback.emit(f"{total} | {current}")
+                self.crawler.collect(transform_params, gather='single')
+                npage += 1
 
     def start_collecting(self):
         self.stopped = False
@@ -367,10 +367,6 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
 
         if self.crawler.NAME == "rellasamortiser.gr":
             self.count_items.setText("0")
-            if self.meta_check.isChecked():
-                self.crawler = RellasAmortiserBrand(self.in_url.text())
-            else:
-                self.crawler = RellasAmortiser(self.in_url.text())
 
         self.run_threaded_process(self.collect,
                                   self.collecting_updates,
@@ -411,11 +407,8 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
 
                 self.crawler.transform(**self.get_params())
 
-                if self.crawler.NAME != 'gbg-eshop.gr':
-                    self.count_items.setText(self.count_parsed())
-                else:
-                    self.count_items.setText(str(self.crawler.nitems))
-
+                self.count_items.setText(self.count_parsed())
+            
                 self.crawler.export(name=_name,
                                     folder=_folder,
                                     export_type=_type)
@@ -447,7 +440,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
 
             self.mask_output()
             self.mask_buttons('launched')
-            self.count_items.setText(self.count_parsed())
+            self.count_items.setText('0')
         else:
             show_popup("Launch the driver first!")
 

@@ -62,7 +62,7 @@ class GBGProduct:
             _cars = self.driver.find_element(By.XPATH, other_cars.XPATH)
             if _cars.text:
                 _s = _cars.text.split('\n')
-                cars = ' | '.join(map(lambda x: x.strip(), _s))
+                cars = ', '.join(map(lambda x: x.strip(), _s))
                 return cars
             return other_cars.DEFAULT
         except NoSuchElementException:

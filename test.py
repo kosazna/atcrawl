@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 from dataclasses import astuple, dataclass, asdict
+=======
+from dataclasses import astuple, dataclass, asdict, fields
+>>>>>>> 1383f37732c54f990dc634e42b11d1675b299aee
 from typing import List, Union
 import pandas as pd
 
@@ -83,4 +87,4 @@ class CollectionProcessor:
 a = Item1('kostas', 30.0, 25, True,)
 print(a.asdict())
 print(a.types())
-print(a)
+print(astuple(a))

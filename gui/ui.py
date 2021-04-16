@@ -140,9 +140,9 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
             self.label_meta0.setText('ID Category')
             self.label_meta1.setText('Meta Title SEO')
             self.label_meta2.setText("Meta SEO")
-            self.label_meta3.setText("Car")
-            self.meta_check.setText("Χωρίς καρτέλες")
-            self.meta_check.toggle()
+            self.label_meta3.setText("Skroutz")
+            self.meta_check.setText("")
+            self.meta_check.setEnabled(False)
             self.mask_buttons('launched')
             self.change_button_status(self.bt_terminate, False, grey)
 
@@ -344,18 +344,17 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
             progress_callback.emit(f"Pages Finished")
         else:
             transform_params = self.get_params()
+            self.crawler.set_url(self.in_url.text())
             self.crawler.pre_collect()
-            if self.meta_check.isChecked():
-                progress_callback.emit("Collecting...")
-                self.crawler.collect()
-            else:
-                npage = 1
-                while not self.stopped and self.crawler.next_url():
-                    current = f"Collecting -> {self.crawler.current_url}"
-                    total = f"URL {npage}/{self.crawler.total_urls}"
-                    progress_callback.emit(f"{total} | {current}")
-                    self.crawler.collect(transform_params, gather='single')
-                    npage += 1
+
+            npage = 1
+
+            while not self.stopped and self.crawler.next_url():
+                current = f"Collecting -> {self.crawler.current_url}"
+                total = f"URL {npage}/{self.crawler.total_urls}"
+                progress_callback.emit(f"{total} | {current}")
+                self.crawler.collect(transform_params, gather='single')
+                npage += 1
 
     def start_collecting(self):
         self.stopped = False
@@ -368,10 +367,6 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
 
         if self.crawler.NAME == "rellasamortiser.gr":
             self.count_items.setText("0")
-            if self.meta_check.isChecked():
-                self.crawler = RellasAmortiserBrand(self.in_url.text())
-            else:
-                self.crawler = RellasAmortiser(self.in_url.text())
 
         self.run_threaded_process(self.collect,
                                   self.collecting_updates,

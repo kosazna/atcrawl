@@ -54,7 +54,7 @@ class RellasAmortiserBrand:
         info['id_category'] = ''
         info['image'] = ''
         info['meta_seo'] = ''
-        info['extra_description'] = ''
+        info['extra_description'] = product_name
 
         return info
 
@@ -68,6 +68,7 @@ class RellasAmortiserBrand:
         soup = self.soup
 
         subcategories = soup.find_all(models.TAG, {'id': models.ID})
+
         for subcategory in subcategories:
             _models = subcategory.find_all(
                 models.SUB.TAG, {"class": models.SUB.CLASS})
@@ -114,6 +115,7 @@ class RellasAmortiserBrand:
         id_cat = kwargs.get('meta0', '')
         meta_desc = kwargs.get('meta1', '')
         meta_seo = kwargs.get('meta2', '')
+        skroutz = kwargs.get('meta3', '')
         discount = kwargs.get('discount', 0)
         brand = kwargs.get('brand', '')
         model = kwargs.get('model', '')
@@ -131,6 +133,8 @@ class RellasAmortiserBrand:
 
             _data['details'] = 'Μοντέλο: ' + _data['model'] + \
                 ', Χρονολογία: ' + _data['year']
+                
+            _data['skroutz'] = skroutz
 
             _data["meta_title_seo"] = meta_desc + ' ' + _data['title']
             _data["meta_seo"] = meta_seo + ' ' + _data['title']
@@ -166,6 +170,8 @@ class RellasAmortiser:
         self.base_url = url.split('/e')[0] if url else None
         self.soup = request_soup(url) if url else None
         self.current_url = None
+
+        self.visit_urls = []
 
         self.brand_urls = []
         self.total_urls = ''

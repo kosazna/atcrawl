@@ -343,8 +343,8 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
                 self.crawler.collect(gather='single')
             progress_callback.emit(f"Pages Finished")
         else:
-            transform_params = self.get_params()
             self.crawler.set_url(self.in_url.text())
+            progress_callback.emit("Finding URLs...")
             self.crawler.pre_collect()
 
             npage = 1
@@ -353,7 +353,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
                 current = f"Collecting -> {self.crawler.current_url}"
                 total = f"URL {npage}/{self.crawler.total_urls}"
                 progress_callback.emit(f"{total} | {current}")
-                self.crawler.collect(transform_params, gather='single')
+                self.crawler.collect(gather='single')
                 npage += 1
 
     def start_collecting(self):

@@ -94,45 +94,6 @@ class RellasAmortiserBrand:
         self.collect_products()
         self.collect_product_details()
 
-    def transform(self, **kwargs):
-        id_cat = kwargs.get('meta0', '')
-        meta_desc = kwargs.get('meta1', '')
-        meta_seo = kwargs.get('meta2', '')
-        skroutz = kwargs.get('meta3', '')
-        discount = kwargs.get('discount', 0)
-        brand = kwargs.get('brand', '')
-        model = kwargs.get('model', '')
-
-        discount_rate = (100 + discount) / 100
-
-        if self.products:
-            _data = pd.DataFrame(self.products)
-
-            if brand:
-                _data['brand'] = brand
-
-            if model:
-                _data['model'] = model
-
-            _data['details'] = 'Μοντέλο: ' + _data['model'] + \
-                ', Χρονολογία: ' + _data['year']
-
-            _data['skroutz'] = skroutz
-
-            _data["meta_title_seo"] = meta_desc + ' ' + _data['title']
-            _data["meta_seo"] = meta_seo + ' ' + _data['title']
-            _data['id_category'] = id_cat
-            _data['price_after_discount'] = (_data['retail_price'].astype(
-                float) * discount_rate).round(2).astype('string')
-
-            _data['retail_price'] = _data['retail_price'].astype(
-                'string').str.replace('.', ',')
-
-            _data['price_after_discount'] = _data['price_after_discount'].str.replace(
-                '.', ',')
-
-            self.data = _data[rellas_properties].copy()
-
 
 class RellasAmortiser:
     NAME = "rellasamortiser.gr"
@@ -140,20 +101,17 @@ class RellasAmortiser:
     def __init__(self, url='') -> None:
         self.url = url
         self.base_url = url.split('/e')[0] if url else None
-        # self.soup = request_soup(url) if url else None
         self.current_url = None
 
         self.visit_urls = []
 
-        # self.brand_urls = []
         self.total_urls = ''
-        self.dfs = []
+        self.collected_data = []
         self.data = None
 
     def set_url(self, url):
         self.url = url
         self.base_url = url.split('/e')[0]
-        # self.soup = request_soup(url)
 
     def _extract_links(self, url):
         soup = request_soup(url)
@@ -180,24 +138,22 @@ class RellasAmortiser:
 
         self.total_urls = str(len(self.visit_urls))
 
-    def collect(self, transform_params, gather='all'):
+    def collect(self, gather='all'):
         if gather == 'all':
             for url in self.visit_urls:
                 rab = RellasAmortiserBrand(url)
                 print(f'Collecting products for {rab.model_title}...\n')
                 rab.collect()
-                rab.transform(**transform_params)
 
                 if rab.data is not None:
-                    self.dfs.append(rab.data)
+                    self.collected_data.extend(rab.products)
         else:
             rab = RellasAmortiserBrand(self.current_url)
             print(f'Collecting products for {rab.model_title}...\n')
             rab.collect()
-            rab.transform(**transform_params)
 
-            if rab.data is not None:
-                self.dfs.append(rab.data)
+            if rab.products is not None:
+                self.collected_data.extend(rab.products)
 
     def next_url(self):
         try:
@@ -207,8 +163,43 @@ class RellasAmortiser:
             return False
 
     def transform(self, **kwargs):
-        if self.dfs:
-            self.data = pd.concat(self.dfs)
+        id_cat = kwargs.get('meta0', '')
+        meta_desc = kwargs.get('meta1', '')
+        meta_seo = kwargs.get('meta2', '')
+        skroutz = kwargs.get('meta3', '')
+        discount = kwargs.get('discount', 0)
+        brand = kwargs.get('brand', '')
+        model = kwargs.get('model', '')
+
+        discount_rate = (100 + discount) / 100
+
+        if self.collected_data:
+            _data = pd.DataFrame(self.collected_data)
+
+            if brand:
+                _data['brand'] = brand
+
+            if model:
+                _data['model'] = model
+
+            _data['details'] = 'Μοντέλο: ' + _data['model'] + \
+                ', Χρονολογία: ' + _data['year']
+
+            _data['skroutz'] = skroutz
+
+            _data["meta_title_seo"] = meta_desc + ' ' + _data['title']
+            _data["meta_seo"] = meta_seo + ' ' + _data['title']
+            _data['id_category'] = id_cat
+            _data['price_after_discount'] = (_data['retail_price'].astype(
+                float) * discount_rate).round(2).astype('string')
+
+            _data['retail_price'] = _data['retail_price'].astype(
+                'string').str.replace('.', ',')
+
+            _data['price_after_discount'] = _data['price_after_discount'].str.replace(
+                '.', ',')
+
+            self.data = _data[rellas_properties].copy()
 
     def export(self, name, folder, export_type):
         if self.data is not None:

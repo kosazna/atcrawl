@@ -14,7 +14,8 @@ rellas_properties = ['brand',
                      'id_category',
                      'image',
                      'meta_seo',
-                     'extra_description']
+                     'extra_description',
+                     'skroutz']
 
 brand_row = Element(NAME='brand_row',
                     TAG='div',
@@ -57,7 +58,8 @@ models = Element(NAME='subcategories',
                  ID='subcategories',
                  SUB=Element(NAME='model',
                              TAG='div',
-                             CLASS='span2 product'))
+                             CLASS='span2 product',
+                             ATTRIBUTE='href'))
 
 p_name = Element(NAME='product_name',
                  TAG='div',

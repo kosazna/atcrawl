@@ -112,6 +112,7 @@ class Skroutz(CrawlEngine):
         desc = kwargs.get('meta1', '')
         meta_desc = kwargs.get('meta2', '')
         meta_seo = kwargs.get('meta3', '')
+        extra_desc = kwargs.get('meta4', '')
         brand = kwargs.get('brand', '')
         discount = kwargs.get('discount', 0)
         ladia = kwargs.get('meta_check', False)
@@ -154,6 +155,12 @@ class Skroutz(CrawlEngine):
                     ", Χωρητικότητα (lt): " + litra
             else:
                 _data['details'] = ''
+
+        if extra_desc:
+            _data.loc[_data['details'].str.len() > 0, 'details'] = _data.loc[_data['details'].str.len(
+            ) > 0, 'details'] + f", {extra_desc}"
+
+            _data.loc[_data['details'].str.len() == 0, 'details'] = extra_desc
 
         _data['article_no'] = ''
         _data["description"] = desc + ' ' + _data['title']

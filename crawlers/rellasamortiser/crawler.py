@@ -183,14 +183,14 @@ class RellasAmortiser:
             if model:
                 _data['model'] = model
 
+            _data['details'] = 'Μοντέλο: ' + _data['model'] + \
+                ', Χρονολογία: ' + _data['year']
+
             if extra_desc:
                 _data.loc[_data['details'].str.len() > 0, 'details'] = _data.loc[_data['details'].str.len(
                 ) > 0, 'details'] + f", {extra_desc}"
 
                 _data.loc[_data['details'].str.len() == 0, 'details'] = extra_desc
-
-            _data['details'] = 'Μοντέλο: ' + _data['model'] + \
-                ', Χρονολογία: ' + _data['year']
 
             _data['skroutz'] = skroutz
 

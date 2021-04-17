@@ -127,20 +127,19 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
             self.label_meta1.setText('Description')
             self.label_meta2.setText('Meta Title SEO')
             self.label_meta3.setText("Meta SEO")
-            self.label_meta4.setText("Extra Description")
+            self.label_meta4.setText("Extra Details")
             self.meta_check.setText("Λάδια")
             self.in_model.setStyleSheet(stylesheet)
             self.in_model.setEnabled(False)
 
         if self.crawler.NAME == 'rellasamortiser.gr':
             stylesheet = make_stylesheet(grey)
-            self.in_meta4.setStyleSheet(stylesheet)
-            self.in_meta4.setEnabled(False)
 
             self.label_meta0.setText('ID Category')
             self.label_meta1.setText('Meta Title SEO')
             self.label_meta2.setText("Meta SEO")
             self.label_meta3.setText("Skroutz")
+            self.label_meta4.setText("Extra Details")
             self.meta_check.setText("")
             self.meta_check.setEnabled(False)
             self.mask_buttons('launched')

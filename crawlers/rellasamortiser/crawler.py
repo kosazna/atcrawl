@@ -167,6 +167,7 @@ class RellasAmortiser:
         meta_desc = kwargs.get('meta1', '')
         meta_seo = kwargs.get('meta2', '')
         skroutz = kwargs.get('meta3', '')
+        extra_desc = kwargs.get('meta4', '')
         discount = kwargs.get('discount', 0)
         brand = kwargs.get('brand', '')
         model = kwargs.get('model', '')
@@ -181,6 +182,12 @@ class RellasAmortiser:
 
             if model:
                 _data['model'] = model
+
+            if extra_desc:
+                _data.loc[_data['details'].str.len() > 0, 'details'] = _data.loc[_data['details'].str.len(
+                ) > 0, 'details'] + f", {extra_desc}"
+
+                _data.loc[_data['details'].str.len() == 0, 'details'] = extra_desc
 
             _data['details'] = 'Μοντέλο: ' + _data['model'] + \
                 ', Χρονολογία: ' + _data['year']

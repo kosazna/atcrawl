@@ -295,16 +295,19 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
                 self.change_button_status(self.bt_collect, True, green)
                 self.change_button_status(self.bt_stop_collect, False, grey)
                 self.change_button_status(self.bt_export, False, grey)
+                self.change_button_status(self.bt_reset, False, grey)
             elif process == 'collecting':
                 self.change_button_status(self.bt_launch, False, grey)
                 self.change_button_status(self.bt_collect, False, grey)
                 self.change_button_status(self.bt_stop_collect, True, red)
                 self.change_button_status(self.bt_export, False, grey)
+                self.change_button_status(self.bt_reset, False, grey)
             elif process == 'done_collecting':
                 self.change_button_status(self.bt_launch, False, grey)
                 self.change_button_status(self.bt_collect, True, green)
                 self.change_button_status(self.bt_stop_collect, False, grey)
                 self.change_button_status(self.bt_export, True, cyan)
+                self.change_button_status(self.bt_reset, True, yellow)
 
     def launch(self):
         self.url = self.in_url.text()
@@ -330,7 +333,6 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
             self.crawler.pre_collect()
             progress_callback.emit(f"Collecting page {npage}")
             while not self.stopped and self.crawler.click('Next'):
-                
 
                 if self.crawler.NAME == 'gbg-eshop.gr':
                     _str = f"Collecting page {npage} of {self.crawler.nitems}"
@@ -407,11 +409,11 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
 
                 self.crawler.transform(**self.get_params())
 
-                self.count_items.setText(self.count_parsed())
-            
                 self.crawler.export(name=_name,
                                     folder=_folder,
                                     export_type=_type)
+
+                self.count_items.setText(self.count_parsed())
 
                 _pre = "Generated file --> "
                 _output = _folder + '\\' + _name + f'.{_type}'
@@ -426,23 +428,29 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
             show_popup("Nothing to export")
 
     def reset(self):
-        if self.driver_status:
-            _url = self.in_url.text()
-
-            if _url == self.old_url:
-                self.crawler.reset()
-            else:
-                self.crawler.reset(_url)
-                self.old_url = _url
-
-            self.threadpool.clear()
-            self.to_export = False
-
-            self.mask_output()
-            self.mask_buttons('launched')
+        if self.crawler.NAME == 'rellasamortiser.gr':
+            self.crawler.reset(self.in_url.text())
             self.count_items.setText('0')
+            self.mask_buttons('launched')
+            self.mask_output()
         else:
-            show_popup("Launch the driver first!")
+            if self.driver_status:
+                _url = self.in_url.text()
+
+                if _url == self.old_url:
+                    self.crawler.reset()
+                else:
+                    self.crawler.reset(_url)
+                    self.old_url = _url
+
+                self.threadpool.clear()
+                self.to_export = False
+
+                self.mask_output()
+                self.mask_buttons('launched')
+                self.count_items.setText('0')
+            else:
+                show_popup("Launch the driver first!")
 
     def terminate(self):
         if self.driver_status:

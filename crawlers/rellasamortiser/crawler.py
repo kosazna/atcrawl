@@ -201,6 +201,18 @@ class RellasAmortiser:
 
             self.data = _data[rellas_properties].copy()
 
+    def reset(self, url):
+        self.url = url
+        self.base_url = url.split('/e')[0] if url else None
+        self.current_url = None
+
+        self.visit_urls = []
+
+        self.total_urls = ''
+        self.collected_data = []
+        self.data = None
+
+
     def export(self, name, folder, export_type):
         if self.data is not None:
             if export_type == 'csv':

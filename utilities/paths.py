@@ -12,6 +12,7 @@ class Paths:
         self._cwd = Path.cwd()
         self._default_export = USER_SETTINGS.get('default_export', '')
         self._images_export = USER_SETTINGS.get('images_export', '')
+        self._images_import = USER_SETTINGS.get('images_import', '')
 
     def get_userhome(self) -> str:
         return str(self._userhome)
@@ -30,6 +31,9 @@ class Paths:
 
     def get_images_export(self):
         return self._images_export
+
+    def get_images_import(self):
+        return self._images_import
 
 
 paths = Paths()

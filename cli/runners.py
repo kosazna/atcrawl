@@ -56,6 +56,35 @@ def download_images_run():
             "Επικοινώνησε με τον κατασκευαστή.\n")
         time.sleep(4)
 
+def create_images_run():
+    authorizer = Authorize("create_images")
+
+    if authorizer.user_is_licensed():
+        _path = input("\nΔώσε το αρχείο:\n")
+        print("\nΦόρτωση αρχείου...\n")
+
+        file2mod = Path(clean_path(_path))
+
+        _src = input("\nΣε ποιο φάκελο είναι οι πρωτότυπες εικόνες\n")
+
+        if _src:
+            src = Path(clean_path(_src))
+        else:
+            src = paths.get_images_import()
+
+        _dst = input("\nΠου να αποθηκευτούν οι εικόνες\n")
+
+        if _dst:
+            dst = Path(clean_path(_dst))
+        else:
+            dst = paths.get_images_export()
+
+        create_images(file2mod, src, dst)
+    else:
+        log("\nΈχεις αποκλειστεί από την εφαρμογή. "
+            "Επικοινώνησε με τον κατασκευαστή.\n")
+        time.sleep(4)
+
 
 def merge_run():
     authorizer = Authorize("merge_run")

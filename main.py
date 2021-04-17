@@ -34,6 +34,8 @@ if __name__ == "__main__":
         elif process == '9':
             download_images_run()
         elif process == '10':
+            create_images_run()
+        elif process == '11':
             split_file_run()
         else:
             print("\nΔεν έχεις πρόσβαση σε αυτή τη λειτουργία\n")

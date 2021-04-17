@@ -251,6 +251,34 @@ def remove_overspace(text):
 def clean_kit(text):
     return remove_overspace(text.replace('\n', ' ').strip()).replace('; ', ';')
 
+def create_images(data, src_images, dst_images):
+    df = pd.read_excel(data)
+    source = list(Path(src_images).glob('*.jpg'))
+    source_mapper = {image.stem:image for image in source}
+
+    destination = Path(dst_images)
+
+    for i in df.itertuples():
+        image_name = None
+
+        for key in source_mapper.keys():
+            if key in i.title:
+                image_name = key
+            else:
+                pass
+        
+        if image_name is not None:
+            src = source_mapper[image_name]
+            data_image_name = f"{i.article_no}.jpg"
+            dst = destination.joinpath(data_image_name)
+            shutil.copyfile(src, dst)
+            df.loc[i.Index, 'image'] = data_image_name
+    
+    try:
+        df.to_excel(data, index=False)
+    except PermissionError:
+        print("Το αρχέιο είναι ανοιχτό στο Excel. Κλείσε και ξαναπροσπάθησε.")
+
 
 def download_image(url, destination, save_name=None):
     r = requests.get(url, stream=True)

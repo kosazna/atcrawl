@@ -51,6 +51,7 @@ def download_images_run():
             dst = paths.get_images_export()
 
         download_images(df[col_url], dst, df[col_name])
+        time.sleep(4)
     else:
         log("\nΈχεις αποκλειστεί από την εφαρμογή. "
             "Επικοινώνησε με τον κατασκευαστή.\n")
@@ -65,21 +66,22 @@ def create_images_run():
 
         file2mod = Path(clean_path(_path))
 
-        _src = input("\nΣε ποιο φάκελο είναι οι πρωτότυπες εικόνες\n")
+        _src = input_path("\nΣε ποιο φάκελο είναι οι πρωτότυπες εικόνες\n")
 
         if _src:
-            src = Path(clean_path(_src))
+            src = Path(_src)
         else:
             src = paths.get_images_import()
 
-        _dst = input("\nΠου να αποθηκευτούν οι εικόνες\n")
+        _dst = input_path("\nΠου να αποθηκευτούν οι εικόνες\n")
 
         if _dst:
-            dst = Path(clean_path(_dst))
+            dst = Path(_dst)
         else:
             dst = paths.get_images_export()
 
         create_images(file2mod, src, dst)
+        time.sleep(4)
     else:
         log("\nΈχεις αποκλειστεί από την εφαρμογή. "
             "Επικοινώνησε με τον κατασκευαστή.\n")

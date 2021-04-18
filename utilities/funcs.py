@@ -9,6 +9,7 @@ import shutil
 import string
 import time
 from pathlib import Path
+from typing import Union
 
 import pandas as pd
 import requests
@@ -325,6 +326,67 @@ def download_images(urls, destination, save_names):
             executor.submit(download_image, url, destination, _name)
 
 
-def input_path(display_text):
-    _path = input(display_text).replace('\\', '/').strip('"')
-    return _path
+DIR = 'directory'
+FILE = 'file'
+
+
+def ensure_path_type(path: str, path_type: str) -> bool:
+    if path_type == DIR:
+        return os.path.isdir(path)
+    elif path_type == FILE:
+        return os.path.isfile(path)
+    else:
+        raise ValueError("path_type must be either 'directory' or 'file'")
+
+
+def input_path(prompt: str,
+               accept_empty: bool = True,
+               ensure: Union[str, None] = None) -> str:
+               
+    _path = input(prompt).replace('\\', '/').strip('"')
+
+    if accept_empty and _path == '':
+        return _path
+    else:
+        if os.path.exists(_path):
+            if ensure is not None:
+                _bool = ensure_path_type(_path, ensure)
+                if _bool:
+                    return _path
+                else:
+                    _display = f"\nPath must be a {ensure}. Give path again:\n"
+                    return input_path(_display, ensure)
+            return _path
+        else:
+            _, ext = os.path.splitext(_path)
+
+            if ensure is not None:
+                _display = f"\nPath must be a {ensure}. Give path again:\n"
+
+                if ensure == DIR and ext != '':
+                    return input_path(_display, ensure)
+                elif ensure == FILE and ext == '':
+                    return input_path(_display, ensure)
+                else:
+                    pass
+
+            if ext != '':
+                _display = "\nFile does not exist. Give path again:\n"
+                return input_path(_display, ensure)
+            else:
+                while True:
+                    _display = "\nDirectory does not exist. Create? ([Y]/N)\n"
+                    _create = input(_display).upper()
+
+                    if _create not in ('Y', 'N', ''):
+                        continue
+                    else:
+                        _create = _create if _create else 'Y'
+                        break
+
+                if _create == 'Y':
+                    os.makedirs(_path)
+                    return _path
+                else:
+                    _error = f"{_path} can't be used for any operation."
+                    raise IOError(_error)

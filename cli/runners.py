@@ -5,6 +5,7 @@ from atcrawl.utilities.paths import paths
 from atcrawl.utilities.display import *
 from atcrawl.utilities.auth import Authorize
 
+
 def split_file_run():
     authorizer = Authorize("split_file")
 
@@ -28,6 +29,7 @@ def split_file_run():
         log("\nΈχεις αποκλειστεί από την εφαρμογή. "
             "Επικοινώνησε με τον κατασκευαστή.\n")
         time.sleep(4)
+
 
 def download_images_run():
     authorizer = Authorize("img_downloader")
@@ -57,6 +59,7 @@ def download_images_run():
             "Επικοινώνησε με τον κατασκευαστή.\n")
         time.sleep(4)
 
+
 def create_images_run():
     authorizer = Authorize("create_images")
 
@@ -66,14 +69,15 @@ def create_images_run():
 
         file2mod = Path(clean_path(_path))
 
-        _src = input_path("\nΣε ποιο φάκελο είναι οι πρωτότυπες εικόνες\n")
+        _src = input_path(
+            "\nΣε ποιο φάκελο είναι οι πρωτότυπες εικόνες\n", ensure=DIR)
 
         if _src:
             src = Path(_src)
         else:
             src = paths.get_images_import()
 
-        _dst = input_path("\nΠου να αποθηκευτούν οι εικόνες\n")
+        _dst = input_path("\nΠου να αποθηκευτούν οι εικόνες\n", ensure=DIR)
 
         if _dst:
             dst = Path(_dst)

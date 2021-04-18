@@ -342,7 +342,7 @@ def ensure_path_type(path: str, path_type: str) -> bool:
 def input_path(prompt: str,
                accept_empty: bool = True,
                ensure: Union[str, None] = None) -> str:
-               
+
     _path = input(prompt).replace('\\', '/').strip('"')
 
     if accept_empty and _path == '':
@@ -355,7 +355,7 @@ def input_path(prompt: str,
                     return _path
                 else:
                     _display = f"\nPath must be a {ensure}. Give path again:\n"
-                    return input_path(_display, ensure)
+                    return input_path(_display, accept_empty, ensure)
             return _path
         else:
             _, ext = os.path.splitext(_path)
@@ -364,15 +364,15 @@ def input_path(prompt: str,
                 _display = f"\nPath must be a {ensure}. Give path again:\n"
 
                 if ensure == DIR and ext != '':
-                    return input_path(_display, ensure)
+                    return input_path(_display, accept_empty, ensure)
                 elif ensure == FILE and ext == '':
-                    return input_path(_display, ensure)
+                    return input_path(_display, accept_empty, ensure)
                 else:
                     pass
 
             if ext != '':
                 _display = "\nFile does not exist. Give path again:\n"
-                return input_path(_display, ensure)
+                return input_path(_display, accept_empty, ensure)
             else:
                 while True:
                     _display = "\nDirectory does not exist. Create? ([Y]/N)\n"

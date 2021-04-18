@@ -10,21 +10,22 @@ def split_file_run():
     authorizer = Authorize("split_file")
 
     if authorizer.user_is_licensed():
-        _path = input("\nΔώσε το αρχείο:\n")
+        file2mod = input_path("\nΔώσε το αρχείο:\n", ensure=FILE)
         print("\nΦόρτωση αρχείου...\n")
-
-        file2mod = Path(clean_path(_path))
 
         _k = int(input("\nΑνά πόσα να σπάσει?\n"))
 
-        _dst = input("\nΠου να αποθηκευτούν τα αρχεία\n")
+        _dst = input_path("\nΠου να αποθηκευτούν τα αρχεία\n",
+                          accept_empty=True,
+                          ensure=DIR)
 
         if _dst:
-            dst = clean_path(_dst)
+            dst = _dst
         else:
-            dst = str(file2mod.parent)
+            dst = str(Path(file2mod).parent)
 
         split_file(file2mod, dst, _k)
+        time.sleep(4)
     else:
         log("\nΈχεις αποκλειστεί από την εφαρμογή. "
             "Επικοινώνησε με τον κατασκευαστή.\n")
@@ -35,20 +36,20 @@ def download_images_run():
     authorizer = Authorize("img_downloader")
 
     if authorizer.user_is_licensed():
-        _path = input("\nΔώσε το αρχείο:\n")
+        file2mod = input_path("\nΔώσε το αρχείο:\n", ensure=FILE)
         print("\nΦόρτωση αρχείου...\n")
-
-        file2mod = Path(clean_path(_path))
 
         df = pd.read_excel(file2mod)
 
         col_name = pick_column(df, 'image_name')
         col_url = pick_column(df, 'image_url')
 
-        _dst = input("\nΠου να αποθηκευτούν οι εικόνες\n")
+        _dst = input_path("\nΠου να αποθηκευτούν οι εικόνες\n",
+                          accept_empty=True,
+                          ensure=FILE)
 
         if _dst:
-            dst = Path(clean_path(_dst))
+            dst = _dst
         else:
             dst = paths.get_images_export()
 
@@ -64,10 +65,8 @@ def create_images_run():
     authorizer = Authorize("create_images")
 
     if authorizer.user_is_licensed():
-        _path = input("\nΔώσε το αρχείο:\n")
+        file2mod = input_path("\nΔώσε το αρχείο:\n", ensure=FILE)
         print("\nΦόρτωση αρχείου...\n")
-
-        file2mod = Path(clean_path(_path))
 
         _src = input_path(
             "\nΣε ποιο φάκελο είναι οι πρωτότυπες εικόνες\n",
@@ -99,7 +98,7 @@ def merge_run():
 
     if authorizer.user_is_licensed():
         while True:
-            cwd = Path(input("Φάκελος αρχείων:\n"))
+            cwd = Path(input_path("Φάκελος αρχείων:\n", ensure=DIR))
             files = list(cwd.glob('*.xlsx'))
 
             if files:
@@ -107,8 +106,8 @@ def merge_run():
                 print("Γίνεται ένωση...\n")
                 to_concat = []
 
-                for file in files:
-                    df = pd.read_excel(file)
+                for _file in files:
+                    df = pd.read_excel(_file)
 
                     new_cols = [change_col(col_name) for col_name in df.columns]
                     df.columns = new_cols
@@ -151,10 +150,8 @@ def filter_run():
 
     if authorizer.user_is_licensed():
         while True:
-            _path = input("\nΔώσε το αρχείο:\n")
+            file2mod = Path(input_path("\nΔώσε το αρχείο:\n", ensure=FILE))
             print("\nΦόρτωση αρχείου...\n")
-
-            file2mod = Path(clean_path(_path))
 
             df = pd.read_excel(file2mod)
 
@@ -201,10 +198,8 @@ def sort_run():
 
     if authorizer.user_is_licensed():
         while True:
-            _path = input("\nΔώσε το αρχείο:\n")
+            file2mod = Path(input_path("\nΔώσε το αρχείο:\n", ensure=FILE))
             print("\nΦόρτωση αρχείου...\n")
-
-            file2mod = Path(clean_path(_path))
 
             df = pd.read_excel(file2mod)
 

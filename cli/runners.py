@@ -115,17 +115,15 @@ def merge_run():
 
                 merged_df = pd.concat(to_concat)
 
-                to_add_col = input("Θες να προσθέσεις στήλη? [y/n]\n").upper()
+                to_add_col = input_bool("\nΘες να προσθέσεις στήλη?\n")
 
-                if to_add_col == 'Y':
+                if to_add_col:
                     col_name = input("\nΌνομα στήλης:\n")
                     col_value = input("\nΤιμή στήλης:\n")
 
                     merged_df[col_name] = col_value
 
-                save_base_name = input("\nΌνομα αποθήκευσης αρχείου:\n")
-                save_suffix = ".xlsx"
-                save_name = f"{save_base_name}{save_suffix}"
+                save_name = input_filename("\nΌνομα αποθήκευσης αρχείου:\n", 'xlsx')
                 save_filepath = cwd.joinpath(save_name)
 
                 merged_df.to_excel(save_filepath, index=False)
@@ -133,9 +131,9 @@ def merge_run():
             else:
                 print("\nΔεν εντοπίστηκαν αρχεία '.xlsx'\n")
 
-            _status = input("\n\nΘες να ενώσεις άλλα αρχεία? [y/n]\n").upper()
+            _status = input_bool("\nΘες να ενώσεις άλλα αρχεία?\n")
 
-            if _status == 'Y':
+            if _status:
                 continue
             else:
                 break
@@ -164,9 +162,7 @@ def filter_run():
 
             rest_value = input("\nΟι υπόλοιπες γραμμές τι τιμή να πάρουν:\n")
 
-            save_base_name = input("\nΌνομα αποθήκευσης αρχείου:\n")
-            save_suffix = ".xlsx"
-            save_name = f"{save_base_name}{save_suffix}"
+            save_name = input_filename("\nΌνομα αποθήκευσης αρχείου:\n", 'xlsx')
             save_filepath = file2mod.parent.joinpath(save_name)
 
             print("\nΕπεξεργασία αρχείου...\n")
@@ -181,9 +177,9 @@ def filter_run():
             df.to_excel(save_filepath, index=False)
             print(f"\nΤο αρχείο δημιουργήθηκε:\n -> {str(save_filepath)}")
 
-            _status = input("\n\nΘες επεξεργαστείς άλλο αρχείο [y/n]\n").upper()
+            _status = input_bool("\nΘες επεξεργαστείς άλλο αρχείο?\n")
 
-            if _status == 'Y':
+            if _status:
                 continue
             else:
                 break
@@ -206,9 +202,7 @@ def sort_run():
             col_src = pick_column(df, 'filter')
             print(col_src)
 
-            save_base_name = input("\nΌνομα αποθήκευσης αρχείου:\n")
-            save_suffix = ".xlsx"
-            save_name = f"{save_base_name}{save_suffix}"
+            save_name = input_filename("\nΌνομα αποθήκευσης αρχείου:\n", 'xlsx')
             save_filepath = file2mod.parent.joinpath(save_name)
 
             print("\nΕπεξεργασία αρχείου...\n")
@@ -229,9 +223,9 @@ def sort_run():
             merged_df.to_excel(save_filepath, index=False)
             print(f"\nΤο αρχείο δημιουργήθηκε:\n -> {str(save_filepath)}")
 
-            _status = input("\n\nΘες επεξεργαστείς άλλο αρχείο [y/n]\n").upper()
+            _status = input_bool("\nΘες επεξεργαστείς άλλο αρχείο?\n")
 
-            if _status == 'Y':
+            if _status:
                 continue
             else:
                 break

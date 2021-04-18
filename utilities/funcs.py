@@ -326,6 +326,48 @@ def download_images(urls, destination, save_names):
             executor.submit(download_image, url, destination, _name)
 
 
+def input_filename(prompt: str, suffix: str = None) -> str:
+    _user_input = input(prompt).strip()
+
+    not_valid = ('.', '<', '>', ':', '"', '/', '\\', '|', '?', '*')
+
+    valid = True
+
+    for char in not_valid:
+        if char in _user_input:
+            valid = False
+
+    if not valid:
+        _banned = ' '.join(not_valid)
+        _display = f"\nFilename must not contain these 10 characters: {_banned}\nTry again:\n"
+        return input_filename(_display, suffix)
+    else:
+        if suffix is not None:
+            return f"{_user_input}.{suffix}"
+        else:
+            return _user_input
+
+
+def input_bool(prompt: str) -> bool:
+    _yes_no = '[Y]/N'
+
+    _prompt = prompt.strip('\n')
+    _prompt = f"\n{_prompt}  -  {_yes_no}\n"
+
+    while True:
+        _user_input = input(_prompt).upper().strip()
+
+        if _user_input not in ('Y', 'N', ''):
+            continue
+        else:
+            _user_input = _user_input if _user_input else 'Y'
+            break
+
+    if _user_input == 'Y':
+        return True
+    return False
+
+
 DIR = 'directory'
 FILE = 'file'
 
@@ -374,17 +416,10 @@ def input_path(prompt: str,
                 _display = "\nFile does not exist. Give path again:\n"
                 return input_path(_display, accept_empty, ensure)
             else:
-                while True:
-                    _display = "\nDirectory does not exist. Create? ([Y]/N)\n"
-                    _create = input(_display).upper()
+                _display = "\nDirectory does not exist. Create?\n"
+                _create = input_bool(_display)
 
-                    if _create not in ('Y', 'N', ''):
-                        continue
-                    else:
-                        _create = _create if _create else 'Y'
-                        break
-
-                if _create == 'Y':
+                if _create:
                     os.makedirs(_path)
                     return _path
                 else:

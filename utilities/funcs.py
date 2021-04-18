@@ -340,7 +340,7 @@ def ensure_path_type(path: str, path_type: str) -> bool:
 
 
 def input_path(prompt: str,
-               accept_empty: bool = True,
+               accept_empty: bool = False,
                ensure: Union[str, None] = None) -> str:
 
     _path = input(prompt).replace('\\', '/').strip('"')

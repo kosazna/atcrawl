@@ -70,14 +70,16 @@ def create_images_run():
         file2mod = Path(clean_path(_path))
 
         _src = input_path(
-            "\nΣε ποιο φάκελο είναι οι πρωτότυπες εικόνες\n", ensure=DIR)
+            "\nΣε ποιο φάκελο είναι οι πρωτότυπες εικόνες\n",
+            accept_empty=True, ensure=DIR)
 
         if _src:
             src = Path(_src)
         else:
             src = paths.get_images_import()
 
-        _dst = input_path("\nΠου να αποθηκευτούν οι εικόνες\n", ensure=DIR)
+        _dst = input_path("\nΠου να αποθηκευτούν οι εικόνες\n",
+                          accept_empty=True, ensure=DIR)
 
         if _dst:
             dst = Path(_dst)

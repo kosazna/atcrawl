@@ -195,7 +195,10 @@ class MainApp(QtWidgets.QWidget):
     def __init__(self, *args, **kwargs):
         super(MainApp, self).__init__(*args, **kwargs)
         self.setStyleSheet(make_color(light_grey, 0.9))
-        layout = QtWidgets.QVBoxLayout()
+        layout = QtWidgets.QHBoxLayout()
+
+        left = QtWidgets.QVBoxLayout()
+        right = QtWidgets.QVBoxLayout()
 
         self.l5 = ParameterInput('URL', 'horizontal')
         self.l1 = ParameterInput('Meta Title SEO')
@@ -203,12 +206,17 @@ class MainApp(QtWidgets.QWidget):
         self.l3 = FileInput('Import')
         self.l4 = FileOutput('Save to')
         self.l6 = StatusIndicator('Status')
-        layout.addWidget(self.l5)
-        layout.addWidget(self.l1)
-        layout.addWidget(self.l2)
-        layout.addWidget(self.l3)
-        layout.addWidget(self.l4)
-        layout.addWidget(self.l6)
+        left.addWidget(self.l5)
+        left.addWidget(self.l1)
+        left.addWidget(self.l2)
+        left.addWidget(self.l3)
+        left.addWidget(self.l4)
+
+        right.addWidget(self.l6)
+
+        layout.addLayout(left)
+        layout.addLayout(right)
+
         self.setLayout(layout)
 
 

@@ -1,6 +1,4 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import (QApplication,
-                             QDialogButtonBox)
 from atcrawl.gui.colors import *
 
 HEIGHT = 30
@@ -8,6 +6,8 @@ HOFFSET = 80
 BTWIDTH = 100
 FONTSIZE = 10
 FONT = "Segoe UI"
+HORIZONTAL = 'H'
+VERTICAL = 'V'
 
 
 class FileNameInput(QtWidgets.QWidget):
@@ -201,7 +201,7 @@ class FileOutput(QtWidgets.QWidget):
 class InputParameter(QtWidgets.QWidget):
     def __init__(self,
                  label='',
-                 orientation='vertical',
+                 orientation=HORIZONTAL,
                  *args,
                  **kwargs):
         super(InputParameter, self).__init__(*args, **kwargs)
@@ -220,7 +220,7 @@ class InputParameter(QtWidgets.QWidget):
         self.lineEdit.setFont(font)
         self.lineEdit.setFixedHeight(HEIGHT)
         self.lineEdit.setStyleSheet(make_stylesheet())
-        if orientation == 'vertical':
+        if orientation == VERTICAL:
             layout = QtWidgets.QVBoxLayout()
         else:
             layout = QtWidgets.QHBoxLayout()
@@ -250,7 +250,7 @@ class InputParameter(QtWidgets.QWidget):
 class IntInputParameter(QtWidgets.QWidget):
     def __init__(self,
                  label='',
-                 orientation='vertical',
+                 orientation=HORIZONTAL,
                  value_range=None,
                  *args,
                  **kwargs):
@@ -274,7 +274,7 @@ class IntInputParameter(QtWidgets.QWidget):
         self.lineEdit.setFixedHeight(HEIGHT)
         self.lineEdit.setStyleSheet(make_stylesheet())
         self.lineEdit.setValidator(self.validator)
-        if orientation == 'vertical':
+        if orientation == VERTICAL:
             layout = QtWidgets.QVBoxLayout()
         else:
             layout = QtWidgets.QHBoxLayout()
@@ -450,9 +450,9 @@ class MainApp(QtWidgets.QWidget):
         left = QtWidgets.QVBoxLayout()
         right = QtWidgets.QVBoxLayout()
 
-        self.l5 = InputParameter('URL', 'horizontal')
-        self.l1 = InputParameter('Meta Title SEO')
-        self.l7 = IntInputParameter('Discount', 'horizontal')
+        self.l5 = InputParameter('URL')
+        self.l1 = InputParameter('Meta Title SEO', VERTICAL)
+        self.l7 = IntInputParameter('Discount')
         self.l2 = FileNameInput('Filename')
         self.l3 = FileInput('Import')
         self.l4 = FileOutput('Save to')

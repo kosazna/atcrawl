@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from PyQt5.QtGui import QIntValidator, QValidator
 from crawlers.rellasamortiser.crawler import RellasAmortiserBrand
 from PyQt5.QtWidgets import QFileDialog, QMainWindow
 from PyQt5.QtCore import QThreadPool

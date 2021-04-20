@@ -43,5 +43,5 @@ def make_stylesheet(background: Color = white,
     return _stylesheet
 
 
-def make_color(color: Color, alpha: float = 1.0) -> str:
+def make_color(color: Color, alpha: float = 0.8) -> str:
     return f"background-color: {color.rgb(alpha)};\n"

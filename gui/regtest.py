@@ -3,8 +3,9 @@ from PyQt5.QtWidgets import (QApplication,
                              QDialogButtonBox)
 from atcrawl.gui.colors import *
 
-HEIGHT = 25
-HOFFSET = 60
+HEIGHT = 30
+HOFFSET = 80
+BTWIDTH = 100
 FONTSIZE = 10
 FONT = "Segoe UI"
 
@@ -15,9 +16,9 @@ class FileNameInput(QtWidgets.QWidget):
                  *args,
                  **kwargs):
         super(FileNameInput, self).__init__(*args, **kwargs)
-        self.setupUI(label)
+        self.setupUi(label)
 
-    def setupUI(self, label):
+    def setupUi(self, label):
         font = QtGui.QFont()
         font.setFamily(FONT)
         font.setPointSize(FONTSIZE)
@@ -41,6 +42,9 @@ class FileNameInput(QtWidgets.QWidget):
         layout.addWidget(self.lineEdit)
         self.setLayout(layout)
 
+    def getText(self):
+        return self.lineEdit.text()
+
 
 class FolderInput(QtWidgets.QWidget):
     def __init__(self,
@@ -48,11 +52,11 @@ class FolderInput(QtWidgets.QWidget):
                  *args,
                  **kwargs):
         super(FolderInput, self).__init__(*args, **kwargs)
-        self.setupUI(label)
+        self.setupUi(label)
         self.lastVisit = ''
         self.button.clicked.connect(self.browse)
 
-    def setupUI(self, label):
+    def setupUi(self, label):
         labelFont = QtGui.QFont()
         labelFont.setFamily(FONT)
         labelFont.setPointSize(FONTSIZE)
@@ -89,6 +93,9 @@ class FolderInput(QtWidgets.QWidget):
             self.lineEdit.setText(file_path)
             self.lastVisit = file_path
 
+    def getText(self):
+        return self.lineEdit.text()
+
 
 class FileInput(QtWidgets.QWidget):
     def __init__(self,
@@ -96,11 +103,11 @@ class FileInput(QtWidgets.QWidget):
                  *args,
                  **kwargs):
         super(FileInput, self).__init__(*args, **kwargs)
-        self.setupUI(label)
+        self.setupUi(label)
         self.lastVisit = ''
         self.button.clicked.connect(self.browse)
 
-    def setupUI(self, label):
+    def setupUi(self, label):
         labelFont = QtGui.QFont()
         labelFont.setFamily(FONT)
         labelFont.setPointSize(FONTSIZE)
@@ -138,6 +145,9 @@ class FileInput(QtWidgets.QWidget):
             self.lineEdit.setText(file_path)
             self.lastVisit = file_path
 
+    def getText(self):
+        return self.lineEdit.text()
+
 
 class FileOutput(QtWidgets.QWidget):
     def __init__(self,
@@ -145,11 +155,11 @@ class FileOutput(QtWidgets.QWidget):
                  *args,
                  **kwargs):
         super(FileOutput, self).__init__(*args, **kwargs)
-        self.setupUI(label)
+        self.setupUi(label)
         self.lastVisit = ''
         self.button.clicked.connect(self.browse)
 
-    def setupUI(self, label):
+    def setupUi(self, label):
         font = QtGui.QFont()
         font.setFamily(FONT)
         font.setPointSize(FONTSIZE)
@@ -184,6 +194,9 @@ class FileOutput(QtWidgets.QWidget):
             self.lineEdit.setText(file_path)
             self.lastVisit = file_path
 
+    def getText(self):
+        return self.lineEdit.text()
+
 
 class InputParameter(QtWidgets.QWidget):
     def __init__(self,
@@ -192,9 +205,9 @@ class InputParameter(QtWidgets.QWidget):
                  *args,
                  **kwargs):
         super(InputParameter, self).__init__(*args, **kwargs)
-        self.setupUI(label, orientation)
+        self.setupUi(label, orientation)
 
-    def setupUI(self, label, orientation):
+    def setupUi(self, label, orientation):
         font = QtGui.QFont()
         font.setFamily(FONT)
         font.setPointSize(FONTSIZE)
@@ -230,6 +243,9 @@ class InputParameter(QtWidgets.QWidget):
     def setLabel(self, text):
         self.label.setText(text)
 
+    def getText(self):
+        return self.lineEdit.text()
+
 
 class IntInputParameter(QtWidgets.QWidget):
     def __init__(self,
@@ -239,9 +255,9 @@ class IntInputParameter(QtWidgets.QWidget):
                  *args,
                  **kwargs):
         super(IntInputParameter, self).__init__(*args, **kwargs)
-        self.setupUI(label, orientation, value_range)
+        self.setupUi(label, orientation, value_range)
 
-    def setupUI(self, label, orientation, value_range):
+    def setupUi(self, label, orientation, value_range):
         font = QtGui.QFont()
         font.setFamily(FONT)
         font.setPointSize(FONTSIZE)
@@ -275,6 +291,9 @@ class IntInputParameter(QtWidgets.QWidget):
         self.lineEdit.setEnabled(True)
         self.lineEdit.setStyleSheet(make_stylesheet(white))
 
+    def getText(self):
+        return self.lineEdit.text()
+
 
 class ComboInput(QtWidgets.QWidget):
     def __init__(self,
@@ -283,9 +302,9 @@ class ComboInput(QtWidgets.QWidget):
                  *args,
                  **kwargs):
         super(ComboInput, self).__init__(*args, **kwargs)
-        self.setupUI(label, items)
+        self.setupUi(label, items)
 
-    def setupUI(self, label, items):
+    def setupUi(self, label, items):
         font = QtGui.QFont()
         font.setFamily(FONT)
         font.setPointSize(FONTSIZE)
@@ -307,16 +326,19 @@ class ComboInput(QtWidgets.QWidget):
             for item in items:
                 self.comboEdit.addItem(item)
 
-    def currentText(self):
+    def getCurrentText(self):
         return self.comboEdit.currentText()
+
+    def subscribe(self, func):
+        self.comboEdit.currentIndexChanged.connect(func)
 
 
 class CheckInput(QtWidgets.QCheckBox):
     def __init__(self, label='', checked=True, *args, **kwargs):
         super(CheckInput, self).__init__(*args, **kwargs)
-        self.setupUI(label, checked)
+        self.setupUi(label, checked)
 
-    def setupUI(self, label, checked):
+    def setupUi(self, label, checked):
         font = QtGui.QFont()
         font.setFamily(FONT)
         font.setPointSize(FONTSIZE)
@@ -324,8 +346,7 @@ class CheckInput(QtWidgets.QCheckBox):
         self.setFixedHeight(HEIGHT)
         self.setFont(font)
         self.setChecked(checked)
-        self.animateClick(100)
-        # self.setStyleSheet(make_color(white, 0))
+        self.setStyleSheet(make_stylesheet(white, alpha=0))
 
     def enable(self):
         self.setEnabled(True)
@@ -333,18 +354,49 @@ class CheckInput(QtWidgets.QCheckBox):
     def disable(self):
         self.setEnabled(False)
 
+    def subscribe(self, func):
+        self.stateChanged.connect(func)
+
+class Button(QtWidgets.QToolButton):
+    def __init__(self, label='', *args, **kwargs):
+        super(Button, self).__init__(*args, **kwargs)
+        self.setupUi(label)
+
+    def setupUi(self, label):
+        font = QtGui.QFont()
+        font.setFamily(FONT)
+        font.setPointSize(FONTSIZE)
+        font.setBold(True)
+        self.setText(label)
+        self.setFixedHeight(HEIGHT)
+        self.setFont(font)
+        self.setStyleSheet(make_stylesheet(blue))
+        self.setMinimumWidth(BTWIDTH)
+
+    def disable(self):
+        self.setEnabled(False)
+        self.setStyleSheet(make_stylesheet(grey))
+
+    def enable(self, color):
+        self.setEnabled(True)
+        self.setStyleSheet(make_stylesheet(color))
+
+    def subscribe(self, func):
+        self.clicked.connect(func)
+
 
 class StatusIndicator(QtWidgets.QWidget):
     def __init__(self,
                  label='',
                  status='',
-                 size=100,
+                 size=BTWIDTH,
                  *args,
                  **kwargs):
         super(StatusIndicator, self).__init__(*args, **kwargs)
-        self.setupUI(label, status, size)
+        self.setupUi(label, status, size)
 
-    def setupUI(self, label, status, size):
+    def setupUi(self, label, status, size):
+        layout = QtWidgets.QHBoxLayout()
         labelFont = QtGui.QFont()
         labelFont.setFamily(FONT)
         labelFont.setPointSize(FONTSIZE)
@@ -352,12 +404,14 @@ class StatusIndicator(QtWidgets.QWidget):
         btFont.setFamily(FONT)
         btFont.setPointSize(FONTSIZE)
         btFont.setBold(True)
-        self.label = QtWidgets.QLabel()
-        self.label.setFont(labelFont)
-        self.label.setText(label)
-        self.label.setStyleSheet(make_stylesheet(alpha=0))
-        self.label.setFixedHeight(HEIGHT)
-        self.label.setFixedWidth(HOFFSET)
+        if label:
+            self.label = QtWidgets.QLabel()
+            self.label.setFont(labelFont)
+            self.label.setText(label)
+            self.label.setStyleSheet(make_stylesheet(alpha=0))
+            self.label.setFixedHeight(HEIGHT)
+            self.label.setFixedWidth(HOFFSET)
+            layout.addWidget(self.label)
         self.button = QtWidgets.QToolButton()
         self.button.setFont(btFont)
         self.button.setText(status)
@@ -365,8 +419,6 @@ class StatusIndicator(QtWidgets.QWidget):
         self.button.setMinimumWidth(size)
         self.button.setEnabled(False)
         self.button.setStyleSheet(make_stylesheet(grey, radius=5))
-        layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(self.label)
         layout.addWidget(self.button)
         self.setLayout(layout)
 
@@ -379,16 +431,21 @@ class StatusIndicator(QtWidgets.QWidget):
     def setText(self, text):
         self.button.setText(text)
 
-    def style(self, style):
+    def setStyle(self, style):
         self.button.setStyleSheet(style)
+
+    def subscribe(self, func):
+        self.button.clicked.connect(func)
 
 
 class MainApp(QtWidgets.QWidget):
     def __init__(self, *args, **kwargs):
         super(MainApp, self).__init__(*args, **kwargs)
-        self.setStyleSheet(make_color(light_grey, 0.9))
-        self.resize(800, 600)
-        layout = QtWidgets.QHBoxLayout()
+        self.setStyleSheet(make_color(light_grey))
+        self.resize(800, 500)
+        whole = QtWidgets.QVBoxLayout()
+        top = QtWidgets.QVBoxLayout()
+        bottom = QtWidgets.QHBoxLayout()
 
         left = QtWidgets.QVBoxLayout()
         right = QtWidgets.QVBoxLayout()
@@ -404,7 +461,10 @@ class MainApp(QtWidgets.QWidget):
         self.l9 = FolderInput('Folder')
         self.l10 = ComboInput('Process', ['Cavino', 'Concepts', 'Giochi'])
         self.l11 = CheckInput('Export')
-        left.addWidget(self.l5)
+        self.l12 = Button('Collect')
+        self.l13 = Button('Reset')
+        self.l14 = StatusIndicator(status='kostas', size=self.width())
+ 
         left.addWidget(self.l1)
         left.addWidget(self.l7)
         left.addWidget(self.l2)
@@ -412,21 +472,30 @@ class MainApp(QtWidgets.QWidget):
         left.addWidget(self.l4)
         left.addWidget(self.l9)
         left.addWidget(self.l10)
+
         left.addStretch()
 
         right.addWidget(self.l6)
         right.addWidget(self.l8)
-        right.addWidget(self.l11)
+        right.addWidget(self.l11, alignment=QtCore.Qt.AlignRight)
+        right.addStretch(1)
+        right.addWidget(self.l12, alignment=QtCore.Qt.AlignRight)
+        right.addWidget(self.l13, alignment=QtCore.Qt.AlignRight)
         right.addStretch()
 
-        layout.addLayout(left)
-        layout.addLayout(right)
+        top.addWidget(self.l5)
+        top.addWidget(self.l14)
+        bottom.addLayout(left)
+        bottom.addLayout(right)
 
-        self.setLayout(layout)
+        whole.addLayout(top)
+        whole.addLayout(bottom)
+
+        self.setLayout(whole)
 
 
 app = QtWidgets.QApplication([])
-app.setStyle('Fusion')
+# app.setStyle('Fusion')
 volume = MainApp()
 volume.show()
 app.exec_()

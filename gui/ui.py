@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5.QtGui import QIntValidator, QValidator
-from crawlers.rellasamortiser.crawler import RellasAmortiserBrand
 from PyQt5.QtWidgets import QFileDialog, QMainWindow
 from PyQt5.QtCore import QThreadPool
 
@@ -10,34 +8,7 @@ from atcrawl.gui.crawler_design import *
 from atcrawl.crawlers import *
 
 from atcrawl.gui.qutils import *
-
-blue = "rgba(13, 110, 253, 0.8)"
-green = "rgba(42, 214, 107, 0.8)"
-teal = "rgba(32, 201, 151, 0.8)"
-red = "rgba(239, 62, 79, 0.8)"
-grey = "rgba(108, 117, 125, 0.8)"
-yellow = "rgba(255, 193, 7, 0.8)"
-cyan = "rgba(13, 202, 240, 0.8)"
-orange = "rgba(253, 126, 20, 0.8)"
-dark = "rgba(33, 37, 41, 0.8)"
-
-
-def make_stylesheet(color, radius=5):
-    _stylesheet = (f"background-color: {color};\n"
-                   "border-width:4px;\n"
-                   "border-color:black;\n"
-                   "border-style:offset;\n"
-                   f"border-radius:{radius}px;")
-    return _stylesheet
-
-
-def make_bt_stylesheet(color, radius=5):
-    _stylesheet = (f"background-color: {color};\n"
-                   "color: rgb(0, 0, 0);\n"
-                   "border-width:10px;"
-                   f"border-radius:{radius}px;")
-
-    return _stylesheet
+from atcrawl.gui.colors import *
 
 
 class WelcomeUI(Ui_WelcomeUI):
@@ -191,7 +162,7 @@ class CrawlerUI(QMainWindow, Ui_CrawlerUI):
 
     def change_button_status(self, button, status, color):
         button.setEnabled(status)
-        button.setStyleSheet(make_bt_stylesheet(color))
+        button.setStyleSheet(make_stylesheet(color))
 
     def count_parsed(self):
         try:

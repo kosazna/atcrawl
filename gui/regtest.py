@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from atcrawl.gui.colors import *
 
-HEIGHT = 30
+HEIGHT = 25
 HOFFSET = 80
 BTWIDTH = 100
 FONTSIZE = 10
@@ -477,7 +477,7 @@ class MainApp(QtWidgets.QWidget):
 
         right.addWidget(self.l6)
         right.addWidget(self.l8)
-        right.addWidget(self.l11, alignment=QtCore.Qt.AlignRight)
+        right.addWidget(self.l11, alignment=QtCore.Qt.AlignHCenter)
         right.addStretch(1)
         right.addWidget(self.l12, alignment=QtCore.Qt.AlignRight)
         right.addWidget(self.l13, alignment=QtCore.Qt.AlignRight)

@@ -163,7 +163,7 @@ class Skroutz(CrawlEngine):
             _data.loc[_data['details'].str.len() == 0, 'details'] = extra_desc
 
         _data['article_no'] = ''
-        _data["description"] = desc + ' ' + _data['title']
+        _data["description"] = desc
         _data["meta_title_seo"] = meta_desc + ' ' + _data['title']
         _data["meta_seo"] = meta_seo + ' ' + _data['title']
         _data['id_category'] = id_cat

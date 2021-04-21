@@ -168,8 +168,8 @@ class GBG(CrawlEngine):
             _data['description'] = 'Γνήσιος κωδικός: ' + _data['description']
             _data['meta_title_seo'] = meta_desc + ' ' + _data['title']
             _data['details'] = 'Μοντέλο: ' + model + ', Χρονολογία: ' + year
-            _data['part'] = _data['title'].str.split(brand, expand=True)[0]
-            _data['details'] = _data['details'] + ', ' + _data['part']
+            part = _data['title'].str.split(brand, expand=True)[0]
+            _data['details'] = _data['details'] + ', Ανταλλακτικό: ' + part
             _data["meta_seo"] = meta_seo + ' ' + _data['title']
             _data['id_category'] = id_cat
 

@@ -20,7 +20,7 @@ class Color:
 
 blue = Color('blue', '#0D6EFD', (13, 110, 253))
 grey = Color('grey', '#6C757D', (108, 117, 125))
-light_grey = Color('light_grey', '#D6D6D6', (214, 214, 214))
+light_grey = Color('light_grey', '#D6D6D6', (221, 221, 221))
 red = Color('red', '#EF3E4F', (239, 62, 79))
 yellow = Color('yellow', '#FFC107', (255, 193, 7))
 green = Color('green', '#2AD66B', (42, 214, 107))
@@ -43,5 +43,5 @@ def make_stylesheet(background: Color = white,
     return _stylesheet
 
 
-def make_color(color: Color, alpha: float = 0.8) -> str:
-    return f"background-color: {color.rgb(alpha)};\n"
+def make_color(background: Color, alpha: float = 0.8) -> str:
+    return f"background-color: {background.rgb(alpha)};\n"

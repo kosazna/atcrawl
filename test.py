@@ -76,11 +76,10 @@ class CollectionProcessor:
             df = df.astype(dtype=self.types)
         return df
 
+import csv
+with open("C:\\Users\\aznavouridis.k\\.atcrawl\\RellasAmortiserManufacturers.txt", encoding='UTF-8') as f:
+    data = csv.reader(f)
 
-# a = ItemCollection(template=Item)
-# print(a.get_types())
+    brands = [row[0].strip() for row in data if row]
 
-a = Item1('kostas', 30.0, 25, True,)
-print(a.asdict())
-print(a.types())
-print(astuple(a))
+print(brands)

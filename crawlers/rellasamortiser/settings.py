@@ -4,6 +4,7 @@ from atcrawl.utilities.elements import *
 
 
 rellas_properties = ['brand',
+                     'model',
                      'article_no',
                      'title',
                      'description',

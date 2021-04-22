@@ -9,6 +9,7 @@ class Paths:
         self._atcrawl = self._userhome.joinpath(".atcrawl")
         self._chrome = self._atcrawl.joinpath("chromedriver.exe")
         self._firefox = self._atcrawl.joinpath("geckodriver.exe")
+        self._rellas_brands = self._atcrawl.joinpath("RellasAmortiserManufacturers.txt")
         self._cwd = Path.cwd()
         self._default_export = USER_SETTINGS.get('default_export', '')
         self._images_export = USER_SETTINGS.get('images_export', '')
@@ -34,6 +35,9 @@ class Paths:
 
     def get_images_import(self):
         return self._images_import
+
+    def get_rellas_path(self):
+        return self._rellas_brands
 
 
 paths = Paths()

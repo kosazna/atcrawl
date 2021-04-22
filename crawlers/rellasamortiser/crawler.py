@@ -4,6 +4,8 @@ import pandas as pd
 from atcrawl.crawlers.rellasamortiser.settings import *
 from atcrawl.utilities import *
 
+manufacturers = import_rellas_brands(paths.get_rellas_path())
+
 
 class RellasAmortiserBrand:
     NAME = "rellasamortiser.gr"
@@ -47,6 +49,7 @@ class RellasAmortiserBrand:
         info['description'] = f'Γνήσιος κωδικός: {sku}'
         info['meta_title_seo'] = ''
         info['model'] = _model
+        info['manufacturer'] = ''
         info['year'] = year
         info['retail_price'] = price
         info['price_after_discount'] = 0
@@ -54,6 +57,10 @@ class RellasAmortiserBrand:
         info['image'] = ''
         info['meta_seo'] = ''
         info['extra_description'] = product_name
+
+        for man in manufacturers:
+            if man in product_name:
+                info['manufacturer'] = man
 
         return info
 
@@ -183,14 +190,15 @@ class RellasAmortiser:
             if model:
                 _data['model'] = model
 
-            _data['details'] = 'Μοντέλο: ' + _data['model'] + \
-                ', Χρονολογία: ' + _data['year']
+            _data['details'] = 'Χρονολογία: ' + _data['year'] + \
+                ', Κατασκευαστής: ' + _data['manufacturer']
 
             if extra_desc:
                 _data.loc[_data['details'].str.len() > 0, 'details'] = _data.loc[_data['details'].str.len(
                 ) > 0, 'details'] + f", {extra_desc}"
 
-                _data.loc[_data['details'].str.len() == 0, 'details'] = extra_desc
+                _data.loc[_data['details'].str.len() == 0,
+                          'details'] = extra_desc
 
             _data['skroutz'] = skroutz
 
@@ -218,7 +226,6 @@ class RellasAmortiser:
         self.total_urls = ''
         self.collected_data = []
         self.data = None
-
 
     def export(self, name, folder, export_type):
         if self.data is not None:

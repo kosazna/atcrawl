@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import csv
 import concurrent.futures
 import json
 import os
@@ -61,6 +61,15 @@ def request_soup(url, browser='firefox'):
     _soup = BeautifulSoup(_r.text, 'lxml')
 
     return _soup
+
+
+def import_rellas_brands(path):
+    with open(path, encoding='UTF-8') as f:
+        data = csv.reader(f)
+
+        _brands = [row[0].strip() for row in data if row]
+
+    return _brands
 
 
 def remove_years(text):

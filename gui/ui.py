@@ -37,7 +37,7 @@ class WelcomeUI(Ui_WelcomeUI):
             self.ui = CrawlerUI()
             self.ui.set_crawler(crawler_map[name]())
             self.ui.set_auth(authorizer)
-            self.ui.setWindowTitle(f"atCrawl - {name}")
+            self.ui.setWindowTitle(f"atCrawl Services - {name}")
             self.ui.apply_masks()
             self.ui.show()
         else:

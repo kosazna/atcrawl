@@ -442,7 +442,7 @@ class Button(QtWidgets.QToolButton):
         self.setText(label)
         self.setFixedHeight(HEIGHT)
         self.setFont(font)
-        self.setStyleSheet(make_stylesheet(blue))
+        self.setStyleSheet(make_stylesheet(blue, radius=5))
         self.setMinimumWidth(BTWIDTH)
         self.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
 

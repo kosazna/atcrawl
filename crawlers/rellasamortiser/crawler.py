@@ -190,8 +190,13 @@ class RellasAmortiser:
             if model:
                 _data['model'] = model
 
-            _data['details'] = 'Χρονολογία: ' + _data['year'] + \
-                ', Κατασκευαστής: ' + _data['manufacturer']
+            _details1 = "Μάρκα αυτοκινήτου: " + _data['brand'] + ', '
+            _details2 = "Μοντέλο: " + _data['model'] + ', '
+            _details3 = "Χρονολογία: " + _data['year'] + ', '
+            _details4 = "Κατασκευαστής: " + _data['manufacturer']
+
+
+            _data['details'] = _details1 + _details2 + _details3 + _details4
 
             if extra_desc:
                 _data.loc[_data['details'].str.len() > 0, 'details'] = _data.loc[_data['details'].str.len(

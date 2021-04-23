@@ -85,7 +85,9 @@ def create_images_run():
         else:
             dst = paths.get_images_export()
 
-        create_images(file2mod, src, dst)
+        prefix = input("\nΠοιο είναι το link που θα μπεί μπροστά από το όνομα της εικόνας?\n")
+
+        create_images(file2mod, src, dst, prefix)
         time.sleep(4)
     else:
         log("\nΈχεις αποκλειστεί από την εφαρμογή. "

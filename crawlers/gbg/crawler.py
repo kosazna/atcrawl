@@ -167,11 +167,16 @@ class GBG(CrawlEngine):
             _data['title'] =  _data['title'] + f' {brand}' + f' {model}' + f' {year}'
             _data['description'] = 'Γνήσιος κωδικός: ' + _data['description']
             _data['meta_title_seo'] = meta_desc + ' ' + _data['title']
-            _data['details'] = 'Μοντέλο: ' + model + ', Χρονολογία: ' + year
-            part = _data['title'].str.split(brand, expand=True)[0]
-            _data['details'] = _data['details'] + ', Ανταλλακτικό: ' + part
+
             _data["meta_seo"] = meta_seo + ' ' + _data['title']
             _data['id_category'] = id_cat
+
+            _data['details1'] = "Μάρκα αυτοκινήτου: " + _data['brand'] + ', '
+            _data['details2'] = "Μοντέλο: " + model + ', '
+            _data['details3'] = "Χρονολογία: " + year + ', '
+            _data['details4'] = "Ανταλλακτικό: " + _data['title']
+
+            _data['details'] = _data['details1'] + _data['details2'] + _data['details3'] + _data['details4']
 
             _data['price_after_discount'] = (_data['retail_price'].astype(
                 float) * discount_rate).round(2).astype('string')

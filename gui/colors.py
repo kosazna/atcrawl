@@ -33,7 +33,7 @@ white = Color('white', '#F8F8FF', (248, 248, 255))
 
 def make_stylesheet(background: Color = white,
                     foreground: Color = dark,
-                    radius: int = 5,
+                    radius: int = 3,
                     alpha: float = 0.8) -> str:
 
     _stylesheet = (f"background-color: {background.rgb(alpha)};\n"

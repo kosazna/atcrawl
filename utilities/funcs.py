@@ -262,12 +262,17 @@ def clean_kit(text):
     return remove_overspace(text.replace('\n', ' ').strip()).replace('; ', ';')
 
 
-def create_images(data, src_images, dst_images):
+def create_images(data, src_images, dst_images, prefix_images=''):
     df = pd.read_excel(data)
     source = list(Path(src_images).glob('*.jpg'))
     source_mapper = {image.stem: image for image in source}
 
     destination = Path(dst_images)
+
+    if prefix_images.endswith('/'):
+        _prefix = prefix_images[:-1]
+    else:
+        _prefix = prefix_images
 
     for i in df.itertuples():
         image_name = None
@@ -283,7 +288,7 @@ def create_images(data, src_images, dst_images):
             data_image_name = f"{i.article_no}.jpg"
             dst = destination.joinpath(data_image_name)
             shutil.copyfile(src, dst)
-            df.loc[i.Index, 'image'] = data_image_name
+            df.loc[i.Index, 'image'] = f"{_prefix}/{data_image_name}"
 
     try:
         df.to_excel(data, index=False)

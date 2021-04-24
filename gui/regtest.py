@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from atcrawl.gui.colors import *
-from PyQt5.QtCore import QRegExp, Qt
+import os
+from PyQt5.QtCore import QLine, QRegExp, Qt
 from PyQt5.QtGui import QCursor, QFont, QIntValidator, QRegExpValidator
-from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QFileDialog,
-                             QHBoxLayout, QLabel, QLineEdit, QToolButton,
-                             QVBoxLayout, QWidget)
+from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QCompleter,
+                             QFileDialog, QHBoxLayout, QLabel, QLineEdit,
+                             QToolButton, QVBoxLayout, QWidget)
 
 HEIGHT = 25
 HOFFSET = 55
@@ -29,15 +30,13 @@ class FileNameInput(QWidget):
     def __init__(self,
                  label='',
                  placeholder='',
+                 parent=None,
                  *args,
                  **kwargs):
-        super(FileNameInput, self).__init__(*args, **kwargs)
+        super().__init__(parent=parent, *args, **kwargs)
         self.setupUi(label, placeholder)
 
     def setupUi(self, label, placeholder):
-        regexp = QRegExp('[^\.\<\>:\"/\\\|\?\*]*')
-        validator = QRegExpValidator(regexp)
-
         self.label = QLabel()
         self.label.setText(label)
         self.label.setFixedHeight(HEIGHT)
@@ -48,6 +47,10 @@ class FileNameInput(QWidget):
         self.lineEdit.setFont(labelFont)
         self.lineEdit.setFixedHeight(HEIGHT)
         self.lineEdit.setStyleSheet(make_stylesheet())
+        self.lineEdit.setClearButtonEnabled(True)
+        self.lineEdit.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
+        regexp = QRegExp('[^\.\<\>:\"/\\\|\?\*]*')
+        validator = QRegExpValidator(regexp, self.lineEdit)
         self.lineEdit.setValidator(validator)
         self.setPlaceholder(placeholder)
         layout = QHBoxLayout()
@@ -75,12 +78,14 @@ class FolderInput(QWidget):
     def __init__(self,
                  label='',
                  placeholder=PATH_PLACEHOLDER,
+                 parent=None,
                  *args,
                  **kwargs):
-        super(FolderInput, self).__init__(*args, **kwargs)
+        super().__init__(parent=parent, *args, **kwargs)
         self.setupUi(label, placeholder)
         self.lastVisit = ''
         self.button.clicked.connect(self.browse)
+        self.lineEdit.textChanged.connect(lambda x: self.pathExists(x))
 
     def setupUi(self, label, placeholder):
         self.label = QLabel()
@@ -93,6 +98,8 @@ class FolderInput(QWidget):
         self.lineEdit.setFont(labelFont)
         self.lineEdit.setFixedHeight(HEIGHT)
         self.lineEdit.setStyleSheet(make_stylesheet())
+        self.lineEdit.setClearButtonEnabled(True)
+        self.lineEdit.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
         self.setPlaceholder(placeholder)
         self.button = QToolButton()
         self.button.setFont(btFont)
@@ -121,17 +128,25 @@ class FolderInput(QWidget):
     def setOffset(self, offset):
         self.label.setFixedWidth(offset)
 
+    def pathExists(self, path):
+        if os.path.exists(path):
+            self.lineEdit.setStyleSheet(make_stylesheet(border=green))
+        else:
+            self.lineEdit.setStyleSheet(make_stylesheet(border=red))
+
 
 class FileInput(QWidget):
     def __init__(self,
                  label='',
                  placeholder=PATH_PLACEHOLDER,
+                 parent=None,
                  *args,
                  **kwargs):
-        super(FileInput, self).__init__(*args, **kwargs)
+        super().__init__(parent=parent, *args, **kwargs)
         self.setupUi(label, placeholder)
         self.lastVisit = ''
         self.button.clicked.connect(self.browse)
+        self.lineEdit.textChanged.connect(lambda x: self.pathExists(x))
 
     def setupUi(self, label, placeholder):
         self.label = QLabel()
@@ -144,6 +159,8 @@ class FileInput(QWidget):
         self.lineEdit.setFont(labelFont)
         self.lineEdit.setFixedHeight(HEIGHT)
         self.lineEdit.setStyleSheet(make_stylesheet())
+        self.lineEdit.setClearButtonEnabled(True)
+        self.lineEdit.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
         self.setPlaceholder(placeholder)
         self.button = QToolButton()
         self.button.setFont(btFont)
@@ -173,20 +190,26 @@ class FileInput(QWidget):
     def setOffset(self, offset):
         self.label.setFixedWidth(offset)
 
+    def pathExists(self, path):
+        if os.path.exists(path):
+            self.lineEdit.setStyleSheet(make_stylesheet(border=green))
+        else:
+            self.lineEdit.setStyleSheet(make_stylesheet(border=red))
+
 
 class FileOutput(QWidget):
     def __init__(self,
                  label='',
                  placeholder=PATH_PLACEHOLDER,
+                 parent=None,
                  *args,
                  **kwargs):
-        super(FileOutput, self).__init__(*args, **kwargs)
+        super().__init__(parent=parent, *args, **kwargs)
         self.setupUi(label, placeholder)
         self.lastVisit = ''
         self.button.clicked.connect(self.browse)
 
     def setupUi(self, label, placeholder):
-
         self.label = QLabel()
         self.label.setText(label)
         self.label.setFixedHeight(HEIGHT)
@@ -197,6 +220,8 @@ class FileOutput(QWidget):
         self.lineEdit.setFont(labelFont)
         self.lineEdit.setFixedHeight(HEIGHT)
         self.lineEdit.setStyleSheet(make_stylesheet())
+        self.lineEdit.setClearButtonEnabled(True)
+        self.lineEdit.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
         self.setPlaceholder(placeholder)
         self.button = QToolButton()
         self.button.setFont(btFont)
@@ -231,12 +256,23 @@ class InputParameter(QWidget):
     def __init__(self,
                  label='',
                  orientation=HORIZONTAL,
+                 parent=None,
+                 completer=None,
+                 hidden=False,
                  *args,
                  **kwargs):
-        super(InputParameter, self).__init__(*args, **kwargs)
-        self.setupUi(label, orientation)
+        super().__init__(parent=parent, *args, **kwargs)
+        self.setupUi(label, orientation, hidden)
+        if completer is not None:
+            _completer = QCompleter(completer)
+            _completer.setCompletionMode(QCompleter.PopupCompletion)
+            _completer.setCaseSensitivity(Qt.CaseInsensitive)
+            _completer.setModelSorting(QCompleter.CaseInsensitivelySortedModel)
+            _completer.setFilterMode(Qt.MatchContains)
+            _completer.popup().setStyleSheet(make_stylesheet(border=blue))
+            self.lineEdit.setCompleter(_completer)
 
-    def setupUi(self, label, orientation):
+    def setupUi(self, label, orientation, hidden):
         self.label = QLabel()
         self.label.setText(label)
         self.label.setFixedHeight(HEIGHT)
@@ -246,6 +282,10 @@ class InputParameter(QWidget):
         self.lineEdit.setFont(labelFont)
         self.lineEdit.setFixedHeight(HEIGHT)
         self.lineEdit.setStyleSheet(make_stylesheet())
+        self.lineEdit.setClearButtonEnabled(True)
+        self.lineEdit.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
+        if hidden:
+            self.lineEdit.setEchoMode(QLineEdit.EchoMode.Password)
         if orientation == VERTICAL:
             layout = QVBoxLayout()
         else:
@@ -290,9 +330,10 @@ class IntInputParameter(QWidget):
                  label='',
                  orientation=HORIZONTAL,
                  value_range=None,
+                 parent=None,
                  *args,
                  **kwargs):
-        super(IntInputParameter, self).__init__(*args, **kwargs)
+        super().__init__(parent=parent, *args, **kwargs)
         self.setupUi(label, orientation, value_range)
 
     def setupUi(self, label, orientation, value_range):
@@ -309,6 +350,8 @@ class IntInputParameter(QWidget):
         self.lineEdit.setFixedHeight(HEIGHT)
         self.lineEdit.setStyleSheet(make_stylesheet())
         self.lineEdit.setValidator(self.validator)
+        self.lineEdit.setClearButtonEnabled(True)
+        self.lineEdit.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
         if orientation == VERTICAL:
             layout = QVBoxLayout()
         else:
@@ -352,9 +395,10 @@ class ComboInput(QWidget):
     def __init__(self,
                  label='',
                  items=None,
+                 parent=None,
                  *args,
                  **kwargs):
-        super(ComboInput, self).__init__(*args, **kwargs)
+        super().__init__(parent=parent, *args, **kwargs)
         self.setupUi(label, items)
 
     def setupUi(self, label, items):
@@ -368,6 +412,7 @@ class ComboInput(QWidget):
         self.comboEdit.setFont(labelFont)
         self.comboEdit.setFixedHeight(HEIGHT)
         self.comboEdit.setStyleSheet(make_stylesheet())
+        self.comboEdit.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
         layout = QHBoxLayout()
         layout.addWidget(self.label)
         layout.addWidget(self.comboEdit, 1)
@@ -384,8 +429,8 @@ class ComboInput(QWidget):
 
 
 class CheckInput(QCheckBox):
-    def __init__(self, label='', checked=True, *args, **kwargs):
-        super(CheckInput, self).__init__(*args, **kwargs)
+    def __init__(self, label='', checked=True, parent=None, *args, **kwargs):
+        super().__init__(parent=parent, *args, **kwargs)
         self.setupUi(label, checked)
 
     def setupUi(self, label, checked):
@@ -408,8 +453,8 @@ class CheckInput(QCheckBox):
 
 
 class Button(QToolButton):
-    def __init__(self, label='', *args, **kwargs):
-        super(Button, self).__init__(*args, **kwargs)
+    def __init__(self, label='', parent=None, *args, **kwargs):
+        super().__init__(parent=parent, *args, **kwargs)
         self.setupUi(label)
 
     def setupUi(self, label):
@@ -419,6 +464,7 @@ class Button(QToolButton):
         self.setStyleSheet(make_stylesheet(blue, radius=5))
         self.setMinimumWidth(BTWIDTH)
         self.setCursor(QCursor(Qt.PointingHandCursor))
+        # self.setCheckable(True)
 
     def disable(self):
         self.setEnabled(False)
@@ -442,9 +488,10 @@ class StatusIndicator(QWidget):
                  label='',
                  status='',
                  size=BTWIDTH,
+                 parent=None,
                  *args,
                  **kwargs):
-        super(StatusIndicator, self).__init__(*args, **kwargs)
+        super().__init__(parent=parent, *args, **kwargs)
         self.setupUi(label, status, size)
 
     def setupUi(self, label, status, size):
@@ -491,14 +538,14 @@ class StatusIndicator(QWidget):
 
 
 class CrawlerUI(QWidget):
-    def __init__(self, *args, **kwargs):
-        super(CrawlerUI, self).__init__(*args, **kwargs)
+    def __init__(self, parent=None, *args, **kwargs):
+        super().__init__(parent=parent, *args, **kwargs)
         self.setupUi()
-
+ 
     def setupUi(self):
         self.setStyleSheet(make_color(light_grey))
         self.setWindowTitle("atCrawl Services")
-        self.resize(550, 450)
+        # self.resize(550, 400)
         self.buttonLaunch = Button('launch')
         self.buttonCollect = Button('collect')
         self.buttonStop = Button('stop')
@@ -506,9 +553,9 @@ class CrawlerUI(QWidget):
         self.buttonTerminate = Button('terminate')
         self.checkMeta = CheckInput('MetaCheck')
         self.inputUrl = InputParameter('URL')
-        self.inputMeta0 = InputParameter('Meta0')
+        self.inputMeta0 = InputParameter('Meta0', completer=['ASTTOM', 'ASTOTA', 'DBOUND'])
         self.inputMeta0.setMinimumWidth(200)
-        self.inputMeta1 = InputParameter('Meta1')
+        self.inputMeta1 = InputParameter('Meta1', hidden=True)
         self.inputMeta1.setMinimumWidth(200)
         self.inputMeta2 = InputParameter('Meta2')
         self.inputMeta2.setMinimumWidth(200)
@@ -543,11 +590,13 @@ class CrawlerUI(QWidget):
         self.layoutSmall.addWidget(self.inputMeta1, 0, Qt.AlignLeft)
         self.layoutSmall.addWidget(self.inputMeta2, 0, Qt.AlignLeft)
         self.layoutSmall.addWidget(self.inputMeta3, 0, Qt.AlignLeft)
+        self.layoutSmall.addStretch()
         self.layoutSmall.addWidget(self.inputFilename, 0, Qt.AlignLeft)
         self.layoutBig.addWidget(self.inputMeta4)
         self.layoutBig.addWidget(self.inputMeta5)
         self.layoutBig.addWidget(self.inputMeta6)
         self.layoutBig.addWidget(self.inputMeta7)
+        self.layoutBig.addStretch()
         self.layoutBig.addWidget(self.outputFolder)
         self.layoutButtons.addWidget(self.checkMeta)
         self.layoutButtons.addWidget(self.buttonLaunch)
@@ -568,6 +617,7 @@ class CrawlerUI(QWidget):
         self.layoutGui.addLayout(self.layoutLeft)
         self.layoutGui.addLayout(self.layoutButtons)
         self.setLayout(self.layoutGui)
+
 
 if __name__ == '__main__':
     app = QApplication([])

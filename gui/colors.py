@@ -33,12 +33,19 @@ white = Color('white', '#F8F8FF', (248, 248, 255))
 
 def make_stylesheet(background: Color = white,
                     foreground: Color = dark,
+                    border=None,
                     radius: int = 3,
-                    alpha: float = 0.8) -> str:
+                    alpha: float = 0.8,) -> str:
 
-    _stylesheet = (f"background-color: {background.rgb(alpha)};\n"
-                   f"color: {foreground.rgb()};\n"
-                   f"border-radius: {radius}px;")
+    if border is None:
+        _stylesheet = (f"background-color: {background.rgb(alpha)};\n"
+                       f"color: {foreground.rgb()};\n"
+                       f"border-radius: {radius}px;")
+    else:
+        _stylesheet = (f"background-color: {background.rgb(alpha)};\n"
+                       f"border: 1px solid {border.rgb(1)};\n"
+                       f"color: {foreground.rgb()};\n"
+                       f"border-radius: {radius}px;")
 
     return _stylesheet
 

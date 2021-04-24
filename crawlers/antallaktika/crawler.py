@@ -141,14 +141,14 @@ class AntallaktikaOnline(CrawlEngine):
                 pass
 
     def transform(self, **kwargs):
-        brand = kwargs.get('brand', '')
-        discount = kwargs.get('discount', 0)
-        car = kwargs.get('meta0', '0')
+        brand = kwargs.get('meta0', '')
+        discount = int(kwargs.get('meta3', 0))
+        car = kwargs.get('meta1', '0')
 
         _data = pd.DataFrame.from_dict(self.data)
         self.collected_data = _data.copy()
 
-        discount_rate = (100 + discount) / 100
+        discount_rate = (100 + int(discount)) / 100
 
         new_prices = (_data['retail_price'].astype(
             float) * discount_rate).round(2).astype('string')

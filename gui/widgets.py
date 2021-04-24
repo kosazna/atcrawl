@@ -2,7 +2,7 @@
 
 from atcrawl.gui.colors import *
 import os
-from PyQt5.QtCore import QLine, QRegExp, Qt
+from PyQt5.QtCore import QRegExp, Qt
 from PyQt5.QtGui import QCursor, QFont, QIntValidator, QRegExpValidator
 from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QCompleter,
                              QFileDialog, QHBoxLayout, QLabel, QLineEdit,
@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QCompleter,
 
 HEIGHT = 25
 HOFFSET = 55
-BTWIDTH = 100
+BTWIDTH = 80
 FONTSIZE = 10
 FONT = "Segoe UI"
 HORIZONTAL = 'H'
@@ -48,7 +48,7 @@ class FileNameInput(QWidget):
         self.lineEdit.setFixedHeight(HEIGHT)
         self.lineEdit.setStyleSheet(make_stylesheet(border=grey))
         self.lineEdit.setClearButtonEnabled(True)
-        self.lineEdit.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
+        self.lineEdit.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         regexp = QRegExp('[^\.\<\>:\"/\\\|\?\*]*')
         validator = QRegExpValidator(regexp, self.lineEdit)
         self.lineEdit.setValidator(validator)
@@ -102,7 +102,7 @@ class FolderInput(QWidget):
         self.lineEdit.setFixedHeight(HEIGHT)
         self.lineEdit.setStyleSheet(make_stylesheet(border=grey))
         self.lineEdit.setClearButtonEnabled(True)
-        self.lineEdit.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
+        self.lineEdit.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         self.setPlaceholder(placeholder)
         self.button = QToolButton()
         self.button.setFont(btFont)
@@ -169,7 +169,7 @@ class FileInput(QWidget):
         self.lineEdit.setFixedHeight(HEIGHT)
         self.lineEdit.setStyleSheet(make_stylesheet(border=grey))
         self.lineEdit.setClearButtonEnabled(True)
-        self.lineEdit.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
+        self.lineEdit.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         self.setPlaceholder(placeholder)
         self.button = QToolButton()
         self.button.setFont(btFont)
@@ -236,7 +236,7 @@ class FileOutput(QWidget):
         self.lineEdit.setFixedHeight(HEIGHT)
         self.lineEdit.setStyleSheet(make_stylesheet(border=grey))
         self.lineEdit.setClearButtonEnabled(True)
-        self.lineEdit.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
+        self.lineEdit.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         self.setPlaceholder(placeholder)
         self.button = QToolButton()
         self.button.setFont(btFont)
@@ -281,14 +281,7 @@ class InputParameter(QWidget):
                  **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
         self.setupUi(label, orientation, hidden)
-        if completer is not None:
-            _completer = QCompleter(completer)
-            _completer.setCompletionMode(QCompleter.PopupCompletion)
-            _completer.setCaseSensitivity(Qt.CaseInsensitive)
-            _completer.setModelSorting(QCompleter.CaseInsensitivelySortedModel)
-            _completer.setFilterMode(Qt.MatchContains)
-            _completer.popup().setStyleSheet(make_stylesheet(border=blue))
-            self.lineEdit.setCompleter(_completer)
+        self.setCompleter(completer)
 
     def setupUi(self, label, orientation, hidden):
         self.label = QLabel()
@@ -301,7 +294,7 @@ class InputParameter(QWidget):
         self.lineEdit.setFixedHeight(HEIGHT)
         self.lineEdit.setStyleSheet(make_stylesheet(border=grey))
         self.lineEdit.setClearButtonEnabled(True)
-        self.lineEdit.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
+        self.lineEdit.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         if hidden:
             self.lineEdit.setEchoMode(QLineEdit.EchoMode.Password)
         if orientation == VERTICAL:
@@ -342,6 +335,16 @@ class InputParameter(QWidget):
     def setOffset(self, offset):
         self.label.setFixedWidth(offset)
 
+    def setCompleter(self, items):
+        if items is not None:
+            _completer = QCompleter(items)
+            _completer.setCompletionMode(QCompleter.PopupCompletion)
+            _completer.setCaseSensitivity(Qt.CaseInsensitive)
+            _completer.setModelSorting(QCompleter.CaseInsensitivelySortedModel)
+            _completer.setFilterMode(Qt.MatchContains)
+            _completer.popup().setStyleSheet(make_stylesheet(border=grey))
+            self.lineEdit.setCompleter(_completer)
+
 
 class IntInputParameter(QWidget):
     def __init__(self,
@@ -369,7 +372,7 @@ class IntInputParameter(QWidget):
         self.lineEdit.setStyleSheet(make_stylesheet(border=grey))
         self.lineEdit.setValidator(self.validator)
         self.lineEdit.setClearButtonEnabled(True)
-        self.lineEdit.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
+        self.lineEdit.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         if orientation == VERTICAL:
             layout = QVBoxLayout()
         else:
@@ -430,7 +433,8 @@ class ComboInput(QWidget):
         self.comboEdit.setFont(labelFont)
         self.comboEdit.setFixedHeight(HEIGHT)
         self.comboEdit.setStyleSheet(make_stylesheet(border=grey))
-        self.comboEdit.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
+        self.comboEdit.setSizeAdjustPolicy(
+            QComboBox.SizeAdjustPolicy.AdjustToContents)
         layout = QHBoxLayout()
         layout.addWidget(self.label)
         layout.addWidget(self.comboEdit, 1)
@@ -563,11 +567,11 @@ class Atcrawl(QWidget):
     def __init__(self, parent=None, *args, **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
         self.setupUi()
- 
+
     def setupUi(self):
         self.setStyleSheet(make_color(light_grey))
         self.setWindowTitle("atCrawl Services")
-        self.resize(450, 350)
+        self.resize(500, 350)
         self.buttonLaunch = Button('launch')
         self.buttonCollect = Button('collect')
         self.buttonStop = Button('stop')
@@ -595,8 +599,8 @@ class Atcrawl(QWidget):
         self.inputFilename.setMinimumWidth(200)
         self.outputFolder = FolderInput('Folder')
         self.outputFolder.setOffset(100)
-        self.statusBrowser = StatusIndicator('Browser', 'offline')
-        self.statusCrawler = StatusIndicator('Crawler', 'offline')
+        self.statusBrowser = StatusIndicator('Browser', 'offline', size=60)
+        self.statusCrawler = StatusIndicator('Crawler', 'offline', size=60)
         self.statusGeneral = StatusIndicator(status='', size=self.width())
         self.statusGeneral.setStyle(make_stylesheet(grey))
         self.layoutGui = QHBoxLayout()
@@ -630,7 +634,7 @@ class Atcrawl(QWidget):
         self.layoutStatus.addWidget(self.statusBrowser)
         self.layoutStatus.addWidget(self.statusCrawler)
         self.layoutStatus.addStretch()
-        self.layoutStatus.addWidget(self.statusGeneral,1)
+        self.layoutStatus.addWidget(self.statusGeneral, 1)
         self.layoutParams.addLayout(self.layoutSmall)
         self.layoutParams.addLayout(self.layoutBig)
         self.layoutBottom.addLayout(self.layoutStatus)

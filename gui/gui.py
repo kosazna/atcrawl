@@ -6,6 +6,8 @@ from atcrawl.gui.welcome_design import *
 from atcrawl.crawlers import *
 from PyQt5.QtCore import QThreadPool
 
+
+
 class WelcomeUI(Ui_WelcomeUI):
     def __init__(self, window):
         self.setupUi(window)
@@ -91,11 +93,12 @@ class CrawlerUI(Atcrawl):
             self.inputMeta6.hide()
             self.inputMeta7.hide()
             self.checkMeta.hide()
-            self.mask_buttons('launched')
-        
+            self.mask_buttons('start')
+            self.inputMeta0.setCompleter(MANUFACTURES_BRANDS)
+
         if self.crawler.NAME == 'skroutz.gr':
             self.inputMeta0.setLabel("Brand")
-            self.inputMeta1.setLabel("Model")
+            self.inputMeta1.hide()
             self.inputMeta2.setLabel("ID Cat.")
             self.inputMeta3.setLabel("Price (%)")
             self.inputMeta4.setLabel("Description")
@@ -103,7 +106,9 @@ class CrawlerUI(Atcrawl):
             self.inputMeta6.setLabel("Meta SEO")
             self.inputMeta7.setLabel("Extra Details")
             self.checkMeta.setText("Λάδια")
-            self.mask_buttons('launched')
+            self.checkMeta.toggle()
+            self.mask_buttons('start')
+            self.inputMeta0.setCompleter(MANUFACTURES_BRANDS)
 
         if self.crawler.NAME == 'rellasamortiser.gr':
             self.inputMeta0.setLabel("Brand")
@@ -116,6 +121,7 @@ class CrawlerUI(Atcrawl):
             self.inputMeta7.setLabel("Extra Details")
             self.checkMeta.hide()
             self.mask_buttons('launched')
+            self.inputMeta0.setCompleter(CAR_BRANDS)
 
         if self.crawler.NAME == 'gbg-eshop.gr':
             self.inputMeta0.setLabel("Brand")
@@ -127,7 +133,8 @@ class CrawlerUI(Atcrawl):
             self.inputMeta6.setLabel("Meta SEO")
             self.inputMeta7.hide()
             self.checkMeta.hide()
-            self.mask_buttons('launched')
+            self.mask_buttons('start')
+            self.inputMeta0.setCompleter(CAR_BRANDS)
 
     def mask_output(self, text=None):
         if text is None:
@@ -183,18 +190,17 @@ class CrawlerUI(Atcrawl):
         return self.file_name
 
     def get_params(self):
-        _params = {'meta0': self.inputMeta0.text(),
-                   'meta1': self.inputMeta1.text(),
-                   'meta2': self.inputMeta2.text(),
-                   'meta3': self.inputMeta3.text(),
-                   'meta4': self.inputMeta4.text(),
-                   'meta5': self.inputMeta5.text(),
-                   'meta6': self.inputMeta6.text(),
-                   'meta7': self.inputMeta7.text(),
-                   'meta_check': self.meta_check.isChecked()}
+        _params = {'meta0': self.inputMeta0.getText(),
+                   'meta1': self.inputMeta1.getText(),
+                   'meta2': self.inputMeta2.getText(),
+                   'meta3': self.inputMeta3.getText(),
+                   'meta4': self.inputMeta4.getText(),
+                   'meta5': self.inputMeta5.getText(),
+                   'meta6': self.inputMeta6.getText(),
+                   'meta7': self.inputMeta7.getText(),
+                   'meta_check': self.checkMeta.isChecked()}
 
         return _params
-
 
     def mask_buttons(self, process):
         if self.crawler.NAME != 'rellasamortiser.gr':
@@ -243,8 +249,8 @@ class CrawlerUI(Atcrawl):
                 self.buttonTerminate.disable()
 
     def launch(self):
-        self.url = self.inputUrl.text()
-        self.old_url = self.inputUrl.text()
+        self.url = self.inputUrl.getText()
+        self.old_url = self.inputUrl.getText()
 
         if self.url is not None and self.url != '':
             self.crawler.set_url(self.url)
@@ -278,7 +284,7 @@ class CrawlerUI(Atcrawl):
                 self.crawler.collect(gather='single')
             progress_callback.emit(f"Pages Finished")
         else:
-            self.crawler.set_url(self.in_url.text())
+            self.crawler.set_url(self.inputUrl.getText())
             progress_callback.emit("Finding URLs...")
             self.crawler.pre_collect()
 
@@ -357,12 +363,12 @@ class CrawlerUI(Atcrawl):
 
     def reset(self):
         if self.crawler.NAME == 'rellasamortiser.gr':
-            self.crawler.reset(self.in_url.text())
+            self.crawler.reset(self.inputUrl.getText())
             self.mask_buttons('launched')
             self.mask_output()
         else:
             if self.driver_status:
-                _url = self.inputUrl.text()
+                _url = self.inputUrl.getText()
 
                 if _url == self.old_url:
                     self.crawler.reset()

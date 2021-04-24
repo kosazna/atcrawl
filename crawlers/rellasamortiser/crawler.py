@@ -170,16 +170,16 @@ class RellasAmortiser:
             return False
 
     def transform(self, **kwargs):
-        id_cat = kwargs.get('meta0', '')
-        meta_desc = kwargs.get('meta1', '')
-        meta_seo = kwargs.get('meta2', '')
-        skroutz = kwargs.get('meta3', '')
-        extra_desc = kwargs.get('meta4', '')
-        discount = kwargs.get('discount', 0)
-        brand = kwargs.get('brand', '')
-        model = kwargs.get('model', '')
+        id_cat = kwargs.get('meta2', '')
+        meta_desc = kwargs.get('meta5', '')
+        meta_seo = kwargs.get('meta6', '')
+        skroutz = kwargs.get('meta4', '')
+        extra_desc = kwargs.get('meta7', '')
+        discount = int(kwargs.get('meta3', 0))
+        brand = kwargs.get('meta0', '')
+        model = kwargs.get('meta1', '')
 
-        discount_rate = (100 + discount) / 100
+        discount_rate = (100 + int(discount)) / 100
 
         if self.collected_data:
             _data = pd.DataFrame(self.collected_data)

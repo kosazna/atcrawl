@@ -108,13 +108,13 @@ class Skroutz(CrawlEngine):
                 pass
 
     def transform(self, **kwargs):
-        id_cat = kwargs.get('meta0', '')
-        desc = kwargs.get('meta1', '')
-        meta_desc = kwargs.get('meta2', '')
-        meta_seo = kwargs.get('meta3', '')
-        extra_desc = kwargs.get('meta4', '')
-        brand = kwargs.get('brand', '')
-        discount = kwargs.get('discount', 0)
+        id_cat = kwargs.get('meta2', '')
+        desc = kwargs.get('meta4', '')
+        meta_desc = kwargs.get('meta5', '')
+        meta_seo = kwargs.get('meta6', '')
+        extra_desc = kwargs.get('meta7', '')
+        brand = kwargs.get('meta0', '')
+        discount = int(kwargs.get('meta3', 0))
         ladia = kwargs.get('meta_check', False)
 
         _data = pd.DataFrame.from_dict(self.data)

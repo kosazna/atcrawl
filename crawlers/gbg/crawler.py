@@ -149,15 +149,15 @@ class GBG(CrawlEngine):
             return False
 
     def transform(self, *args, **kwargs):
-        id_cat = kwargs.get('meta0', '')
-        meta_desc = kwargs.get('meta1', '')
-        meta_seo = kwargs.get('meta2', '')
-        brand = kwargs.get('brand', '')
-        discount = kwargs.get('discount', 0)
-        model = kwargs.get('model', '')
-        year = kwargs.get('meta3', '')
+        id_cat = kwargs.get('meta2', '')
+        meta_desc = kwargs.get('meta5', '')
+        meta_seo = kwargs.get('meta6', '')
+        brand = kwargs.get('meta0', '')
+        discount = int(kwargs.get('meta3', 0))
+        model = kwargs.get('meta1', '')
+        year = kwargs.get('meta4', '')
 
-        discount_rate = (100 + discount) / 100
+        discount_rate = (100 + int(discount)) / 100
 
         if self.parsed:
             _data = pd.DataFrame(self.parsed)

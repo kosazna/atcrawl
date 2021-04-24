@@ -1,2 +1,2 @@
 # -*- coding: utf-8 -*-
-from atcrawl.gui.ui import *
+from atcrawl.gui.gui import *

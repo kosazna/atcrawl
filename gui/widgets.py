@@ -6,7 +6,7 @@ from PyQt5.QtCore import QLine, QRegExp, Qt
 from PyQt5.QtGui import QCursor, QFont, QIntValidator, QRegExpValidator
 from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QCompleter,
                              QFileDialog, QHBoxLayout, QLabel, QLineEdit,
-                             QToolButton, QVBoxLayout, QWidget)
+                             QToolButton, QVBoxLayout, QWidget, QSizePolicy)
 
 HEIGHT = 25
 HOFFSET = 55
@@ -61,6 +61,9 @@ class FileNameInput(QWidget):
     def getText(self):
         return self.lineEdit.text()
 
+    def setText(self, text):
+        self.lineEdit.setText(text)
+
     def setPlaceholder(self, text):
         self.lineEdit.setPlaceholderText(text)
 
@@ -106,7 +109,7 @@ class FolderInput(QWidget):
         self.button.setFixedHeight(HEIGHT)
         self.button.setFixedWidth(HEIGHT)
         self.button.setText("...")
-        self.button.setStyleSheet(make_stylesheet())
+        self.button.setStyleSheet(make_stylesheet(border=grey))
         layout = QHBoxLayout()
         layout.addWidget(self.label)
         layout.addWidget(self.lineEdit)
@@ -121,6 +124,9 @@ class FolderInput(QWidget):
 
     def getText(self):
         return self.lineEdit.text()
+
+    def setText(self, text):
+        self.lineEdit.setText(text)
 
     def setPlaceholder(self, text):
         self.lineEdit.setPlaceholderText(text)
@@ -187,6 +193,9 @@ class FileInput(QWidget):
     def getText(self):
         return self.lineEdit.text()
 
+    def setText(self, text):
+        self.lineEdit.setText(text)
+
     def setPlaceholder(self, text):
         self.lineEdit.setPlaceholderText(text)
 
@@ -250,6 +259,9 @@ class FileOutput(QWidget):
 
     def getText(self):
         return self.lineEdit.text()
+
+    def setText(self, text):
+        self.lineEdit.setText(text)
 
     def setPlaceholder(self, text):
         self.lineEdit.setPlaceholderText(text)
@@ -516,7 +528,8 @@ class StatusIndicator(QWidget):
         self.button.setFixedHeight(HEIGHT)
         self.button.setMinimumWidth(size)
         self.button.setEnabled(False)
-        self.button.setStyleSheet(make_stylesheet(grey, radius=5, border=dark))
+        self.button.setStyleSheet(make_stylesheet(red, radius=5))
+        self.button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         layout.addWidget(self.button)
         self.setLayout(layout)
 
@@ -533,6 +546,9 @@ class StatusIndicator(QWidget):
     def setText(self, text):
         self.button.setText(text)
 
+    def getText(self):
+        return self.button.text()
+
     def setStyle(self, style):
         self.button.setStyleSheet(style)
 
@@ -543,7 +559,7 @@ class StatusIndicator(QWidget):
         self.label.setFixedWidth(offset)
 
 
-class CrawlerUI(QWidget):
+class Atcrawl(QWidget):
     def __init__(self, parent=None, *args, **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
         self.setupUi()
@@ -582,6 +598,7 @@ class CrawlerUI(QWidget):
         self.statusBrowser = StatusIndicator('Browser', 'offline')
         self.statusCrawler = StatusIndicator('Crawler', 'offline')
         self.statusGeneral = StatusIndicator(status='', size=self.width())
+        self.statusGeneral.setStyle(make_stylesheet(grey))
         self.layoutGui = QHBoxLayout()
         self.layoutLeft = QVBoxLayout()
         self.layoutTop = QHBoxLayout()
@@ -613,7 +630,7 @@ class CrawlerUI(QWidget):
         self.layoutStatus.addWidget(self.statusBrowser)
         self.layoutStatus.addWidget(self.statusCrawler)
         self.layoutStatus.addStretch()
-        self.layoutStatus.addWidget(self.statusGeneral)
+        self.layoutStatus.addWidget(self.statusGeneral,1)
         self.layoutParams.addLayout(self.layoutSmall)
         self.layoutParams.addLayout(self.layoutBig)
         self.layoutBottom.addLayout(self.layoutStatus)
@@ -622,11 +639,12 @@ class CrawlerUI(QWidget):
         self.layoutLeft.addLayout(self.layoutBottom)
         self.layoutGui.addLayout(self.layoutLeft)
         self.layoutGui.addLayout(self.layoutButtons)
+        # self.Res()
         self.setLayout(self.layoutGui)
 
 
 if __name__ == '__main__':
     app = QApplication([])
-    volume = CrawlerUI()
+    volume = Atcrawl()
     volume.show()
     app.exec_()

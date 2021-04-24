@@ -46,7 +46,7 @@ class FileNameInput(QWidget):
         self.lineEdit = QLineEdit()
         self.lineEdit.setFont(labelFont)
         self.lineEdit.setFixedHeight(HEIGHT)
-        self.lineEdit.setStyleSheet(make_stylesheet())
+        self.lineEdit.setStyleSheet(make_stylesheet(border=grey))
         self.lineEdit.setClearButtonEnabled(True)
         self.lineEdit.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
         regexp = QRegExp('[^\.\<\>:\"/\\\|\?\*]*')
@@ -97,7 +97,7 @@ class FolderInput(QWidget):
         self.lineEdit = QLineEdit()
         self.lineEdit.setFont(labelFont)
         self.lineEdit.setFixedHeight(HEIGHT)
-        self.lineEdit.setStyleSheet(make_stylesheet())
+        self.lineEdit.setStyleSheet(make_stylesheet(border=grey))
         self.lineEdit.setClearButtonEnabled(True)
         self.lineEdit.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
         self.setPlaceholder(placeholder)
@@ -129,10 +129,13 @@ class FolderInput(QWidget):
         self.label.setFixedWidth(offset)
 
     def pathExists(self, path):
-        if os.path.exists(path):
-            self.lineEdit.setStyleSheet(make_stylesheet(border=green))
+        if path:
+            if os.path.exists(path):
+                self.lineEdit.setStyleSheet(make_stylesheet(border=green))
+            else:
+                self.lineEdit.setStyleSheet(make_stylesheet(border=red))
         else:
-            self.lineEdit.setStyleSheet(make_stylesheet(border=red))
+            self.lineEdit.setStyleSheet(make_stylesheet(border=grey))
 
 
 class FileInput(QWidget):
@@ -158,7 +161,7 @@ class FileInput(QWidget):
         self.lineEdit = QLineEdit()
         self.lineEdit.setFont(labelFont)
         self.lineEdit.setFixedHeight(HEIGHT)
-        self.lineEdit.setStyleSheet(make_stylesheet())
+        self.lineEdit.setStyleSheet(make_stylesheet(border=grey))
         self.lineEdit.setClearButtonEnabled(True)
         self.lineEdit.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
         self.setPlaceholder(placeholder)
@@ -191,10 +194,13 @@ class FileInput(QWidget):
         self.label.setFixedWidth(offset)
 
     def pathExists(self, path):
-        if os.path.exists(path):
-            self.lineEdit.setStyleSheet(make_stylesheet(border=green))
+        if path:
+            if os.path.exists(path):
+                self.lineEdit.setStyleSheet(make_stylesheet(border=green))
+            else:
+                self.lineEdit.setStyleSheet(make_stylesheet(border=red))
         else:
-            self.lineEdit.setStyleSheet(make_stylesheet(border=red))
+            self.lineEdit.setStyleSheet(make_stylesheet(border=grey))
 
 
 class FileOutput(QWidget):
@@ -219,7 +225,7 @@ class FileOutput(QWidget):
         self.lineEdit = QLineEdit()
         self.lineEdit.setFont(labelFont)
         self.lineEdit.setFixedHeight(HEIGHT)
-        self.lineEdit.setStyleSheet(make_stylesheet())
+        self.lineEdit.setStyleSheet(make_stylesheet(border=grey))
         self.lineEdit.setClearButtonEnabled(True)
         self.lineEdit.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
         self.setPlaceholder(placeholder)
@@ -281,7 +287,7 @@ class InputParameter(QWidget):
         self.lineEdit = QLineEdit()
         self.lineEdit.setFont(labelFont)
         self.lineEdit.setFixedHeight(HEIGHT)
-        self.lineEdit.setStyleSheet(make_stylesheet())
+        self.lineEdit.setStyleSheet(make_stylesheet(border=grey))
         self.lineEdit.setClearButtonEnabled(True)
         self.lineEdit.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
         if hidden:
@@ -348,7 +354,7 @@ class IntInputParameter(QWidget):
         self.lineEdit = QLineEdit()
         self.lineEdit.setFont(labelFont)
         self.lineEdit.setFixedHeight(HEIGHT)
-        self.lineEdit.setStyleSheet(make_stylesheet())
+        self.lineEdit.setStyleSheet(make_stylesheet(border=grey))
         self.lineEdit.setValidator(self.validator)
         self.lineEdit.setClearButtonEnabled(True)
         self.lineEdit.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
@@ -411,7 +417,7 @@ class ComboInput(QWidget):
         self.comboEdit = QComboBox()
         self.comboEdit.setFont(labelFont)
         self.comboEdit.setFixedHeight(HEIGHT)
-        self.comboEdit.setStyleSheet(make_stylesheet())
+        self.comboEdit.setStyleSheet(make_stylesheet(border=grey))
         self.comboEdit.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
         layout = QHBoxLayout()
         layout.addWidget(self.label)
@@ -510,7 +516,7 @@ class StatusIndicator(QWidget):
         self.button.setFixedHeight(HEIGHT)
         self.button.setMinimumWidth(size)
         self.button.setEnabled(False)
-        self.button.setStyleSheet(make_stylesheet(grey, radius=5))
+        self.button.setStyleSheet(make_stylesheet(grey, radius=5, border=dark))
         layout.addWidget(self.button)
         self.setLayout(layout)
 
@@ -545,7 +551,7 @@ class CrawlerUI(QWidget):
     def setupUi(self):
         self.setStyleSheet(make_color(light_grey))
         self.setWindowTitle("atCrawl Services")
-        # self.resize(550, 400)
+        self.resize(450, 350)
         self.buttonLaunch = Button('launch')
         self.buttonCollect = Button('collect')
         self.buttonStop = Button('stop')
@@ -553,9 +559,9 @@ class CrawlerUI(QWidget):
         self.buttonTerminate = Button('terminate')
         self.checkMeta = CheckInput('MetaCheck')
         self.inputUrl = InputParameter('URL')
-        self.inputMeta0 = InputParameter('Meta0', completer=['ASTTOM', 'ASTOTA', 'DBOUND'])
+        self.inputMeta0 = InputParameter('Meta0')
         self.inputMeta0.setMinimumWidth(200)
-        self.inputMeta1 = InputParameter('Meta1', hidden=True)
+        self.inputMeta1 = InputParameter('Meta1')
         self.inputMeta1.setMinimumWidth(200)
         self.inputMeta2 = InputParameter('Meta2')
         self.inputMeta2.setMinimumWidth(200)

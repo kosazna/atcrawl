@@ -1,5 +1,11 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
+# -*- coding: utf-8 -*-
+
 from atcrawl.gui.colors import *
+from PyQt5.QtCore import QRegExp, Qt
+from PyQt5.QtGui import QCursor, QFont, QIntValidator, QRegExpValidator
+from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QFileDialog,
+                             QHBoxLayout, QLabel, QLineEdit, QToolButton,
+                             QVBoxLayout, QWidget)
 
 HEIGHT = 25
 HOFFSET = 55
@@ -10,8 +16,16 @@ HORIZONTAL = 'H'
 VERTICAL = 'V'
 PATH_PLACEHOLDER = "Paste path here or browse..."
 
+labelFont = QFont()
+labelFont.setFamily(FONT)
+labelFont.setPointSize(FONTSIZE)
+btFont = QFont()
+btFont.setFamily(FONT)
+btFont.setPointSize(FONTSIZE)
+btFont.setBold(True)
 
-class FileNameInput(QtWidgets.QWidget):
+
+class FileNameInput(QWidget):
     def __init__(self,
                  label='',
                  placeholder='',
@@ -21,26 +35,22 @@ class FileNameInput(QtWidgets.QWidget):
         self.setupUi(label, placeholder)
 
     def setupUi(self, label, placeholder):
-        font = QtGui.QFont()
-        font.setFamily(FONT)
-        font.setPointSize(FONTSIZE)
+        regexp = QRegExp('[^\.\<\>:\"/\\\|\?\*]*')
+        validator = QRegExpValidator(regexp)
 
-        regexp = QtCore.QRegExp('[^\.\<\>:\"/\\\|\?\*]*')
-        validator = QtGui.QRegExpValidator(regexp)
-
-        self.label = QtWidgets.QLabel()
+        self.label = QLabel()
         self.label.setText(label)
         self.label.setFixedHeight(HEIGHT)
-        self.label.setFont(font)
+        self.label.setFont(labelFont)
         self.label.setMinimumWidth(HOFFSET)
         self.label.setStyleSheet(make_stylesheet(alpha=0))
-        self.lineEdit = QtWidgets.QLineEdit()
-        self.lineEdit.setFont(font)
+        self.lineEdit = QLineEdit()
+        self.lineEdit.setFont(labelFont)
         self.lineEdit.setFixedHeight(HEIGHT)
         self.lineEdit.setStyleSheet(make_stylesheet())
         self.lineEdit.setValidator(validator)
         self.setPlaceholder(placeholder)
-        layout = QtWidgets.QHBoxLayout()
+        layout = QHBoxLayout()
         layout.addWidget(self.label)
         layout.addWidget(self.lineEdit)
         self.setLayout(layout)
@@ -61,7 +71,7 @@ class FileNameInput(QtWidgets.QWidget):
         self.lineEdit.setMinimumWidth(minw)
 
 
-class FolderInput(QtWidgets.QWidget):
+class FolderInput(QWidget):
     def __init__(self,
                  label='',
                  placeholder=PATH_PLACEHOLDER,
@@ -73,39 +83,31 @@ class FolderInput(QtWidgets.QWidget):
         self.button.clicked.connect(self.browse)
 
     def setupUi(self, label, placeholder):
-        labelFont = QtGui.QFont()
-        labelFont.setFamily(FONT)
-        labelFont.setPointSize(FONTSIZE)
-        btFont = QtGui.QFont()
-        btFont.setFamily(FONT)
-        btFont.setPointSize(FONTSIZE)
-        btFont.setBold(True)
-        self.label = QtWidgets.QLabel()
+        self.label = QLabel()
         self.label.setText(label)
         self.label.setFixedHeight(HEIGHT)
         self.label.setFont(labelFont)
         self.label.setMinimumWidth(HOFFSET)
         self.label.setStyleSheet(make_stylesheet(alpha=0))
-        self.lineEdit = QtWidgets.QLineEdit()
+        self.lineEdit = QLineEdit()
         self.lineEdit.setFont(labelFont)
         self.lineEdit.setFixedHeight(HEIGHT)
         self.lineEdit.setStyleSheet(make_stylesheet())
         self.setPlaceholder(placeholder)
-        self.button = QtWidgets.QToolButton()
+        self.button = QToolButton()
         self.button.setFont(btFont)
         self.button.setFixedHeight(HEIGHT)
         self.button.setFixedWidth(HEIGHT)
         self.button.setText("...")
         self.button.setStyleSheet(make_stylesheet())
-        layout = QtWidgets.QHBoxLayout()
+        layout = QHBoxLayout()
         layout.addWidget(self.label)
         layout.addWidget(self.lineEdit)
         layout.addWidget(self.button)
         self.setLayout(layout)
 
     def browse(self):
-        file_path = QtWidgets.QFileDialog.getExistingDirectory(
-            directory=self.lastVisit)
+        file_path = QFileDialog.getExistingDirectory(directory=self.lastVisit)
         if file_path:
             self.lineEdit.setText(file_path)
             self.lastVisit = file_path
@@ -120,7 +122,7 @@ class FolderInput(QtWidgets.QWidget):
         self.label.setFixedWidth(offset)
 
 
-class FileInput(QtWidgets.QWidget):
+class FileInput(QWidget):
     def __init__(self,
                  label='',
                  placeholder=PATH_PLACEHOLDER,
@@ -132,39 +134,31 @@ class FileInput(QtWidgets.QWidget):
         self.button.clicked.connect(self.browse)
 
     def setupUi(self, label, placeholder):
-        labelFont = QtGui.QFont()
-        labelFont.setFamily(FONT)
-        labelFont.setPointSize(FONTSIZE)
-        btFont = QtGui.QFont()
-        btFont.setFamily(FONT)
-        btFont.setPointSize(FONTSIZE)
-        btFont.setBold(True)
-        self.label = QtWidgets.QLabel()
+        self.label = QLabel()
         self.label.setText(label)
         self.label.setFixedHeight(HEIGHT)
         self.label.setFont(labelFont)
         self.label.setMinimumWidth(HOFFSET)
         self.label.setStyleSheet(make_stylesheet(alpha=0))
-        self.lineEdit = QtWidgets.QLineEdit()
+        self.lineEdit = QLineEdit()
         self.lineEdit.setFont(labelFont)
         self.lineEdit.setFixedHeight(HEIGHT)
         self.lineEdit.setStyleSheet(make_stylesheet())
         self.setPlaceholder(placeholder)
-        self.button = QtWidgets.QToolButton()
+        self.button = QToolButton()
         self.button.setFont(btFont)
         self.button.setFixedHeight(HEIGHT)
         self.button.setFixedWidth(HEIGHT)
         self.button.setText("...")
         self.button.setStyleSheet(make_stylesheet())
-        layout = QtWidgets.QHBoxLayout()
+        layout = QHBoxLayout()
         layout.addWidget(self.label)
         layout.addWidget(self.lineEdit)
         layout.addWidget(self.button)
         self.setLayout(layout)
 
     def browse(self):
-        filename = QtWidgets.QFileDialog.getOpenFileName(
-            directory=self.lastVisit)
+        filename = QFileDialog.getOpenFileName(directory=self.lastVisit)
         file_path = filename[0]
         if file_path:
             self.lineEdit.setText(file_path)
@@ -180,7 +174,7 @@ class FileInput(QtWidgets.QWidget):
         self.label.setFixedWidth(offset)
 
 
-class FileOutput(QtWidgets.QWidget):
+class FileOutput(QWidget):
     def __init__(self,
                  label='',
                  placeholder=PATH_PLACEHOLDER,
@@ -192,36 +186,32 @@ class FileOutput(QtWidgets.QWidget):
         self.button.clicked.connect(self.browse)
 
     def setupUi(self, label, placeholder):
-        font = QtGui.QFont()
-        font.setFamily(FONT)
-        font.setPointSize(FONTSIZE)
-        self.label = QtWidgets.QLabel()
+
+        self.label = QLabel()
         self.label.setText(label)
         self.label.setFixedHeight(HEIGHT)
-        self.label.setFont(font)
+        self.label.setFont(labelFont)
         self.label.setMinimumWidth(HOFFSET)
         self.label.setStyleSheet(make_stylesheet(alpha=0))
-        self.lineEdit = QtWidgets.QLineEdit()
-        self.lineEdit.setFont(font)
+        self.lineEdit = QLineEdit()
+        self.lineEdit.setFont(labelFont)
         self.lineEdit.setFixedHeight(HEIGHT)
         self.lineEdit.setStyleSheet(make_stylesheet())
         self.setPlaceholder(placeholder)
-        font.setBold(True)
-        self.button = QtWidgets.QToolButton()
-        self.button.setFont(font)
+        self.button = QToolButton()
+        self.button.setFont(btFont)
         self.button.setFixedHeight(HEIGHT)
         self.button.setFixedWidth(HEIGHT)
         self.button.setText("...")
         self.button.setStyleSheet(make_stylesheet())
-        layout = QtWidgets.QHBoxLayout()
+        layout = QHBoxLayout()
         layout.addWidget(self.label)
         layout.addWidget(self.lineEdit, 2)
         layout.addWidget(self.button)
         self.setLayout(layout)
 
     def browse(self):
-        filename = QtWidgets.QFileDialog.getSaveFileName(
-            directory=self.lastVisit)
+        filename = QFileDialog.getSaveFileName(directory=self.lastVisit)
         file_path = filename[0]
         if file_path:
             self.lineEdit.setText(file_path)
@@ -237,7 +227,7 @@ class FileOutput(QtWidgets.QWidget):
         self.label.setFixedWidth(offset)
 
 
-class InputParameter(QtWidgets.QWidget):
+class InputParameter(QWidget):
     def __init__(self,
                  label='',
                  orientation=HORIZONTAL,
@@ -247,22 +237,19 @@ class InputParameter(QtWidgets.QWidget):
         self.setupUi(label, orientation)
 
     def setupUi(self, label, orientation):
-        font = QtGui.QFont()
-        font.setFamily(FONT)
-        font.setPointSize(FONTSIZE)
-        self.label = QtWidgets.QLabel()
+        self.label = QLabel()
         self.label.setText(label)
         self.label.setFixedHeight(HEIGHT)
-        self.label.setFont(font)
+        self.label.setFont(labelFont)
         self.label.setStyleSheet(make_stylesheet(alpha=0))
-        self.lineEdit = QtWidgets.QLineEdit()
-        self.lineEdit.setFont(font)
+        self.lineEdit = QLineEdit()
+        self.lineEdit.setFont(labelFont)
         self.lineEdit.setFixedHeight(HEIGHT)
         self.lineEdit.setStyleSheet(make_stylesheet())
         if orientation == VERTICAL:
-            layout = QtWidgets.QVBoxLayout()
+            layout = QVBoxLayout()
         else:
-            layout = QtWidgets.QHBoxLayout()
+            layout = QHBoxLayout()
             self.label.setMinimumWidth(HOFFSET)
         layout.addWidget(self.label)
         layout.addWidget(self.lineEdit)
@@ -298,7 +285,7 @@ class InputParameter(QtWidgets.QWidget):
         self.label.setFixedWidth(offset)
 
 
-class IntInputParameter(QtWidgets.QWidget):
+class IntInputParameter(QWidget):
     def __init__(self,
                  label='',
                  orientation=HORIZONTAL,
@@ -309,26 +296,23 @@ class IntInputParameter(QtWidgets.QWidget):
         self.setupUi(label, orientation, value_range)
 
     def setupUi(self, label, orientation, value_range):
-        font = QtGui.QFont()
-        font.setFamily(FONT)
-        font.setPointSize(FONTSIZE)
-        self.label = QtWidgets.QLabel()
+        self.label = QLabel()
         self.label.setText(label)
         self.label.setFixedHeight(HEIGHT)
-        self.label.setFont(font)
+        self.label.setFont(labelFont)
         self.label.setStyleSheet(make_stylesheet(alpha=0))
-        self.validator = QtGui.QIntValidator()
+        self.validator = QIntValidator()
         if value_range is not None:
             self.validator.setRange(*value_range)
-        self.lineEdit = QtWidgets.QLineEdit()
-        self.lineEdit.setFont(font)
+        self.lineEdit = QLineEdit()
+        self.lineEdit.setFont(labelFont)
         self.lineEdit.setFixedHeight(HEIGHT)
         self.lineEdit.setStyleSheet(make_stylesheet())
         self.lineEdit.setValidator(self.validator)
         if orientation == VERTICAL:
-            layout = QtWidgets.QVBoxLayout()
+            layout = QVBoxLayout()
         else:
-            layout = QtWidgets.QHBoxLayout()
+            layout = QHBoxLayout()
             self.label.setMinimumWidth(HOFFSET)
         layout.addWidget(self.label)
         layout.addWidget(self.lineEdit)
@@ -364,7 +348,7 @@ class IntInputParameter(QtWidgets.QWidget):
         self.label.setFixedWidth(offset)
 
 
-class ComboInput(QtWidgets.QWidget):
+class ComboInput(QWidget):
     def __init__(self,
                  label='',
                  items=None,
@@ -374,20 +358,17 @@ class ComboInput(QtWidgets.QWidget):
         self.setupUi(label, items)
 
     def setupUi(self, label, items):
-        font = QtGui.QFont()
-        font.setFamily(FONT)
-        font.setPointSize(FONTSIZE)
-        self.label = QtWidgets.QLabel()
+        self.label = QLabel()
         self.label.setText(label)
         self.label.setFixedHeight(HEIGHT)
-        self.label.setFont(font)
+        self.label.setFont(labelFont)
         self.label.setStyleSheet(make_stylesheet(alpha=0))
         self.label.setMinimumWidth(HOFFSET)
-        self.comboEdit = QtWidgets.QComboBox()
-        self.comboEdit.setFont(font)
+        self.comboEdit = QComboBox()
+        self.comboEdit.setFont(labelFont)
         self.comboEdit.setFixedHeight(HEIGHT)
         self.comboEdit.setStyleSheet(make_stylesheet())
-        layout = QtWidgets.QHBoxLayout()
+        layout = QHBoxLayout()
         layout.addWidget(self.label)
         layout.addWidget(self.comboEdit, 1)
         self.setLayout(layout)
@@ -402,18 +383,15 @@ class ComboInput(QtWidgets.QWidget):
         self.comboEdit.currentIndexChanged.connect(func)
 
 
-class CheckInput(QtWidgets.QCheckBox):
+class CheckInput(QCheckBox):
     def __init__(self, label='', checked=True, *args, **kwargs):
         super(CheckInput, self).__init__(*args, **kwargs)
         self.setupUi(label, checked)
 
     def setupUi(self, label, checked):
-        font = QtGui.QFont()
-        font.setFamily(FONT)
-        font.setPointSize(FONTSIZE)
         self.setText(label)
         self.setFixedHeight(HEIGHT)
-        self.setFont(font)
+        self.setFont(labelFont)
         self.setChecked(checked)
         self.setStyleSheet(make_stylesheet(white, alpha=0))
 
@@ -429,32 +407,28 @@ class CheckInput(QtWidgets.QCheckBox):
         self.stateChanged.connect(func)
 
 
-class Button(QtWidgets.QToolButton):
+class Button(QToolButton):
     def __init__(self, label='', *args, **kwargs):
         super(Button, self).__init__(*args, **kwargs)
         self.setupUi(label)
 
     def setupUi(self, label):
-        font = QtGui.QFont()
-        font.setFamily(FONT)
-        font.setPointSize(FONTSIZE)
-        font.setBold(True)
         self.setText(label)
         self.setFixedHeight(HEIGHT)
-        self.setFont(font)
+        self.setFont(btFont)
         self.setStyleSheet(make_stylesheet(blue, radius=5))
         self.setMinimumWidth(BTWIDTH)
-        self.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.setCursor(QCursor(Qt.PointingHandCursor))
 
     def disable(self):
         self.setEnabled(False)
         self.setStyleSheet(make_stylesheet(grey))
-        self.setCursor(QtGui.QCursor(QtCore.Qt.ForbiddenCursor))
+        self.setCursor(QCursor(Qt.ForbiddenCursor))
 
     def enable(self, color):
         self.setEnabled(True)
         self.setStyleSheet(make_stylesheet(color))
-        self.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.setCursor(QCursor(Qt.PointingHandCursor))
 
     def subscribe(self, func):
         self.clicked.connect(func)
@@ -463,7 +437,7 @@ class Button(QtWidgets.QToolButton):
         self.setStyleSheet(style)
 
 
-class StatusIndicator(QtWidgets.QWidget):
+class StatusIndicator(QWidget):
     def __init__(self,
                  label='',
                  status='',
@@ -474,23 +448,16 @@ class StatusIndicator(QtWidgets.QWidget):
         self.setupUi(label, status, size)
 
     def setupUi(self, label, status, size):
-        layout = QtWidgets.QHBoxLayout()
-        labelFont = QtGui.QFont()
-        labelFont.setFamily(FONT)
-        labelFont.setPointSize(FONTSIZE)
-        btFont = QtGui.QFont()
-        btFont.setFamily(FONT)
-        btFont.setPointSize(FONTSIZE)
-        btFont.setBold(True)
+        layout = QHBoxLayout()
         if label:
-            self.label = QtWidgets.QLabel()
+            self.label = QLabel()
             self.label.setFont(labelFont)
             self.label.setText(label)
             self.label.setStyleSheet(make_stylesheet(alpha=0))
             self.label.setFixedHeight(HEIGHT)
             self.label.setFixedWidth(HOFFSET)
             layout.addWidget(self.label)
-        self.button = QtWidgets.QToolButton()
+        self.button = QToolButton()
         self.button.setFont(btFont)
         self.button.setText(status)
         self.button.setFixedHeight(HEIGHT)
@@ -503,12 +470,12 @@ class StatusIndicator(QtWidgets.QWidget):
     def disable(self):
         self.button.setEnabled(False)
         self.button.setText('')
-        self.button.setCursor(QtGui.QCursor(QtCore.Qt.ForbiddenCursor))
+        self.button.setCursor(QCursor(Qt.ForbiddenCursor))
 
     def enable(self, text=''):
         self.button.setEnabled(True)
         self.button.setText(text)
-        self.button.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.button.setCursor(QCursor(Qt.PointingHandCursor))
 
     def setText(self, text):
         self.button.setText(text)
@@ -523,7 +490,7 @@ class StatusIndicator(QtWidgets.QWidget):
         self.label.setFixedWidth(offset)
 
 
-class CrawlerUI(QtWidgets.QWidget):
+class CrawlerUI(QWidget):
     def __init__(self, *args, **kwargs):
         super(CrawlerUI, self).__init__(*args, **kwargs)
         self.setupUi()
@@ -562,21 +529,21 @@ class CrawlerUI(QtWidgets.QWidget):
         self.statusBrowser = StatusIndicator('Browser', 'offline')
         self.statusCrawler = StatusIndicator('Crawler', 'offline')
         self.statusGeneral = StatusIndicator(status='', size=self.width())
-        self.layoutGui = QtWidgets.QHBoxLayout()
-        self.layoutLeft = QtWidgets.QVBoxLayout()
-        self.layoutTop = QtWidgets.QHBoxLayout()
-        self.layoutParams = QtWidgets.QHBoxLayout()
-        self.layoutSmall = QtWidgets.QVBoxLayout()
-        self.layoutBig = QtWidgets.QVBoxLayout()
-        self.layoutBottom = QtWidgets.QVBoxLayout()
-        self.layoutButtons = QtWidgets.QVBoxLayout()
-        self.layoutStatus = QtWidgets.QHBoxLayout()
+        self.layoutGui = QHBoxLayout()
+        self.layoutLeft = QVBoxLayout()
+        self.layoutTop = QHBoxLayout()
+        self.layoutParams = QHBoxLayout()
+        self.layoutSmall = QVBoxLayout()
+        self.layoutBig = QVBoxLayout()
+        self.layoutBottom = QVBoxLayout()
+        self.layoutButtons = QVBoxLayout()
+        self.layoutStatus = QHBoxLayout()
         self.layoutTop.addWidget(self.inputUrl)
-        self.layoutSmall.addWidget(self.inputMeta0, 0, QtCore.Qt.AlignLeft)
-        self.layoutSmall.addWidget(self.inputMeta1, 0, QtCore.Qt.AlignLeft)
-        self.layoutSmall.addWidget(self.inputMeta2, 0, QtCore.Qt.AlignLeft)
-        self.layoutSmall.addWidget(self.inputMeta3, 0, QtCore.Qt.AlignLeft)
-        self.layoutSmall.addWidget(self.inputFilename, 0, QtCore.Qt.AlignLeft)
+        self.layoutSmall.addWidget(self.inputMeta0, 0, Qt.AlignLeft)
+        self.layoutSmall.addWidget(self.inputMeta1, 0, Qt.AlignLeft)
+        self.layoutSmall.addWidget(self.inputMeta2, 0, Qt.AlignLeft)
+        self.layoutSmall.addWidget(self.inputMeta3, 0, Qt.AlignLeft)
+        self.layoutSmall.addWidget(self.inputFilename, 0, Qt.AlignLeft)
         self.layoutBig.addWidget(self.inputMeta4)
         self.layoutBig.addWidget(self.inputMeta5)
         self.layoutBig.addWidget(self.inputMeta6)
@@ -602,8 +569,8 @@ class CrawlerUI(QtWidgets.QWidget):
         self.layoutGui.addLayout(self.layoutButtons)
         self.setLayout(self.layoutGui)
 
-
-app = QtWidgets.QApplication([])
-volume = CrawlerUI()
-volume.show()
-app.exec_()
+if __name__ == '__main__':
+    app = QApplication([])
+    volume = CrawlerUI()
+    volume.show()
+    app.exec_()

@@ -155,13 +155,13 @@ class CrawlerUI(Atcrawl):
     def change_crawler_status(self, status):
         if status == 'running':
             self.statusCrawler.setStyle(make_stylesheet(green))
-            self.statusBrowser.setText(status)
+            self.statusCrawler.setText(status)
         elif status == 'offline':
             self.statusCrawler.setStyle(make_stylesheet(red))
-            self.statusBrowser.setText(status)
+            self.statusCrawler.setText(status)
         else:
             self.statusCrawler.setStyle(make_stylesheet(yellow))
-            self.statusBrowser.setText(status)
+            self.statusCrawler.setText(status)
 
     def count_parsed(self):
         try:
@@ -349,7 +349,7 @@ class CrawlerUI(Atcrawl):
                                     export_type=_type)
 
                 items = self.count_parsed()
-                _output = _folder + '\\' + _name + f'.{_type}'
+                _output = _folder + f'/{_name}.{_type}'
                 self.output = _output
                 self.mask_output(f"Items: {items} | {_output}")
 

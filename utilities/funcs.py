@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-import csv
 import concurrent.futures
+import csv
 import json
 import os
 import random
@@ -27,7 +27,6 @@ def get_headers(browser):
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
             "Accept-Language": "en-US,en;q=0.5",
             "Accept-Encoding": "gzip, deflate, br",
-            "Referer": "https://www.google.com/",
             "DNT": "1",
             "Connection": "keep-alive",
             "Upgrade-Insecure-Requests": "1"
@@ -42,7 +41,6 @@ def get_headers(browser):
             "Sec-Fetch-Mode": "navigate",
             "Sec-Fetch-User": "?1",
             "Sec-Fetch-Dest": "document",
-            "Referer": "https://www.google.com/",
             "Accept-Encoding": "gzip, deflate, br",
             "Accept-Language": "en-US,en;q=0.9"
         }

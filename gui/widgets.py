@@ -2,11 +2,13 @@
 
 from atcrawl.gui.colors import *
 import os
+import pandas as pd
 from PyQt5.QtCore import QRegExp, Qt
 from PyQt5.QtGui import QCursor, QFont, QIntValidator, QRegExpValidator
 from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QCompleter,
                              QFileDialog, QHBoxLayout, QLabel, QLineEdit,
-                             QToolButton, QVBoxLayout, QWidget, QSizePolicy)
+                             QToolButton, QVBoxLayout, QWidget, QSizePolicy,
+                             QStackedLayout)
 
 HEIGHT = 25
 HOFFSET = 55
@@ -58,7 +60,12 @@ class FileNameInput(QWidget):
         layout.addWidget(self.lineEdit)
         self.setLayout(layout)
 
-    def getText(self):
+    def getText(self, suffix=None):
+        if suffix is not None:
+            _stem = self.lineEdit.text()
+            _suffix = suffix if suffix.startswith('.') else f".{suffix}"
+            _filename = f"{_stem}{_suffix}"
+            return _filename
         return self.lineEdit.text()
 
     def setText(self, text):
@@ -82,20 +89,20 @@ class FolderInput(QWidget):
                  label='',
                  placeholder=PATH_PLACEHOLDER,
                  parent=None,
+                 orientation=HORIZONTAL,
                  *args,
                  **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
-        self.setupUi(label, placeholder)
+        self.setupUi(label, placeholder, orientation)
         self.lastVisit = ''
         self.button.clicked.connect(self.browse)
         self.lineEdit.textChanged.connect(lambda x: self.pathExists(x))
 
-    def setupUi(self, label, placeholder):
+    def setupUi(self, label, placeholder, orientation):
         self.label = QLabel()
         self.label.setText(label)
         self.label.setFixedHeight(HEIGHT)
         self.label.setFont(labelFont)
-        self.label.setMinimumWidth(HOFFSET)
         self.label.setStyleSheet(make_stylesheet(alpha=0))
         self.lineEdit = QLineEdit()
         self.lineEdit.setFont(labelFont)
@@ -110,10 +117,19 @@ class FolderInput(QWidget):
         self.button.setFixedWidth(HEIGHT)
         self.button.setText("...")
         self.button.setStyleSheet(make_stylesheet(border=grey))
-        layout = QHBoxLayout()
-        layout.addWidget(self.label)
-        layout.addWidget(self.lineEdit)
-        layout.addWidget(self.button)
+        if orientation == HORIZONTAL:
+            self.label.setMinimumWidth(HOFFSET)
+            layout = QHBoxLayout()
+            layout.addWidget(self.label)
+            layout.addWidget(self.lineEdit)
+            layout.addWidget(self.button)
+        else:
+            layout = QVBoxLayout()
+            inner = QHBoxLayout()
+            layout.addWidget(self.label)
+            inner.addWidget(self.lineEdit)
+            inner.addWidget(self.button)
+            layout.addLayout(inner)
         self.setLayout(layout)
 
     def browse(self):
@@ -137,7 +153,10 @@ class FolderInput(QWidget):
     def pathExists(self, path):
         if path:
             if os.path.exists(path):
-                self.lineEdit.setStyleSheet(make_stylesheet(border=green))
+                if os.path.isdir(path):
+                    self.lineEdit.setStyleSheet(make_stylesheet(border=green))
+                else:
+                    self.lineEdit.setStyleSheet(make_stylesheet(border=yellow))
             else:
                 self.lineEdit.setStyleSheet(make_stylesheet(border=red))
         else:
@@ -149,20 +168,21 @@ class FileInput(QWidget):
                  label='',
                  placeholder=PATH_PLACEHOLDER,
                  parent=None,
+                 orientation=HORIZONTAL,
                  *args,
                  **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
-        self.setupUi(label, placeholder)
+        self.setupUi(label, placeholder, orientation)
         self.lastVisit = ''
         self.button.clicked.connect(self.browse)
         self.lineEdit.textChanged.connect(lambda x: self.pathExists(x))
+        self.browseCallback = None
 
-    def setupUi(self, label, placeholder):
+    def setupUi(self, label, placeholder, orientation):
         self.label = QLabel()
         self.label.setText(label)
         self.label.setFixedHeight(HEIGHT)
         self.label.setFont(labelFont)
-        self.label.setMinimumWidth(HOFFSET)
         self.label.setStyleSheet(make_stylesheet(alpha=0))
         self.lineEdit = QLineEdit()
         self.lineEdit.setFont(labelFont)
@@ -176,11 +196,21 @@ class FileInput(QWidget):
         self.button.setFixedHeight(HEIGHT)
         self.button.setFixedWidth(HEIGHT)
         self.button.setText("...")
-        self.button.setStyleSheet(make_stylesheet())
-        layout = QHBoxLayout()
-        layout.addWidget(self.label)
-        layout.addWidget(self.lineEdit)
-        layout.addWidget(self.button)
+        self.button.setStyleSheet(make_stylesheet(border=grey))
+        if orientation == HORIZONTAL:
+            self.label.setMinimumWidth(HOFFSET)
+            layout = QHBoxLayout()
+            layout.addWidget(self.label)
+            layout.addWidget(self.lineEdit)
+            layout.addWidget(self.button)
+        else:
+            layout = QVBoxLayout()
+            inner = QHBoxLayout()
+            layout.addWidget(self.label)
+            inner.addWidget(self.lineEdit)
+            inner.addWidget(self.button)
+            layout.addLayout(inner)
+        self.setLayout(layout)
         self.setLayout(layout)
 
     def browse(self):
@@ -189,6 +219,12 @@ class FileInput(QWidget):
         if file_path:
             self.lineEdit.setText(file_path)
             self.lastVisit = file_path
+
+            if self.browseCallback is not None:
+                self.browseCallback()
+
+    def setBrowseCallback(self, func):
+        self.browseCallback = func
 
     def getText(self):
         return self.lineEdit.text()
@@ -205,7 +241,10 @@ class FileInput(QWidget):
     def pathExists(self, path):
         if path:
             if os.path.exists(path):
-                self.lineEdit.setStyleSheet(make_stylesheet(border=green))
+                if os.path.isfile(path):
+                    self.lineEdit.setStyleSheet(make_stylesheet(border=green))
+                else:
+                    self.lineEdit.setStyleSheet(make_stylesheet(border=yellow))
             else:
                 self.lineEdit.setStyleSheet(make_stylesheet(border=red))
         else:
@@ -217,19 +256,19 @@ class FileOutput(QWidget):
                  label='',
                  placeholder=PATH_PLACEHOLDER,
                  parent=None,
+                 orientation=HORIZONTAL,
                  *args,
                  **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
-        self.setupUi(label, placeholder)
+        self.setupUi(label, placeholder, orientation)
         self.lastVisit = ''
         self.button.clicked.connect(self.browse)
 
-    def setupUi(self, label, placeholder):
+    def setupUi(self, label, placeholder, orientation):
         self.label = QLabel()
         self.label.setText(label)
         self.label.setFixedHeight(HEIGHT)
         self.label.setFont(labelFont)
-        self.label.setMinimumWidth(HOFFSET)
         self.label.setStyleSheet(make_stylesheet(alpha=0))
         self.lineEdit = QLineEdit()
         self.lineEdit.setFont(labelFont)
@@ -243,11 +282,20 @@ class FileOutput(QWidget):
         self.button.setFixedHeight(HEIGHT)
         self.button.setFixedWidth(HEIGHT)
         self.button.setText("...")
-        self.button.setStyleSheet(make_stylesheet())
-        layout = QHBoxLayout()
-        layout.addWidget(self.label)
-        layout.addWidget(self.lineEdit, 2)
-        layout.addWidget(self.button)
+        self.button.setStyleSheet(make_stylesheet(border=grey))
+        if orientation == HORIZONTAL:
+            self.label.setMinimumWidth(HOFFSET)
+            layout = QHBoxLayout()
+            layout.addWidget(self.label)
+            layout.addWidget(self.lineEdit)
+            layout.addWidget(self.button)
+        else:
+            layout = QVBoxLayout()
+            inner = QHBoxLayout()
+            layout.addWidget(self.label)
+            inner.addWidget(self.lineEdit)
+            inner.addWidget(self.button)
+            layout.addLayout(inner)
         self.setLayout(layout)
 
     def browse(self):
@@ -440,11 +488,22 @@ class ComboInput(QWidget):
         layout.addWidget(self.comboEdit, 1)
         self.setLayout(layout)
         if items is not None:
-            for item in items:
-                self.comboEdit.addItem(item)
+            self.comboEdit.addItems(items)
 
     def getCurrentText(self):
         return self.comboEdit.currentText()
+
+    def getCurrentIndex(self):
+        return self.comboEdit.currentIndex()
+
+    def addItems(self, items):
+        self.comboEdit.addItems(items)
+
+    def clearItems(self):
+        self.comboEdit.clear()
+
+    def setOffset(self, offset):
+        self.label.setMinimumWidth(offset)
 
     def subscribe(self, func):
         self.comboEdit.currentIndexChanged.connect(func)
@@ -643,12 +702,317 @@ class Atcrawl(QWidget):
         self.layoutLeft.addLayout(self.layoutBottom)
         self.layoutGui.addLayout(self.layoutLeft)
         self.layoutGui.addLayout(self.layoutButtons)
-        # self.Res()
         self.setLayout(self.layoutGui)
+
+
+class SplitFileEdit(QWidget):
+    def __init__(self, parent=None, *args, **kwargs):
+        super().__init__(parent=parent, *args, **kwargs)
+        self.setupUi()
+
+    def setupUi(self):
+        self.setStyleSheet(make_stylesheet(light_grey, radius=10))
+
+        self.fileToModify = FileInput("Αρχείο προς επεξεργασία:",
+                                      orientation=VERTICAL)
+        self.destination = FolderInput("Αποθήκευση αρχέιων στον φάκελο:",
+                                       orientation=VERTICAL)
+        self.splitRatio = IntInputParameter("Σπάσιμο αρχείου ανά:",
+                                            orientation=VERTICAL)
+
+        self.buttonLayout = QHBoxLayout()
+        self.status = StatusIndicator(status='', size=self.width() - BTWIDTH)
+        self.status.setStyle(make_stylesheet(grey))
+        self.button = Button("Εκτέλεση")
+        self.buttonLayout.addWidget(self.status)
+        self.buttonLayout.addWidget(self.button)
+
+        self.pageLayout = QVBoxLayout()
+        self.pageLayout.addWidget(self.fileToModify)
+        self.pageLayout.addWidget(self.destination)
+        self.pageLayout.addWidget(self.splitRatio)
+        self.pageLayout.addStretch()
+        self.pageLayout.addLayout(self.buttonLayout)
+        self.setLayout(self.pageLayout)
+
+
+class DownloadImagesEdit(QWidget):
+    def __init__(self, parent=None, *args, **kwargs):
+        super().__init__(parent=parent, *args, **kwargs)
+        self.setupUi()
+        self.fileToModify.lineEdit.textChanged.connect(self.clearCombos)
+
+    def setupUi(self):
+        self.setStyleSheet(make_stylesheet(light_grey, radius=10))
+
+        self.fileToModify = FileInput("Αρχείο προς επεξεργασία:",
+                                      orientation=VERTICAL)
+        self.fileToModify.setBrowseCallback(self.readInputFile)
+        self.colCombo1 = ComboInput("Στήλη ονόματος εικόνας")
+        self.colCombo1.setOffset(200)
+        self.colCombo2 = ComboInput("Στήλη URL εικόνας")
+        self.colCombo2.setOffset(200)
+        self.destination = FolderInput("Αποθήκευση αρχέιων στον φάκελο:",
+                                       orientation=VERTICAL)
+
+        self.buttonLayout = QHBoxLayout()
+        self.status = StatusIndicator(status='', size=self.width() - BTWIDTH)
+        self.status.setStyle(make_stylesheet(grey))
+        self.button = Button("Εκτέλεση")
+        self.buttonLayout.addWidget(self.status)
+        self.buttonLayout.addWidget(self.button)
+
+        self.pageLayout = QVBoxLayout()
+        self.pageLayout.addWidget(self.fileToModify)
+        self.pageLayout.addWidget(self.colCombo1)
+        self.pageLayout.addWidget(self.colCombo2)
+        self.pageLayout.addWidget(self.destination)
+        self.pageLayout.addStretch()
+        self.pageLayout.addLayout(self.buttonLayout)
+        self.setLayout(self.pageLayout)
+
+    def readInputFile(self):
+        _file = self.fileToModify.getText()
+        _df = pd.read_excel(_file)
+        _cols = _df.columns.tolist()
+
+        self.colCombo1.addItems(_cols)
+        self.colCombo2.addItems(_cols)
+
+    def clearCombos(self):
+        self.colCombo1.clearItems()
+        self.colCombo2.clearItems()
+
+
+class CreateImagesEdit(QWidget):
+    def __init__(self, parent=None, *args, **kwargs):
+        super().__init__(parent=parent, *args, **kwargs)
+        self.setupUi()
+
+    def setupUi(self):
+        self.setStyleSheet(make_stylesheet(light_grey, radius=10))
+        self.fileToModify = FileInput("Αρχείο προς επεξεργασία:",
+                                      orientation=VERTICAL)
+        self.source = FolderInput("Φάκελος πρωτότυπων εικόνων:",
+                                  orientation=VERTICAL)
+        self.destination = FolderInput("Αποθήκευση αρχέιων στον φάκελο:",
+                                       orientation=VERTICAL)
+        self.prefix = InputParameter("Link μπροστά από το όνομα της εικόνας:",
+                                     orientation=VERTICAL)
+        self.buttonLayout = QHBoxLayout()
+        self.status = StatusIndicator(status='', size=self.width() - BTWIDTH)
+        self.status.setStyle(make_stylesheet(grey))
+        self.button = Button("Εκτέλεση")
+        self.buttonLayout.addWidget(self.status)
+        self.buttonLayout.addWidget(self.button)
+
+        self.pageLayout = QVBoxLayout()
+        self.pageLayout.addWidget(self.fileToModify)
+        self.pageLayout.addWidget(self.source)
+        self.pageLayout.addWidget(self.destination)
+        self.pageLayout.addWidget(self.prefix)
+        self.pageLayout.addStretch()
+        self.pageLayout.addLayout(self.buttonLayout)
+        self.setLayout(self.pageLayout)
+
+
+class MergeEdit(QWidget):
+    def __init__(self, parent=None, *args, **kwargs):
+        super().__init__(parent=parent, *args, **kwargs)
+        self.setupUi()
+
+    def setupUi(self):
+        self.setStyleSheet(make_stylesheet(light_grey, radius=10))
+        self.source = FolderInput("Φάκελος αρχείων:",
+                                  orientation=VERTICAL)
+        self.colsLayout1 = QHBoxLayout()
+        self.colsLayout2 = QHBoxLayout()
+        self.newColName1 = InputParameter("Νέα στήλη 1")
+        self.newColName1.setOffset(80)
+        self.newColName1.setPlaceholder("Προαιρετικό")
+        self.newColValue1 = InputParameter("Τιμή στήλης 1")
+        self.newColValue1.setOffset(80)
+        self.newColValue1.setPlaceholder("Προαιρετικό")
+        self.newColName2 = InputParameter("Νέα στήλη 2")
+        self.newColName2.setOffset(80)
+        self.newColName2.setPlaceholder("Προαιρετικό")
+        self.newColValue2 = InputParameter("Τιμή στήλης 2")
+        self.newColValue2.setOffset(80)
+        self.newColValue2.setPlaceholder("Προαιρετικό")
+        self.colsLayout1.addWidget(self.newColName1)
+        self.colsLayout1.addWidget(self.newColValue1)
+        self.colsLayout2.addWidget(self.newColName2)
+        self.colsLayout2.addWidget(self.newColValue2)
+        self.destination = FileOutput("Αποθήκευση αρχείου:",
+                                      orientation=VERTICAL)
+        self.buttonLayout = QHBoxLayout()
+        self.status = StatusIndicator(status='', size=self.width() - BTWIDTH)
+        self.status.setStyle(make_stylesheet(grey))
+        self.button = Button("Εκτέλεση")
+        self.buttonLayout.addWidget(self.status)
+        self.buttonLayout.addWidget(self.button)
+        self.pageLayout = QVBoxLayout()
+        self.pageLayout.addWidget(self.source)
+        self.pageLayout.addLayout(self.colsLayout1)
+        self.pageLayout.addLayout(self.colsLayout2)
+        self.pageLayout.addWidget(self.destination)
+        self.pageLayout.addStretch()
+        self.pageLayout.addLayout(self.buttonLayout)
+        self.setLayout(self.pageLayout)
+
+
+class FilterEdit(QWidget):
+    def __init__(self, parent=None, *args, **kwargs):
+        super().__init__(parent=parent, *args, **kwargs)
+        self.setupUi()
+        self.fileToModify.lineEdit.textChanged.connect(self.clearCombos)
+
+    def setupUi(self):
+        self.setStyleSheet(make_stylesheet(light_grey, radius=10))
+
+        self.fileToModify = FileInput("Αρχείο προς επεξεργασία:",
+                                      orientation=VERTICAL)
+        self.fileToModify.setBrowseCallback(self.readInputFile)
+        self.combosLayout = QHBoxLayout()
+        self.colCombo1 = ComboInput("Στήλη εφαρμογής")
+        self.colCombo1.setOffset(100)
+        self.colCombo2 = ComboInput("Στήλη αλλαγών")
+        self.colCombo2.setOffset(100)
+        self.combosLayout.addWidget(self.colCombo1)
+        self.combosLayout.addWidget(self.colCombo2)
+        self.paramsLayout = QHBoxLayout()
+        self.paramFilter = InputParameter("Φίλτρο:")
+        self.paramFilter.setMinimumWidth(200)
+        self.paramTrue = InputParameter("Τιμή για θετικές:")
+        self.paramTrue.setMaximumWidth(50)
+        self.paramFalse = InputParameter("Τιμή για αρνητικές:")
+        self.paramFalse.setMaximumWidth(50)
+        self.paramsLayout.addWidget(self.paramFilter)
+        self.paramsLayout.addWidget(self.paramTrue)
+        self.paramsLayout.addWidget(self.paramFalse)
+        self.destination = FileOutput("Αποθήκευση αρχείου:",
+                                      orientation=VERTICAL)
+
+        self.buttonLayout = QHBoxLayout()
+        self.status = StatusIndicator(status='', size=self.width() - BTWIDTH)
+        self.status.setStyle(make_stylesheet(grey))
+        self.button = Button("Εκτέλεση")
+        self.buttonLayout.addWidget(self.status)
+        self.buttonLayout.addWidget(self.button)
+
+        self.pageLayout = QVBoxLayout()
+        self.pageLayout.addWidget(self.fileToModify)
+        self.pageLayout.addLayout(self.combosLayout)
+        self.pageLayout.addLayout(self.paramsLayout)
+        self.pageLayout.addWidget(self.destination)
+        self.pageLayout.addStretch()
+        self.pageLayout.addLayout(self.buttonLayout)
+        self.setLayout(self.pageLayout)
+
+    def readInputFile(self):
+        _file = self.fileToModify.getText()
+        _df = pd.read_excel(_file)
+        _cols = _df.columns.tolist()
+
+        self.colCombo1.addItems(_cols)
+        self.colCombo2.addItems(_cols)
+
+    def clearCombos(self):
+        self.colCombo1.clearItems()
+        self.colCombo2.clearItems()
+
+
+class SortEdit(QWidget):
+    def __init__(self, parent=None, *args, **kwargs):
+        super().__init__(parent=parent, *args, **kwargs)
+        self.setupUi()
+        self.fileToModify.lineEdit.textChanged.connect(self.clearCombos)
+
+    def setupUi(self):
+        self.setStyleSheet(make_stylesheet(light_grey, radius=10))
+
+        self.fileToModify = FileInput("Αρχείο προς επεξεργασία:",
+                                      orientation=VERTICAL)
+        self.fileToModify.setBrowseCallback(self.readInputFile)
+        self.colCombo1 = ComboInput("Στήλη εφαρμογής")
+
+        self.destination = FileOutput("Αποθήκευση αρχείου:",
+                                      orientation=VERTICAL)
+
+        self.buttonLayout = QHBoxLayout()
+        self.status = StatusIndicator(status='', size=self.width() - BTWIDTH)
+        self.status.setStyle(make_stylesheet(grey))
+        self.button = Button("Εκτέλεση")
+        self.buttonLayout.addWidget(self.status)
+        self.buttonLayout.addWidget(self.button)
+
+        self.pageLayout = QVBoxLayout()
+        self.pageLayout.addWidget(self.fileToModify)
+        self.pageLayout.addWidget(self.colCombo1)
+        self.pageLayout.addWidget(self.destination)
+        self.pageLayout.addStretch()
+        self.pageLayout.addLayout(self.buttonLayout)
+        self.setLayout(self.pageLayout)
+
+    def readInputFile(self):
+        _file = self.fileToModify.getText()
+        _df = pd.read_excel(_file)
+        _cols = _df.columns.tolist()
+
+        self.colCombo1.addItems(_cols)
+
+    def clearCombos(self):
+        self.colCombo1.clearItems()
+
+
+class EditWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setStyleSheet(make_color(light_grey))
+        self.setWindowTitle("atCrawl Services")
+        # self.resize(500, 300)
+
+        self.layoutGeneral = QVBoxLayout()
+        self.setLayout(self.layoutGeneral)
+        self.pageCombo = ComboInput('Διαδικασία',
+                                    ["Ένωση αρχείων",
+                                     "Αλλαγή τιμής σε στήλη",
+                                     "Σορτάρισμα αρχείου",
+                                     "Κατέβασμα εικόνων",
+                                     "Δημιουργία εικόνων (Rellas)",
+                                     "Κόψιμο αρχείου"])
+
+        self.pageCombo.subscribe(self.switchPage)
+
+        self.stackedLayout = QStackedLayout()
+
+        self.page1 = MergeEdit()
+        self.stackedLayout.addWidget(self.page1)
+
+        self.page2 = FilterEdit()
+        self.stackedLayout.addWidget(self.page2)
+
+        self.page3 = SortEdit()
+        self.stackedLayout.addWidget(self.page3)
+
+        self.page4 = DownloadImagesEdit()
+        self.stackedLayout.addWidget(self.page4)
+
+        self.page5 = CreateImagesEdit()
+        self.stackedLayout.addWidget(self.page5)
+
+        self.page6 = SplitFileEdit()
+        self.stackedLayout.addWidget(self.page6)
+
+        self.layoutGeneral.addWidget(self.pageCombo)
+        self.layoutGeneral.addLayout(self.stackedLayout)
+
+    def switchPage(self):
+        self.stackedLayout.setCurrentIndex(self.pageCombo.getCurrentIndex())
 
 
 if __name__ == '__main__':
     app = QApplication([])
-    volume = Atcrawl()
+    volume = EditWindow()
     volume.show()
     app.exec_()

@@ -46,7 +46,7 @@ def download_images_run():
 
         _dst = input_path("\nΠου να αποθηκευτούν οι εικόνες\n",
                           accept_empty=True,
-                          ensure=FILE)
+                          ensure=DIR)
 
         if _dst:
             dst = _dst

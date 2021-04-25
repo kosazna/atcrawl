@@ -17,16 +17,11 @@ class WelcomeUI(Ui_WelcomeUI):
             lambda: self.init_crawler("antallaktikaonline.gr"))
         self.bt_skroutz.clicked.connect(
             lambda: self.init_crawler("skroutz.gr"))
-        self.bt_booking.clicked.connect(
-            lambda: self.init_crawler("booking.com"))
-        self.bt_tripadvisor.clicked.connect(
-            lambda: self.init_crawler("tripadvisor.com"))
-        self.bt_spitogatos.clicked.connect(
-            lambda: self.init_crawler("spitogatos.gr"))
         self.bt_rellas.clicked.connect(
             lambda: self.init_crawler("rellasamortiser.gr"))
         self.bt_gbg.clicked.connect(
             lambda: self.init_crawler("gbg-eshop.gr"))
+        # self.bt_edit.clicked.connect()
 
     def init_crawler(self, name):
         authorizer = Authorize(name)

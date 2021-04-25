@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>378</width>
-    <height>530</height>
+    <width>350</width>
+    <height>428</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,7 +27,7 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>80</x>
+      <x>70</x>
       <y>130</y>
       <width>221</width>
       <height>50</height>
@@ -76,7 +76,7 @@ border-radius:20px;
     </property>
     <property name="geometry">
      <rect>
-      <x>80</x>
+      <x>70</x>
       <y>70</y>
       <width>220</width>
       <height>50</height>
@@ -131,61 +131,12 @@ border-radius:20px;
      <enum>Qt::NoArrow</enum>
     </property>
    </widget>
-   <widget class="QToolButton" name="bt_tripadvisor">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>80</x>
-      <y>310</y>
-      <width>221</width>
-      <height>50</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Segoe UI</family>
-      <pointsize>12</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
-      <underline>false</underline>
-      <strikeout>false</strikeout>
-      <kerning>true</kerning>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0.5, x2:1, y2:0.5, stop:0 rgba(13, 5, 81, 255), stop:1 rgba(36, 176, 189, 255));
-color: rgb(255, 255, 255);
-border-width:10px;
-border-radius:20px;
-</string>
-    </property>
-    <property name="text">
-     <string>tripadvisor.com</string>
-    </property>
-    <property name="checkable">
-     <bool>false</bool>
-    </property>
-    <property name="popupMode">
-     <enum>QToolButton::InstantPopup</enum>
-    </property>
-    <property name="toolButtonStyle">
-     <enum>Qt::ToolButtonFollowStyle</enum>
-    </property>
-    <property name="autoRaise">
-     <bool>true</bool>
-    </property>
-    <property name="arrowType">
-     <enum>Qt::NoArrow</enum>
-    </property>
-   </widget>
    <widget class="QTextBrowser" name="header">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>0</y>
-      <width>361</width>
+      <width>331</width>
       <height>61</height>
      </rect>
     </property>
@@ -211,14 +162,14 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;right&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:18pt; font-style:italic; color:#dadada;&quot;&gt;atCrawl Services&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QToolButton" name="bt_spitogatos">
+   <widget class="QToolButton" name="bt_edit">
     <property name="enabled">
      <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>430</y>
+      <x>70</x>
+      <y>330</y>
       <width>221</width>
       <height>50</height>
      </rect>
@@ -242,56 +193,7 @@ border-radius:20px;
 </string>
     </property>
     <property name="text">
-     <string>spitogatos.gr</string>
-    </property>
-    <property name="checkable">
-     <bool>false</bool>
-    </property>
-    <property name="popupMode">
-     <enum>QToolButton::InstantPopup</enum>
-    </property>
-    <property name="toolButtonStyle">
-     <enum>Qt::ToolButtonFollowStyle</enum>
-    </property>
-    <property name="autoRaise">
-     <bool>true</bool>
-    </property>
-    <property name="arrowType">
-     <enum>Qt::NoArrow</enum>
-    </property>
-   </widget>
-   <widget class="QToolButton" name="bt_booking">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>80</x>
-      <y>370</y>
-      <width>221</width>
-      <height>50</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Segoe UI</family>
-      <pointsize>12</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
-      <underline>false</underline>
-      <strikeout>false</strikeout>
-      <kerning>true</kerning>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0.5, x2:1, y2:0.5, stop:0 rgba(13, 5, 81, 255), stop:1 rgba(36, 176, 189, 255));
-color: rgb(255, 255, 255);
-border-width:10px;
-border-radius:20px;
-</string>
-    </property>
-    <property name="text">
-     <string>booking.com</string>
+     <string>Επεξεργασία Αρχείων</string>
     </property>
     <property name="checkable">
      <bool>false</bool>
@@ -315,7 +217,7 @@ border-radius:20px;
     </property>
     <property name="geometry">
      <rect>
-      <x>80</x>
+      <x>70</x>
       <y>190</y>
       <width>221</width>
       <height>50</height>
@@ -364,7 +266,7 @@ border-radius:20px;
     </property>
     <property name="geometry">
      <rect>
-      <x>80</x>
+      <x>70</x>
       <y>250</y>
       <width>221</width>
       <height>50</height>
@@ -408,17 +310,17 @@ border-radius:20px;
     </property>
    </widget>
   </widget>
+  <widget class="QStatusBar" name="statusbar"/>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>378</width>
+     <width>350</width>
      <height>21</height>
     </rect>
    </property>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections/>

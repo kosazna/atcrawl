@@ -810,7 +810,7 @@ class DownloadImagesEdit(QWidget):
                                      orientation=VERTICAL)
         self.destination = FolderInput("Αποθήκευση αρχέιων στον φάκελο:",
                                        orientation=VERTICAL)
-
+        self.destination.setText(paths.get_images_export())
         self.buttonLayout = QHBoxLayout()
         self.status = StatusIndicator(status='', size=self.width() - BTWIDTH)
         self.status.setStyle(make_stylesheet(grey))

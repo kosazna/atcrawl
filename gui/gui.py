@@ -7,7 +7,6 @@ from atcrawl.crawlers import *
 from PyQt5.QtCore import QThreadPool
 
 
-
 class WelcomeUI(Ui_WelcomeUI):
     def __init__(self, window):
         self.setupUi(window)
@@ -21,7 +20,7 @@ class WelcomeUI(Ui_WelcomeUI):
             lambda: self.init_crawler("rellasamortiser.gr"))
         self.bt_gbg.clicked.connect(
             lambda: self.init_crawler("gbg-eshop.gr"))
-        # self.bt_edit.clicked.connect()
+        self.bt_edit.clicked.connect(self.init_tools)
 
     def init_crawler(self, name):
         authorizer = Authorize(name)
@@ -35,6 +34,10 @@ class WelcomeUI(Ui_WelcomeUI):
         else:
             show_popup("You are not authorized",
                        "Contact support")
+
+    def init_tools(self, name):
+        self.ui = EditWindow()
+        self.ui.show()
 
 
 class CrawlerUI(Atcrawl):

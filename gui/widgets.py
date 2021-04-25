@@ -1,14 +1,19 @@
 # -*- coding: utf-8 -*-
 
-from atcrawl.gui.colors import *
+
 import os
+
 import pandas as pd
+from atcrawl.gui.colors import *
+from atcrawl.utilities.funcs import (create_images, download_images,
+                                     filter_file, merge_file, sort_file,
+                                     split_file)
 from PyQt5.QtCore import QRegExp, Qt
 from PyQt5.QtGui import QCursor, QFont, QIntValidator, QRegExpValidator
 from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QCompleter,
                              QFileDialog, QHBoxLayout, QLabel, QLineEdit,
-                             QToolButton, QVBoxLayout, QWidget, QSizePolicy,
-                             QStackedLayout)
+                             QSizePolicy, QStackedLayout, QToolButton,
+                             QVBoxLayout, QWidget)
 
 HEIGHT = 25
 HOFFSET = 55
@@ -709,6 +714,7 @@ class SplitFileEdit(QWidget):
     def __init__(self, parent=None, *args, **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
         self.setupUi()
+        self.button.subscribe(self.execute)
 
     def setupUi(self):
         self.setStyleSheet(make_stylesheet(light_grey, radius=10))
@@ -735,12 +741,24 @@ class SplitFileEdit(QWidget):
         self.pageLayout.addLayout(self.buttonLayout)
         self.setLayout(self.pageLayout)
 
+    def getParams(self):
+        _params = {'filepath': self.fileToModify.getText(),
+                   'destination': self.destination.getText(),
+                   'k': self.splitRatio.getText()}
+
+        return _params
+
+    def execute(self):
+        params = self.getParams()
+        split_file(**params)
+
 
 class DownloadImagesEdit(QWidget):
     def __init__(self, parent=None, *args, **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
         self.setupUi()
         self.fileToModify.lineEdit.textChanged.connect(self.clearCombos)
+        self.button.subscribe(self.execute)
 
     def setupUi(self):
         self.setStyleSheet(make_stylesheet(light_grey, radius=10))
@@ -771,6 +789,14 @@ class DownloadImagesEdit(QWidget):
         self.pageLayout.addLayout(self.buttonLayout)
         self.setLayout(self.pageLayout)
 
+    def getParams(self):
+        _params = {'src': self.fileToModify.getText(),
+                   'img_name': self.colCombo1.getCurrentText(),
+                   'img_url': self.colCombo2.getCurrentText(),
+                   'dst': self.destination.getText()}
+
+        return _params
+
     def readInputFile(self):
         _file = self.fileToModify.getText()
         _df = pd.read_excel(_file)
@@ -783,11 +809,26 @@ class DownloadImagesEdit(QWidget):
         self.colCombo1.clearItems()
         self.colCombo2.clearItems()
 
+    def execute(self):
+        params = self.getParams()
+        src = params.get('src')
+        url_col = params.get('img_url')
+        name_col = params.get('img_name')
+        dst = params.get('dst')
+
+        df = pd.read_excel(src)
+
+        url_list = df[url_col].tolist()
+        name_list = df[name_col].tolist()
+
+        download_images(url_list, dst, name_list)
+
 
 class CreateImagesEdit(QWidget):
     def __init__(self, parent=None, *args, **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
         self.setupUi()
+        self.button.subscribe(self.execute)
 
     def setupUi(self):
         self.setStyleSheet(make_stylesheet(light_grey, radius=10))
@@ -815,34 +856,38 @@ class CreateImagesEdit(QWidget):
         self.pageLayout.addLayout(self.buttonLayout)
         self.setLayout(self.pageLayout)
 
+    def getParams(self):
+        _params = {'data': self.fileToModify.getText(),
+                   'src_images': self.source.getText(),
+                   'dst_images': self.destination.getText(),
+                   'prefix_images': self.prefix.getText()}
+
+        return _params
+
+    def execute(self):
+        params = self.getParams()
+        create_images(**params)
+
 
 class MergeEdit(QWidget):
     def __init__(self, parent=None, *args, **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
         self.setupUi()
+        self.button.subscribe(self.execute)
 
     def setupUi(self):
         self.setStyleSheet(make_stylesheet(light_grey, radius=10))
         self.source = FolderInput("Φάκελος αρχείων:",
                                   orientation=VERTICAL)
         self.colsLayout1 = QHBoxLayout()
-        self.colsLayout2 = QHBoxLayout()
         self.newColName1 = InputParameter("Νέα στήλη 1")
         self.newColName1.setOffset(80)
         self.newColName1.setPlaceholder("Προαιρετικό")
         self.newColValue1 = InputParameter("Τιμή στήλης 1")
         self.newColValue1.setOffset(80)
         self.newColValue1.setPlaceholder("Προαιρετικό")
-        self.newColName2 = InputParameter("Νέα στήλη 2")
-        self.newColName2.setOffset(80)
-        self.newColName2.setPlaceholder("Προαιρετικό")
-        self.newColValue2 = InputParameter("Τιμή στήλης 2")
-        self.newColValue2.setOffset(80)
-        self.newColValue2.setPlaceholder("Προαιρετικό")
         self.colsLayout1.addWidget(self.newColName1)
         self.colsLayout1.addWidget(self.newColValue1)
-        self.colsLayout2.addWidget(self.newColName2)
-        self.colsLayout2.addWidget(self.newColValue2)
         self.destination = FileOutput("Αποθήκευση αρχείου:",
                                       orientation=VERTICAL)
         self.buttonLayout = QHBoxLayout()
@@ -854,11 +899,22 @@ class MergeEdit(QWidget):
         self.pageLayout = QVBoxLayout()
         self.pageLayout.addWidget(self.source)
         self.pageLayout.addLayout(self.colsLayout1)
-        self.pageLayout.addLayout(self.colsLayout2)
         self.pageLayout.addWidget(self.destination)
         self.pageLayout.addStretch()
         self.pageLayout.addLayout(self.buttonLayout)
         self.setLayout(self.pageLayout)
+
+    def getParams(self):
+        _params = {'src': self.source.getText(),
+                   'col1': self.newColName1.getText(),
+                   'val1': self.newColValue1.getText(),
+                   'dst': self.destination.getText()}
+
+        return _params
+
+    def execute(self):
+        params = self.getParams()
+        merge_file(**params)
 
 
 class FilterEdit(QWidget):
@@ -866,6 +922,7 @@ class FilterEdit(QWidget):
         super().__init__(parent=parent, *args, **kwargs)
         self.setupUi()
         self.fileToModify.lineEdit.textChanged.connect(self.clearCombos)
+        self.button.subscribe(self.execute)
 
     def setupUi(self):
         self.setStyleSheet(make_stylesheet(light_grey, radius=10))
@@ -909,6 +966,17 @@ class FilterEdit(QWidget):
         self.pageLayout.addLayout(self.buttonLayout)
         self.setLayout(self.pageLayout)
 
+    def getParams(self):
+        _params = {'src': self.fileToModify.getText(),
+                   'col1': self.colCombo1.getCurrentText(),
+                   'col2': self.colCombo2.getCurrentText(),
+                   'pattern': self.paramFilter.getText(),
+                   'val_true': self.paramTrue.getText(),
+                   'val_false': self.paramFalse.getText(),
+                   'dst': self.destination.getText()}
+
+        return _params
+
     def readInputFile(self):
         _file = self.fileToModify.getText()
         _df = pd.read_excel(_file)
@@ -921,15 +989,20 @@ class FilterEdit(QWidget):
         self.colCombo1.clearItems()
         self.colCombo2.clearItems()
 
+    def execute(self):
+        params = self.getParams()
+        filter_file(**params)
+
 
 class SortEdit(QWidget):
     def __init__(self, parent=None, *args, **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
         self.setupUi()
         self.fileToModify.lineEdit.textChanged.connect(self.clearCombos)
+        self.button.subscribe(self.execute)
 
     def setupUi(self):
-        self.setStyleSheet(make_stylesheet(light_grey, radius=10))
+        self.setStyleSheet(make_stylesheet(grey, radius=10))
 
         self.fileToModify = FileInput("Αρχείο προς επεξεργασία:",
                                       orientation=VERTICAL)
@@ -954,6 +1027,13 @@ class SortEdit(QWidget):
         self.pageLayout.addLayout(self.buttonLayout)
         self.setLayout(self.pageLayout)
 
+    def getParams(self):
+        _params = {'src': self.fileToModify.getText(),
+                   'col': self.colCombo1.getCurrentText(),
+                   'dst': self.destination.getText()}
+
+        return _params
+
     def readInputFile(self):
         _file = self.fileToModify.getText()
         _df = pd.read_excel(_file)
@@ -964,14 +1044,20 @@ class SortEdit(QWidget):
     def clearCombos(self):
         self.colCombo1.clearItems()
 
+    def execute(self):
+        params = self.getParams()
+        sort_file(**params)
+
 
 class EditWindow(QWidget):
     def __init__(self):
         super().__init__()
+        self.setupUi()
+
+    def setupUi(self):
         self.setStyleSheet(make_color(light_grey))
         self.setWindowTitle("atCrawl Services")
         # self.resize(500, 300)
-
         self.layoutGeneral = QVBoxLayout()
         self.setLayout(self.layoutGeneral)
         self.pageCombo = ComboInput('Διαδικασία',
@@ -981,29 +1067,20 @@ class EditWindow(QWidget):
                                      "Κατέβασμα εικόνων",
                                      "Δημιουργία εικόνων (Rellas)",
                                      "Κόψιμο αρχείου"])
-
         self.pageCombo.subscribe(self.switchPage)
-
         self.stackedLayout = QStackedLayout()
-
         self.page1 = MergeEdit()
         self.stackedLayout.addWidget(self.page1)
-
         self.page2 = FilterEdit()
         self.stackedLayout.addWidget(self.page2)
-
         self.page3 = SortEdit()
         self.stackedLayout.addWidget(self.page3)
-
         self.page4 = DownloadImagesEdit()
         self.stackedLayout.addWidget(self.page4)
-
         self.page5 = CreateImagesEdit()
         self.stackedLayout.addWidget(self.page5)
-
         self.page6 = SplitFileEdit()
         self.stackedLayout.addWidget(self.page6)
-
         self.layoutGeneral.addWidget(self.pageCombo)
         self.layoutGeneral.addLayout(self.stackedLayout)
 

@@ -198,6 +198,50 @@ def split_file(filepath, destination, k=2000):
         _sub.to_excel(save_name, index=False)
         print(f"  - Created: {save_name}")
 
+def sort_file(src, col, dst):
+    df = pd.read_excel(src)
+    k = df[col].apply(str).apply(
+            lambda x: "<NULL>" if x.isspace() else x.strip())
+    df[col] = k
+    mask = df[col] == '<NULL>'
+    a = df.loc[~mask].copy()
+    b = df.loc[mask].copy()
+    merged_df = pd.concat([a, b], ignore_index=True)
+    merged_df[col] = merged_df[col].replace('<NULL>', '')
+    merged_df.to_excel(dst, index=False)
+
+def filter_file(src, col1, col2, pattern, val_true, val_false, dst):
+    df = pd.read_excel(src)
+    df.loc[df[col1].str.contains(
+            pattern, regex=True, na=False), col2] = val_true
+
+    if val_false:
+        df.loc[~df[col1].str.contains(
+            pattern, regex=True, na=False), col2] = val_false
+
+    df.to_excel(dst, index=False)
+
+def merge_file(src, col1, val1, dst):
+        cwd = Path(src)
+        files = list(cwd.glob('*.xlsx'))
+        if files:
+
+            to_concat = []
+
+            for _file in files:
+                df = pd.read_excel(_file)
+
+                new_cols = [change_col(col_name) for col_name in df.columns]
+                df.columns = new_cols
+                to_concat.append(df)
+
+            merged_df = pd.concat(to_concat)
+
+            if col1:
+                merged_df[col1] = val1
+
+            merged_df.to_excel(dst, index=False)
+
 
 def change_col(col_name):
     new_col = re.sub(r"price_after_discount_[-]*\d+%",

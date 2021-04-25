@@ -5,9 +5,8 @@ import os
 
 import pandas as pd
 from atcrawl.gui.colors import *
-from atcrawl.utilities.funcs import (create_images, download_images,
-                                     filter_file, merge_file, sort_file,
-                                     split_file)
+from atcrawl.utilities import *
+from atcrawl.gui.qutils import show_popup
 from PyQt5.QtCore import QRegExp, Qt
 from PyQt5.QtGui import QCursor, QFont, QIntValidator, QRegExpValidator
 from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QCompleter,
@@ -31,6 +30,8 @@ btFont = QFont()
 btFont.setFamily(FONT)
 btFont.setPointSize(FONTSIZE)
 btFont.setBold(True)
+
+cwd = str(paths.get_cwd())
 
 
 class FileNameInput(QWidget):
@@ -99,7 +100,7 @@ class FolderInput(QWidget):
                  **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
         self.setupUi(label, placeholder, orientation)
-        self.lastVisit = ''
+        self.lastVisit = cwd
         self.button.clicked.connect(self.browse)
         self.lineEdit.textChanged.connect(lambda x: self.pathExists(x))
 
@@ -148,6 +149,7 @@ class FolderInput(QWidget):
 
     def setText(self, text):
         self.lineEdit.setText(text)
+        self.lastVisit = text
 
     def setPlaceholder(self, text):
         self.lineEdit.setPlaceholderText(text)
@@ -178,7 +180,7 @@ class FileInput(QWidget):
                  **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
         self.setupUi(label, placeholder, orientation)
-        self.lastVisit = ''
+        self.lastVisit = cwd
         self.button.clicked.connect(self.browse)
         self.lineEdit.textChanged.connect(lambda x: self.pathExists(x))
         self.browseCallback = None
@@ -236,6 +238,7 @@ class FileInput(QWidget):
 
     def setText(self, text):
         self.lineEdit.setText(text)
+        self.lastVisit = text
 
     def setPlaceholder(self, text):
         self.lineEdit.setPlaceholderText(text)
@@ -266,7 +269,7 @@ class FileOutput(QWidget):
                  **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
         self.setupUi(label, placeholder, orientation)
-        self.lastVisit = ''
+        self.lastVisit = cwd
         self.button.clicked.connect(self.browse)
 
     def setupUi(self, label, placeholder, orientation):
@@ -315,6 +318,7 @@ class FileOutput(QWidget):
 
     def setText(self, text):
         self.lineEdit.setText(text)
+        self.lastVisit = text
 
     def setPlaceholder(self, text):
         self.lineEdit.setPlaceholderText(text)
@@ -715,6 +719,7 @@ class SplitFileEdit(QWidget):
         super().__init__(parent=parent, *args, **kwargs)
         self.setupUi()
         self.button.subscribe(self.execute)
+        self.can_process = False
 
     def setupUi(self):
         self.setStyleSheet(make_stylesheet(light_grey, radius=10))
@@ -741,6 +746,14 @@ class SplitFileEdit(QWidget):
         self.pageLayout.addLayout(self.buttonLayout)
         self.setLayout(self.pageLayout)
 
+    def mask_output(self, text=None):
+        if text is None:
+            self.status.disable()
+            self.status.setStyle(make_stylesheet(grey))
+        else:
+            self.status.enable(text)
+            self.status.setStyle(make_stylesheet(teal))
+
     def getParams(self):
         _params = {'filepath': self.fileToModify.getText(),
                    'destination': self.destination.getText(),
@@ -748,9 +761,28 @@ class SplitFileEdit(QWidget):
 
         return _params
 
+    def assert_process_capabilities(self):
+        bools = []
+        for key, value in self.getParams().items():
+            if value:
+                bools.append(True)
+            else:
+                bools.append(False)
+
+        self.can_process = all(bools)
+
     def execute(self):
-        params = self.getParams()
-        split_file(**params)
+        self.assert_process_capabilities()
+        if authorizer.user_is_licensed('split_file'):
+            if self.can_process:
+                params = self.getParams()
+                split_file(**params)
+                self.mask_output("Ολοκληρώθηκε")
+            else:
+                show_popup("Συμπλήρωσε τα απαραίτητα πεδία")
+        else:
+            show_popup("You are not authorized",
+                       "Contact support")
 
 
 class DownloadImagesEdit(QWidget):
@@ -759,6 +791,7 @@ class DownloadImagesEdit(QWidget):
         self.setupUi()
         self.fileToModify.lineEdit.textChanged.connect(self.clearCombos)
         self.button.subscribe(self.execute)
+        self.can_process = False
 
     def setupUi(self):
         self.setStyleSheet(make_stylesheet(light_grey, radius=10))
@@ -766,10 +799,15 @@ class DownloadImagesEdit(QWidget):
         self.fileToModify = FileInput("Αρχείο προς επεξεργασία:",
                                       orientation=VERTICAL)
         self.fileToModify.setBrowseCallback(self.readInputFile)
+        self.combosLayout = QHBoxLayout()
         self.colCombo1 = ComboInput("Στήλη ονόματος εικόνας")
-        self.colCombo1.setOffset(200)
+        self.colCombo1.setOffset(100)
         self.colCombo2 = ComboInput("Στήλη URL εικόνας")
-        self.colCombo2.setOffset(200)
+        self.colCombo2.setOffset(100)
+        self.combosLayout.addWidget(self.colCombo1)
+        self.combosLayout.addWidget(self.colCombo2)
+        self.prefix = InputParameter("Link μπροστά από το όνομα της εικόνας:",
+                                     orientation=VERTICAL)
         self.destination = FolderInput("Αποθήκευση αρχέιων στον φάκελο:",
                                        orientation=VERTICAL)
 
@@ -782,17 +820,26 @@ class DownloadImagesEdit(QWidget):
 
         self.pageLayout = QVBoxLayout()
         self.pageLayout.addWidget(self.fileToModify)
-        self.pageLayout.addWidget(self.colCombo1)
-        self.pageLayout.addWidget(self.colCombo2)
+        self.pageLayout.addLayout(self.combosLayout)
+        self.pageLayout.addWidget(self.prefix)
         self.pageLayout.addWidget(self.destination)
         self.pageLayout.addStretch()
         self.pageLayout.addLayout(self.buttonLayout)
         self.setLayout(self.pageLayout)
 
+    def mask_output(self, text=None):
+        if text is None:
+            self.status.disable()
+            self.status.setStyle(make_stylesheet(grey))
+        else:
+            self.status.enable(text)
+            self.status.setStyle(make_stylesheet(teal))
+
     def getParams(self):
         _params = {'src': self.fileToModify.getText(),
                    'img_name': self.colCombo1.getCurrentText(),
                    'img_url': self.colCombo2.getCurrentText(),
+                   'prefix': self.prefix.getText(),
                    'dst': self.destination.getText()}
 
         return _params
@@ -809,19 +856,48 @@ class DownloadImagesEdit(QWidget):
         self.colCombo1.clearItems()
         self.colCombo2.clearItems()
 
+    def assert_process_capabilities(self):
+        bools = []
+        for key, value in self.getParams().items():
+            if value:
+                bools.append(True)
+            else:
+                bools.append(False)
+
+        self.can_process = all(bools)
+
     def execute(self):
-        params = self.getParams()
-        src = params.get('src')
-        url_col = params.get('img_url')
-        name_col = params.get('img_name')
-        dst = params.get('dst')
+        self.assert_process_capabilities()
+        if authorizer.user_is_licensed("img_downloader"):
+            if self.can_process:
+                params = self.getParams()
+                src = params.get('src')
+                url_col = params.get('img_url')
+                name_col = params.get('img_name')
+                prefix = params.get('prefix')
+                dst = params.get('dst')
 
-        df = pd.read_excel(src)
+                df = pd.read_excel(src, dtype='string')
 
-        url_list = df[url_col].tolist()
-        name_list = df[name_col].tolist()
+                url_list = df[url_col].copy()
+                name_list = df[name_col].copy()
 
-        download_images(url_list, dst, name_list)
+                if prefix.endswith('/'):
+                    _prefix = prefix[:-1]
+                else:
+                    _prefix = prefix
+
+                new_names = f"{_prefix}/" + df[name_col] + '.jpg'
+
+                download_images(url_list, dst, name_list)
+                df[url_col] = new_names
+                df.to_excel(src, index=False)
+                self.mask_output("Ολοκληρώθηκε")
+            else:
+                show_popup("Συμπλήρωσε τα απαραίτητα πεδία")
+        else:
+            show_popup("You are not authorized",
+                       "Contact support")
 
 
 class CreateImagesEdit(QWidget):
@@ -829,6 +905,7 @@ class CreateImagesEdit(QWidget):
         super().__init__(parent=parent, *args, **kwargs)
         self.setupUi()
         self.button.subscribe(self.execute)
+        self.can_process = False
 
     def setupUi(self):
         self.setStyleSheet(make_stylesheet(light_grey, radius=10))
@@ -840,6 +917,8 @@ class CreateImagesEdit(QWidget):
                                        orientation=VERTICAL)
         self.prefix = InputParameter("Link μπροστά από το όνομα της εικόνας:",
                                      orientation=VERTICAL)
+        self.source.setText(paths.get_images_import())
+        self.destination.setText(paths.get_images_export())
         self.buttonLayout = QHBoxLayout()
         self.status = StatusIndicator(status='', size=self.width() - BTWIDTH)
         self.status.setStyle(make_stylesheet(grey))
@@ -856,6 +935,14 @@ class CreateImagesEdit(QWidget):
         self.pageLayout.addLayout(self.buttonLayout)
         self.setLayout(self.pageLayout)
 
+    def mask_output(self, text=None):
+        if text is None:
+            self.status.disable()
+            self.status.setStyle(make_stylesheet(grey))
+        else:
+            self.status.enable(text)
+            self.status.setStyle(make_stylesheet(teal))
+
     def getParams(self):
         _params = {'data': self.fileToModify.getText(),
                    'src_images': self.source.getText(),
@@ -864,9 +951,30 @@ class CreateImagesEdit(QWidget):
 
         return _params
 
+    def assert_process_capabilities(self):
+        bools = []
+        for key, value in self.getParams().items():
+            if key == 'prefix_images':
+                continue
+            if value:
+                bools.append(True)
+            else:
+                bools.append(False)
+
+        self.can_process = all(bools)
+
     def execute(self):
-        params = self.getParams()
-        create_images(**params)
+        self.assert_process_capabilities()
+        if authorizer.user_is_licensed("create_images"):
+            if self.can_process:
+                params = self.getParams()
+                create_images(**params)
+                self.mask_output("Ολοκληρώθηκε")
+            else:
+                show_popup("Συμπλήρωσε τα απαραίτητα πεδία")
+        else:
+            show_popup("You are not authorized",
+                       "Contact support")
 
 
 class MergeEdit(QWidget):
@@ -874,6 +982,7 @@ class MergeEdit(QWidget):
         super().__init__(parent=parent, *args, **kwargs)
         self.setupUi()
         self.button.subscribe(self.execute)
+        self.can_process = False
 
     def setupUi(self):
         self.setStyleSheet(make_stylesheet(light_grey, radius=10))
@@ -904,6 +1013,14 @@ class MergeEdit(QWidget):
         self.pageLayout.addLayout(self.buttonLayout)
         self.setLayout(self.pageLayout)
 
+    def mask_output(self, text=None):
+        if text is None:
+            self.status.disable()
+            self.status.setStyle(make_stylesheet(grey))
+        else:
+            self.status.enable(text)
+            self.status.setStyle(make_stylesheet(teal))
+
     def getParams(self):
         _params = {'src': self.source.getText(),
                    'col1': self.newColName1.getText(),
@@ -912,9 +1029,30 @@ class MergeEdit(QWidget):
 
         return _params
 
+    def assert_process_capabilities(self):
+        bools = []
+        for key, value in self.getParams().items():
+            if key in ['col1', 'val1']:
+                continue
+            if value:
+                bools.append(True)
+            else:
+                bools.append(False)
+
+        self.can_process = all(bools)
+
     def execute(self):
-        params = self.getParams()
-        merge_file(**params)
+        self.assert_process_capabilities()
+        if authorizer.user_is_licensed("create_images"):
+            if self.can_process:
+                params = self.getParams()
+                merge_file(**params)
+                self.mask_output("Ολοκληρώθηκε")
+            else:
+                show_popup("Συμπλήρωσε τα απαραίτητα πεδία")
+        else:
+            show_popup("You are not authorized",
+                       "Contact support")
 
 
 class FilterEdit(QWidget):
@@ -923,6 +1061,7 @@ class FilterEdit(QWidget):
         self.setupUi()
         self.fileToModify.lineEdit.textChanged.connect(self.clearCombos)
         self.button.subscribe(self.execute)
+        self.can_process = False
 
     def setupUi(self):
         self.setStyleSheet(make_stylesheet(light_grey, radius=10))
@@ -966,7 +1105,16 @@ class FilterEdit(QWidget):
         self.pageLayout.addLayout(self.buttonLayout)
         self.setLayout(self.pageLayout)
 
+    def mask_output(self, text=None):
+        if text is None:
+            self.status.disable()
+            self.status.setStyle(make_stylesheet(grey))
+        else:
+            self.status.enable(text)
+            self.status.setStyle(make_stylesheet(teal))
+
     def getParams(self):
+        self.assert_process_capabilities()
         _params = {'src': self.fileToModify.getText(),
                    'col1': self.colCombo1.getCurrentText(),
                    'col2': self.colCombo2.getCurrentText(),
@@ -989,9 +1137,28 @@ class FilterEdit(QWidget):
         self.colCombo1.clearItems()
         self.colCombo2.clearItems()
 
+    def assert_process_capabilities(self):
+        bools = []
+        for key, value in self.getParams().items():
+            if value:
+                bools.append(True)
+            else:
+                bools.append(False)
+
+        self.can_process = all(bools)
+
     def execute(self):
-        params = self.getParams()
-        filter_file(**params)
+        self.assert_process_capabilities()
+        if authorizer.user_is_licensed("filter_run"):
+            if self.can_process:
+                params = self.getParams()
+                filter_file(**params)
+                self.mask_output("Ολοκληρώθηκε")
+            else:
+                show_popup("Συμπλήρωσε τα απαραίτητα πεδία")
+        else:
+            show_popup("You are not authorized",
+                       "Contact support")
 
 
 class SortEdit(QWidget):
@@ -1000,6 +1167,7 @@ class SortEdit(QWidget):
         self.setupUi()
         self.fileToModify.lineEdit.textChanged.connect(self.clearCombos)
         self.button.subscribe(self.execute)
+        self.can_process = False
 
     def setupUi(self):
         self.setStyleSheet(make_stylesheet(grey, radius=10))
@@ -1027,6 +1195,14 @@ class SortEdit(QWidget):
         self.pageLayout.addLayout(self.buttonLayout)
         self.setLayout(self.pageLayout)
 
+    def mask_output(self, text=None):
+        if text is None:
+            self.status.disable()
+            self.status.setStyle(make_stylesheet(grey))
+        else:
+            self.status.enable(text)
+            self.status.setStyle(make_stylesheet(teal))
+
     def getParams(self):
         _params = {'src': self.fileToModify.getText(),
                    'col': self.colCombo1.getCurrentText(),
@@ -1044,14 +1220,33 @@ class SortEdit(QWidget):
     def clearCombos(self):
         self.colCombo1.clearItems()
 
+    def assert_process_capabilities(self):
+        bools = []
+        for key, value in self.getParams().items():
+            if value:
+                bools.append(True)
+            else:
+                bools.append(False)
+
+        self.can_process = all(bools)
+
     def execute(self):
-        params = self.getParams()
-        sort_file(**params)
+        self.assert_process_capabilities()
+        if authorizer.user_is_licensed("sort_run"):
+            if self.can_process:
+                params = self.getParams()
+                sort_file(**params)
+                self.mask_output("Ολοκληρώθηκε")
+            else:
+                show_popup("Συμπλήρωσε τα απαραίτητα πεδία")
+        else:
+            show_popup("You are not authorized",
+                       "Contact support")
 
 
 class EditWindow(QWidget):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent=None, *args, **kwargs):
+        super().__init__(parent=parent, *args, **kwargs)
         self.setupUi()
 
     def setupUi(self):
@@ -1059,7 +1254,6 @@ class EditWindow(QWidget):
         self.setWindowTitle("atCrawl Services")
         # self.resize(500, 300)
         self.layoutGeneral = QVBoxLayout()
-        self.setLayout(self.layoutGeneral)
         self.pageCombo = ComboInput('Διαδικασία',
                                     ["Ένωση αρχείων",
                                      "Αλλαγή τιμής σε στήλη",
@@ -1083,6 +1277,7 @@ class EditWindow(QWidget):
         self.stackedLayout.addWidget(self.page6)
         self.layoutGeneral.addWidget(self.pageCombo)
         self.layoutGeneral.addLayout(self.stackedLayout)
+        self.setLayout(self.layoutGeneral)
 
     def switchPage(self):
         self.stackedLayout.setCurrentIndex(self.pageCombo.getCurrentIndex())

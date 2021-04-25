@@ -23,8 +23,7 @@ class WelcomeUI(Ui_WelcomeUI):
         self.bt_edit.clicked.connect(self.init_tools)
 
     def init_crawler(self, name):
-        authorizer = Authorize(name)
-        if authorizer.user_is_licensed():
+        if authorizer.user_is_licensed(name):
             self.ui = CrawlerUI()
             self.ui.set_crawler(crawler_map[name]())
             self.ui.set_auth(authorizer)
@@ -35,7 +34,7 @@ class WelcomeUI(Ui_WelcomeUI):
             show_popup("You are not authorized",
                        "Contact support")
 
-    def init_tools(self, name):
+    def init_tools(self):
         self.ui = EditWindow()
         self.ui.show()
 
@@ -335,7 +334,7 @@ class CrawlerUI(Atcrawl):
 
     def export(self):
         if self.to_export:
-            if self.auth.user_is_licensed():
+            if self.auth.user_is_licensed(self.crawler.NAME):
                 _name = self.get_filename()
                 _folder = self.get_folder()
                 _type = 'xlsx'

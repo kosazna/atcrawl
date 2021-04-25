@@ -14,6 +14,7 @@ class Paths:
         self._default_export = USER_SETTINGS.get('default_export', '')
         self._images_export = USER_SETTINGS.get('images_export', '')
         self._images_import = USER_SETTINGS.get('images_import', '')
+        self._base_folder = USER_SETTINGS.get('base_folder', '')
 
     def get_userhome(self) -> str:
         return str(self._userhome)
@@ -38,6 +39,10 @@ class Paths:
 
     def get_rellas_path(self):
         return self._rellas_brands
+
+    def get_base_folder(self):
+        return self._base_folder
+
 
 
 paths = Paths()

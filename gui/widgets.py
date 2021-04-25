@@ -31,7 +31,7 @@ btFont.setFamily(FONT)
 btFont.setPointSize(FONTSIZE)
 btFont.setBold(True)
 
-cwd = str(paths.get_cwd())
+cwd = str(paths.get_base_folder())
 
 
 class FileNameInput(QWidget):

@@ -75,11 +75,3 @@ class CollectionProcessor:
         if self.types is not None:
             df = df.astype(dtype=self.types)
         return df
-
-import csv
-with open("C:\\Users\\aznavouridis.k\\.atcrawl\\RellasAmortiserManufacturers.txt", encoding='UTF-8') as f:
-    data = csv.reader(f)
-
-    brands = [row[0].strip() for row in data if row]
-
-print(brands)

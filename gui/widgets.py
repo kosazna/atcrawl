@@ -722,8 +722,6 @@ class SplitFileEdit(QWidget):
         self.can_process = False
 
     def setupUi(self):
-        self.setStyleSheet(make_stylesheet(light_grey, radius=10))
-
         self.fileToModify = FileInput("Αρχείο προς επεξεργασία:",
                                       orientation=VERTICAL)
         self.destination = FolderInput("Αποθήκευση αρχέιων στον φάκελο:",
@@ -794,8 +792,6 @@ class DownloadImagesEdit(QWidget):
         self.can_process = False
 
     def setupUi(self):
-        self.setStyleSheet(make_stylesheet(light_grey, radius=10))
-
         self.fileToModify = FileInput("Αρχείο προς επεξεργασία:",
                                       orientation=VERTICAL)
         self.fileToModify.setBrowseCallback(self.readInputFile)
@@ -908,7 +904,6 @@ class CreateImagesEdit(QWidget):
         self.can_process = False
 
     def setupUi(self):
-        self.setStyleSheet(make_stylesheet(light_grey, radius=10))
         self.fileToModify = FileInput("Αρχείο προς επεξεργασία:",
                                       orientation=VERTICAL)
         self.source = FolderInput("Φάκελος πρωτότυπων εικόνων:",
@@ -985,7 +980,6 @@ class MergeEdit(QWidget):
         self.can_process = False
 
     def setupUi(self):
-        self.setStyleSheet(make_stylesheet(light_grey, radius=10))
         self.source = FolderInput("Φάκελος αρχείων:",
                                   orientation=VERTICAL)
         self.colsLayout1 = QHBoxLayout()
@@ -1064,8 +1058,6 @@ class FilterEdit(QWidget):
         self.can_process = False
 
     def setupUi(self):
-        self.setStyleSheet(make_stylesheet(light_grey, radius=10))
-
         self.fileToModify = FileInput("Αρχείο προς επεξεργασία:",
                                       orientation=VERTICAL)
         self.fileToModify.setBrowseCallback(self.readInputFile)
@@ -1170,8 +1162,6 @@ class SortEdit(QWidget):
         self.can_process = False
 
     def setupUi(self):
-        self.setStyleSheet(make_stylesheet(grey, radius=10))
-
         self.fileToModify = FileInput("Αρχείο προς επεξεργασία:",
                                       orientation=VERTICAL)
         self.fileToModify.setBrowseCallback(self.readInputFile)
@@ -1251,7 +1241,7 @@ class EditWindow(QWidget):
 
     def setupUi(self):
         self.setStyleSheet(make_color(light_grey))
-        self.setWindowTitle("atCrawl Services")
+        self.setWindowTitle("atCrawl Services - Επεξεργασία Αρχείων")
         # self.resize(500, 300)
         self.layoutGeneral = QVBoxLayout()
         self.pageCombo = ComboInput('Διαδικασία',

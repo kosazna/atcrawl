@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from typing import Union
+
 from atcrawl.utilities.display import *
 from atcrawl.utilities.paths import *
 

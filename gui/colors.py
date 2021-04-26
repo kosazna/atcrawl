@@ -18,6 +18,14 @@ class Color:
         return self.hex_value
 
 
+@dataclass
+class Gradient:
+    value: str
+
+    def rgb(self, a=None):
+        return self.value
+
+
 blue = Color('blue', '#0D6EFD', (13, 110, 253))
 grey = Color('grey', '#6C757D', (108, 117, 125))
 light_grey = Color('light_grey', '#D6D6D6', (221, 221, 221))
@@ -29,6 +37,9 @@ cyan = Color('cyan', '#0DCAF0', (13, 202, 79))
 orange = Color('orange', '#FD7E14', (253, 126, 20))
 dark = Color('dark', '#212529', (33, 37, 41))
 white = Color('white', '#F8F8FF', (248, 248, 255))
+
+blue_gradient = Gradient(
+    "qlineargradient(spread:pad, x1:0, y1:0.5, x2:1, y2:0.5, stop:0 rgba(13, 5, 81, 255), stop:1 rgba(36, 176, 189, 255))")
 
 
 def make_stylesheet(background: Color = white,

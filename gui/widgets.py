@@ -3,16 +3,13 @@
 
 import os
 
-import pandas as pd
 from atcrawl.gui.colors import *
-from atcrawl.utilities import *
-from atcrawl.gui.qutils import show_popup
 from PyQt5.QtCore import QRegExp, Qt
 from PyQt5.QtGui import QCursor, QFont, QIntValidator, QRegExpValidator
 from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QCompleter,
                              QFileDialog, QHBoxLayout, QLabel, QLineEdit,
-                             QSizePolicy, QStackedLayout, QToolButton,
-                             QVBoxLayout, QWidget)
+                             QMessageBox, QSizePolicy, QStackedLayout,
+                             QToolButton, QVBoxLayout, QWidget)
 
 HEIGHT = 25
 HOFFSET = 55
@@ -31,7 +28,34 @@ btFont.setFamily(FONT)
 btFont.setPointSize(FONTSIZE)
 btFont.setBold(True)
 
-cwd = str(paths.get_base_folder())
+visuals = {
+    'widget_height': 25,
+    'line_offset': 55,
+    'button_width': 80,
+    'font': "Segoe UI",
+    'fontsize': 10,
+    'label' : '',
+    'path_placeholder': "Paste path here or browse...",
+    'orientation': HORIZONTAL,
+    'completer': None,
+    'hidden': False,
+    'value_range': None,
+    'checked': True,
+    'combo_items': None,
+    'status': '',
+    'status_size': 250
+}
+
+def show_popup(main_text, info='', icon=QMessageBox.Information):
+    msg = QMessageBox()
+    msg.setFont(labelFont)
+    msg.setWindowTitle("atCrawl Dialog")
+    msg.setText(main_text)
+    msg.setIcon(icon)
+    msg.setStandardButtons(QMessageBox.Ok)
+    msg.setDefaultButton(QMessageBox.Ok)
+    msg.setInformativeText(info)
+    msg.exec_()
 
 
 class FileNameInput(QWidget):
@@ -96,11 +120,12 @@ class FolderInput(QWidget):
                  placeholder=PATH_PLACEHOLDER,
                  parent=None,
                  orientation=HORIZONTAL,
+                 first_visit = '',
                  *args,
                  **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
         self.setupUi(label, placeholder, orientation)
-        self.lastVisit = cwd
+        self.lastVisit = first_visit
         self.button.clicked.connect(self.browse)
         self.lineEdit.textChanged.connect(lambda x: self.pathExists(x))
 
@@ -176,11 +201,12 @@ class FileInput(QWidget):
                  placeholder=PATH_PLACEHOLDER,
                  parent=None,
                  orientation=HORIZONTAL,
+                 first_visit = '',
                  *args,
                  **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
         self.setupUi(label, placeholder, orientation)
-        self.lastVisit = cwd
+        self.lastVisit = first_visit
         self.button.clicked.connect(self.browse)
         self.lineEdit.textChanged.connect(lambda x: self.pathExists(x))
         self.browseCallback = None
@@ -265,11 +291,12 @@ class FileOutput(QWidget):
                  placeholder=PATH_PLACEHOLDER,
                  parent=None,
                  orientation=HORIZONTAL,
+                 first_visit = '',
                  *args,
                  **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
         self.setupUi(label, placeholder, orientation)
-        self.lastVisit = cwd
+        self.lastVisit = first_visit
         self.button.clicked.connect(self.browse)
 
     def setupUi(self, label, placeholder, orientation):
@@ -551,7 +578,7 @@ class Button(QToolButton):
         self.setText(label)
         self.setFixedHeight(HEIGHT)
         self.setFont(btFont)
-        self.setStyleSheet(make_stylesheet(blue, radius=5))
+        self.setStyleSheet(make_stylesheet(blue))
         self.setMinimumWidth(BTWIDTH)
         self.setCursor(QCursor(Qt.PointingHandCursor))
         # self.setCheckable(True)
@@ -631,650 +658,10 @@ class StatusIndicator(QWidget):
         self.label.setFixedWidth(offset)
 
 
-class Atcrawl(QWidget):
-    def __init__(self, parent=None, *args, **kwargs):
-        super().__init__(parent=parent, *args, **kwargs)
-        self.setupUi()
-
-    def setupUi(self):
-        self.setStyleSheet(make_color(light_grey))
-        self.setWindowTitle("atCrawl Services")
-        self.resize(500, 350)
-        self.buttonLaunch = Button('launch')
-        self.buttonCollect = Button('collect')
-        self.buttonStop = Button('stop')
-        self.buttonReset = Button('reset')
-        self.buttonTerminate = Button('terminate')
-        self.checkMeta = CheckInput('MetaCheck')
-        self.inputUrl = InputParameter('URL')
-        self.inputMeta0 = InputParameter('Meta0')
-        self.inputMeta0.setMinimumWidth(200)
-        self.inputMeta1 = InputParameter('Meta1')
-        self.inputMeta1.setMinimumWidth(200)
-        self.inputMeta2 = InputParameter('Meta2')
-        self.inputMeta2.setMinimumWidth(200)
-        self.inputMeta3 = IntInputParameter('Meta3', value_range=(-99, 99))
-        self.inputMeta3.setMinimumWidth(200)
-        self.inputMeta4 = InputParameter('Meta4')
-        self.inputMeta4.setOffset(100)
-        self.inputMeta5 = InputParameter('Meta5')
-        self.inputMeta5.setOffset(100)
-        self.inputMeta6 = InputParameter('Meta6')
-        self.inputMeta6.setOffset(100)
-        self.inputMeta7 = InputParameter('Meta7')
-        self.inputMeta7.setOffset(100)
-        self.inputFilename = FileNameInput('Filename')
-        self.inputFilename.setMinimumWidth(200)
-        self.outputFolder = FolderInput('Folder')
-        self.outputFolder.setOffset(100)
-        self.statusBrowser = StatusIndicator('Browser', 'offline', size=60)
-        self.statusCrawler = StatusIndicator('Crawler', 'offline', size=60)
-        self.statusGeneral = StatusIndicator(status='', size=self.width())
-        self.statusGeneral.setStyle(make_stylesheet(grey))
-        self.layoutGui = QHBoxLayout()
-        self.layoutLeft = QVBoxLayout()
-        self.layoutTop = QHBoxLayout()
-        self.layoutParams = QHBoxLayout()
-        self.layoutSmall = QVBoxLayout()
-        self.layoutBig = QVBoxLayout()
-        self.layoutBottom = QVBoxLayout()
-        self.layoutButtons = QVBoxLayout()
-        self.layoutStatus = QHBoxLayout()
-        self.layoutTop.addWidget(self.inputUrl)
-        self.layoutSmall.addWidget(self.inputMeta0, 0, Qt.AlignLeft)
-        self.layoutSmall.addWidget(self.inputMeta1, 0, Qt.AlignLeft)
-        self.layoutSmall.addWidget(self.inputMeta2, 0, Qt.AlignLeft)
-        self.layoutSmall.addWidget(self.inputMeta3, 0, Qt.AlignLeft)
-        self.layoutSmall.addStretch()
-        self.layoutSmall.addWidget(self.inputFilename, 0, Qt.AlignLeft)
-        self.layoutBig.addWidget(self.inputMeta4)
-        self.layoutBig.addWidget(self.inputMeta5)
-        self.layoutBig.addWidget(self.inputMeta6)
-        self.layoutBig.addWidget(self.inputMeta7)
-        self.layoutBig.addStretch()
-        self.layoutBig.addWidget(self.outputFolder)
-        self.layoutButtons.addWidget(self.checkMeta)
-        self.layoutButtons.addWidget(self.buttonLaunch)
-        self.layoutButtons.addWidget(self.buttonCollect)
-        self.layoutButtons.addWidget(self.buttonStop)
-        self.layoutButtons.addWidget(self.buttonReset)
-        self.layoutButtons.addWidget(self.buttonTerminate)
-        self.layoutStatus.addWidget(self.statusBrowser)
-        self.layoutStatus.addWidget(self.statusCrawler)
-        self.layoutStatus.addStretch()
-        self.layoutStatus.addWidget(self.statusGeneral, 1)
-        self.layoutParams.addLayout(self.layoutSmall)
-        self.layoutParams.addLayout(self.layoutBig)
-        self.layoutBottom.addLayout(self.layoutStatus)
-        self.layoutLeft.addLayout(self.layoutTop)
-        self.layoutLeft.addLayout(self.layoutParams)
-        self.layoutLeft.addLayout(self.layoutBottom)
-        self.layoutGui.addLayout(self.layoutLeft)
-        self.layoutGui.addLayout(self.layoutButtons)
-        self.setLayout(self.layoutGui)
-
-
-class SplitFileEdit(QWidget):
-    def __init__(self, parent=None, *args, **kwargs):
-        super().__init__(parent=parent, *args, **kwargs)
-        self.setupUi()
-        self.button.subscribe(self.execute)
-        self.can_process = False
-
-    def setupUi(self):
-        self.fileToModify = FileInput("Αρχείο προς επεξεργασία:",
-                                      orientation=VERTICAL)
-        self.destination = FolderInput("Αποθήκευση αρχέιων στον φάκελο:",
-                                       orientation=VERTICAL)
-        self.splitRatio = IntInputParameter("Σπάσιμο αρχείου ανά:",
-                                            orientation=VERTICAL)
-
-        self.buttonLayout = QHBoxLayout()
-        self.status = StatusIndicator(status='', size=self.width() - BTWIDTH)
-        self.status.setStyle(make_stylesheet(grey))
-        self.button = Button("Εκτέλεση")
-        self.buttonLayout.addWidget(self.status)
-        self.buttonLayout.addWidget(self.button)
-
-        self.pageLayout = QVBoxLayout()
-        self.pageLayout.addWidget(self.fileToModify)
-        self.pageLayout.addWidget(self.destination)
-        self.pageLayout.addWidget(self.splitRatio)
-        self.pageLayout.addStretch()
-        self.pageLayout.addLayout(self.buttonLayout)
-        self.setLayout(self.pageLayout)
-
-    def mask_output(self, text=None):
-        if text is None:
-            self.status.disable()
-            self.status.setStyle(make_stylesheet(grey))
-        else:
-            self.status.enable(text)
-            self.status.setStyle(make_stylesheet(teal))
-
-    def getParams(self):
-        _params = {'filepath': self.fileToModify.getText(),
-                   'destination': self.destination.getText(),
-                   'k': self.splitRatio.getText()}
-
-        return _params
-
-    def assert_process_capabilities(self):
-        bools = []
-        for key, value in self.getParams().items():
-            if value:
-                bools.append(True)
-            else:
-                bools.append(False)
-
-        self.can_process = all(bools)
-
-    def execute(self):
-        self.assert_process_capabilities()
-        if authorizer.user_is_licensed('split_file'):
-            if self.can_process:
-                params = self.getParams()
-                split_file(**params)
-                self.mask_output("Ολοκληρώθηκε")
-            else:
-                show_popup("Συμπλήρωσε τα απαραίτητα πεδία")
-        else:
-            show_popup("You are not authorized",
-                       "Contact support")
-
-
-class DownloadImagesEdit(QWidget):
-    def __init__(self, parent=None, *args, **kwargs):
-        super().__init__(parent=parent, *args, **kwargs)
-        self.setupUi()
-        self.fileToModify.lineEdit.textChanged.connect(self.clearCombos)
-        self.button.subscribe(self.execute)
-        self.can_process = False
-
-    def setupUi(self):
-        self.fileToModify = FileInput("Αρχείο προς επεξεργασία:",
-                                      orientation=VERTICAL)
-        self.fileToModify.setBrowseCallback(self.readInputFile)
-        self.combosLayout = QHBoxLayout()
-        self.colCombo1 = ComboInput("Στήλη ονόματος εικόνας")
-        self.colCombo1.setOffset(100)
-        self.colCombo2 = ComboInput("Στήλη URL εικόνας")
-        self.colCombo2.setOffset(100)
-        self.combosLayout.addWidget(self.colCombo1)
-        self.combosLayout.addWidget(self.colCombo2)
-        self.prefix = InputParameter("Link μπροστά από το όνομα της εικόνας:",
-                                     orientation=VERTICAL)
-        self.destination = FolderInput("Αποθήκευση αρχέιων στον φάκελο:",
-                                       orientation=VERTICAL)
-        self.destination.setText(paths.get_images_export())
-        self.buttonLayout = QHBoxLayout()
-        self.status = StatusIndicator(status='', size=self.width() - BTWIDTH)
-        self.status.setStyle(make_stylesheet(grey))
-        self.button = Button("Εκτέλεση")
-        self.buttonLayout.addWidget(self.status)
-        self.buttonLayout.addWidget(self.button)
-
-        self.pageLayout = QVBoxLayout()
-        self.pageLayout.addWidget(self.fileToModify)
-        self.pageLayout.addLayout(self.combosLayout)
-        self.pageLayout.addWidget(self.prefix)
-        self.pageLayout.addWidget(self.destination)
-        self.pageLayout.addStretch()
-        self.pageLayout.addLayout(self.buttonLayout)
-        self.setLayout(self.pageLayout)
-
-    def mask_output(self, text=None):
-        if text is None:
-            self.status.disable()
-            self.status.setStyle(make_stylesheet(grey))
-        else:
-            self.status.enable(text)
-            self.status.setStyle(make_stylesheet(teal))
-
-    def getParams(self):
-        _params = {'src': self.fileToModify.getText(),
-                   'img_name': self.colCombo1.getCurrentText(),
-                   'img_url': self.colCombo2.getCurrentText(),
-                   'prefix': self.prefix.getText(),
-                   'dst': self.destination.getText()}
-
-        return _params
-
-    def readInputFile(self):
-        _file = self.fileToModify.getText()
-        _df = pd.read_excel(_file)
-        _cols = _df.columns.tolist()
-
-        self.colCombo1.addItems(_cols)
-        self.colCombo2.addItems(_cols)
-
-    def clearCombos(self):
-        self.colCombo1.clearItems()
-        self.colCombo2.clearItems()
-
-    def assert_process_capabilities(self):
-        bools = []
-        for key, value in self.getParams().items():
-            if value:
-                bools.append(True)
-            else:
-                bools.append(False)
-
-        self.can_process = all(bools)
-
-    def execute(self):
-        self.assert_process_capabilities()
-        if authorizer.user_is_licensed("img_downloader"):
-            if self.can_process:
-                params = self.getParams()
-                src = params.get('src')
-                url_col = params.get('img_url')
-                name_col = params.get('img_name')
-                prefix = params.get('prefix')
-                dst = params.get('dst')
-
-                df = pd.read_excel(src, dtype='string')
-
-                url_list = df[url_col].copy()
-                name_list = df[name_col].copy()
-
-                if prefix.endswith('/'):
-                    _prefix = prefix[:-1]
-                else:
-                    _prefix = prefix
-
-                new_names = f"{_prefix}/" + df[name_col] + '.jpg'
-
-                download_images(url_list, dst, name_list)
-                df[url_col] = new_names
-                df.to_excel(src, index=False)
-                self.mask_output("Ολοκληρώθηκε")
-            else:
-                show_popup("Συμπλήρωσε τα απαραίτητα πεδία")
-        else:
-            show_popup("You are not authorized",
-                       "Contact support")
-
-
-class CreateImagesEdit(QWidget):
-    def __init__(self, parent=None, *args, **kwargs):
-        super().__init__(parent=parent, *args, **kwargs)
-        self.setupUi()
-        self.button.subscribe(self.execute)
-        self.can_process = False
-
-    def setupUi(self):
-        self.fileToModify = FileInput("Αρχείο προς επεξεργασία:",
-                                      orientation=VERTICAL)
-        self.source = FolderInput("Φάκελος πρωτότυπων εικόνων:",
-                                  orientation=VERTICAL)
-        self.destination = FolderInput("Αποθήκευση αρχέιων στον φάκελο:",
-                                       orientation=VERTICAL)
-        self.prefix = InputParameter("Link μπροστά από το όνομα της εικόνας:",
-                                     orientation=VERTICAL)
-        self.source.setText(paths.get_images_import())
-        self.destination.setText(paths.get_images_export())
-        self.buttonLayout = QHBoxLayout()
-        self.status = StatusIndicator(status='', size=self.width() - BTWIDTH)
-        self.status.setStyle(make_stylesheet(grey))
-        self.button = Button("Εκτέλεση")
-        self.buttonLayout.addWidget(self.status)
-        self.buttonLayout.addWidget(self.button)
-
-        self.pageLayout = QVBoxLayout()
-        self.pageLayout.addWidget(self.fileToModify)
-        self.pageLayout.addWidget(self.source)
-        self.pageLayout.addWidget(self.destination)
-        self.pageLayout.addWidget(self.prefix)
-        self.pageLayout.addStretch()
-        self.pageLayout.addLayout(self.buttonLayout)
-        self.setLayout(self.pageLayout)
-
-    def mask_output(self, text=None):
-        if text is None:
-            self.status.disable()
-            self.status.setStyle(make_stylesheet(grey))
-        else:
-            self.status.enable(text)
-            self.status.setStyle(make_stylesheet(teal))
-
-    def getParams(self):
-        _params = {'data': self.fileToModify.getText(),
-                   'src_images': self.source.getText(),
-                   'dst_images': self.destination.getText(),
-                   'prefix_images': self.prefix.getText()}
-
-        return _params
-
-    def assert_process_capabilities(self):
-        bools = []
-        for key, value in self.getParams().items():
-            if key == 'prefix_images':
-                continue
-            if value:
-                bools.append(True)
-            else:
-                bools.append(False)
-
-        self.can_process = all(bools)
-
-    def execute(self):
-        self.assert_process_capabilities()
-        if authorizer.user_is_licensed("create_images"):
-            if self.can_process:
-                params = self.getParams()
-                create_images(**params)
-                self.mask_output("Ολοκληρώθηκε")
-            else:
-                show_popup("Συμπλήρωσε τα απαραίτητα πεδία")
-        else:
-            show_popup("You are not authorized",
-                       "Contact support")
-
-
-class MergeEdit(QWidget):
-    def __init__(self, parent=None, *args, **kwargs):
-        super().__init__(parent=parent, *args, **kwargs)
-        self.setupUi()
-        self.button.subscribe(self.execute)
-        self.can_process = False
-
-    def setupUi(self):
-        self.source = FolderInput("Φάκελος αρχείων:",
-                                  orientation=VERTICAL)
-        self.colsLayout1 = QHBoxLayout()
-        self.newColName1 = InputParameter("Νέα στήλη 1")
-        self.newColName1.setOffset(80)
-        self.newColName1.setPlaceholder("Προαιρετικό")
-        self.newColValue1 = InputParameter("Τιμή στήλης 1")
-        self.newColValue1.setOffset(80)
-        self.newColValue1.setPlaceholder("Προαιρετικό")
-        self.colsLayout1.addWidget(self.newColName1)
-        self.colsLayout1.addWidget(self.newColValue1)
-        self.destination = FileOutput("Αποθήκευση αρχείου:",
-                                      orientation=VERTICAL)
-        self.buttonLayout = QHBoxLayout()
-        self.status = StatusIndicator(status='', size=self.width() - BTWIDTH)
-        self.status.setStyle(make_stylesheet(grey))
-        self.button = Button("Εκτέλεση")
-        self.buttonLayout.addWidget(self.status)
-        self.buttonLayout.addWidget(self.button)
-        self.pageLayout = QVBoxLayout()
-        self.pageLayout.addWidget(self.source)
-        self.pageLayout.addLayout(self.colsLayout1)
-        self.pageLayout.addWidget(self.destination)
-        self.pageLayout.addStretch()
-        self.pageLayout.addLayout(self.buttonLayout)
-        self.setLayout(self.pageLayout)
-
-    def mask_output(self, text=None):
-        if text is None:
-            self.status.disable()
-            self.status.setStyle(make_stylesheet(grey))
-        else:
-            self.status.enable(text)
-            self.status.setStyle(make_stylesheet(teal))
-
-    def getParams(self):
-        _params = {'src': self.source.getText(),
-                   'col1': self.newColName1.getText(),
-                   'val1': self.newColValue1.getText(),
-                   'dst': self.destination.getText()}
-
-        return _params
-
-    def assert_process_capabilities(self):
-        bools = []
-        for key, value in self.getParams().items():
-            if key in ['col1', 'val1']:
-                continue
-            if value:
-                bools.append(True)
-            else:
-                bools.append(False)
-
-        self.can_process = all(bools)
-
-    def execute(self):
-        self.assert_process_capabilities()
-        if authorizer.user_is_licensed("create_images"):
-            if self.can_process:
-                params = self.getParams()
-                merge_file(**params)
-                self.mask_output("Ολοκληρώθηκε")
-            else:
-                show_popup("Συμπλήρωσε τα απαραίτητα πεδία")
-        else:
-            show_popup("You are not authorized",
-                       "Contact support")
-
-
-class FilterEdit(QWidget):
-    def __init__(self, parent=None, *args, **kwargs):
-        super().__init__(parent=parent, *args, **kwargs)
-        self.setupUi()
-        self.fileToModify.lineEdit.textChanged.connect(self.clearCombos)
-        self.button.subscribe(self.execute)
-        self.can_process = False
-
-    def setupUi(self):
-        self.fileToModify = FileInput("Αρχείο προς επεξεργασία:",
-                                      orientation=VERTICAL)
-        self.fileToModify.setBrowseCallback(self.readInputFile)
-        self.combosLayout = QHBoxLayout()
-        self.colCombo1 = ComboInput("Στήλη εφαρμογής")
-        self.colCombo1.setOffset(100)
-        self.colCombo2 = ComboInput("Στήλη αλλαγών")
-        self.colCombo2.setOffset(100)
-        self.combosLayout.addWidget(self.colCombo1)
-        self.combosLayout.addWidget(self.colCombo2)
-        self.paramsLayout = QHBoxLayout()
-        self.paramFilter = InputParameter("Φίλτρο:")
-        self.paramFilter.setMinimumWidth(200)
-        self.paramTrue = InputParameter("Τιμή για θετικές:")
-        self.paramTrue.setMaximumWidth(50)
-        self.paramFalse = InputParameter("Τιμή για αρνητικές:")
-        self.paramFalse.setMaximumWidth(50)
-        self.paramsLayout.addWidget(self.paramFilter)
-        self.paramsLayout.addWidget(self.paramTrue)
-        self.paramsLayout.addWidget(self.paramFalse)
-        self.destination = FileOutput("Αποθήκευση αρχείου:",
-                                      orientation=VERTICAL)
-
-        self.buttonLayout = QHBoxLayout()
-        self.status = StatusIndicator(status='', size=self.width() - BTWIDTH)
-        self.status.setStyle(make_stylesheet(grey))
-        self.button = Button("Εκτέλεση")
-        self.buttonLayout.addWidget(self.status)
-        self.buttonLayout.addWidget(self.button)
-
-        self.pageLayout = QVBoxLayout()
-        self.pageLayout.addWidget(self.fileToModify)
-        self.pageLayout.addLayout(self.combosLayout)
-        self.pageLayout.addLayout(self.paramsLayout)
-        self.pageLayout.addWidget(self.destination)
-        self.pageLayout.addStretch()
-        self.pageLayout.addLayout(self.buttonLayout)
-        self.setLayout(self.pageLayout)
-
-    def mask_output(self, text=None):
-        if text is None:
-            self.status.disable()
-            self.status.setStyle(make_stylesheet(grey))
-        else:
-            self.status.enable(text)
-            self.status.setStyle(make_stylesheet(teal))
-
-    def getParams(self):
-        self.assert_process_capabilities()
-        _params = {'src': self.fileToModify.getText(),
-                   'col1': self.colCombo1.getCurrentText(),
-                   'col2': self.colCombo2.getCurrentText(),
-                   'pattern': self.paramFilter.getText(),
-                   'val_true': self.paramTrue.getText(),
-                   'val_false': self.paramFalse.getText(),
-                   'dst': self.destination.getText()}
-
-        return _params
-
-    def readInputFile(self):
-        _file = self.fileToModify.getText()
-        _df = pd.read_excel(_file)
-        _cols = _df.columns.tolist()
-
-        self.colCombo1.addItems(_cols)
-        self.colCombo2.addItems(_cols)
-
-    def clearCombos(self):
-        self.colCombo1.clearItems()
-        self.colCombo2.clearItems()
-
-    def assert_process_capabilities(self):
-        bools = []
-        for key, value in self.getParams().items():
-            if value:
-                bools.append(True)
-            else:
-                bools.append(False)
-
-        self.can_process = all(bools)
-
-    def execute(self):
-        self.assert_process_capabilities()
-        if authorizer.user_is_licensed("filter_run"):
-            if self.can_process:
-                params = self.getParams()
-                filter_file(**params)
-                self.mask_output("Ολοκληρώθηκε")
-            else:
-                show_popup("Συμπλήρωσε τα απαραίτητα πεδία")
-        else:
-            show_popup("You are not authorized",
-                       "Contact support")
-
-
-class SortEdit(QWidget):
-    def __init__(self, parent=None, *args, **kwargs):
-        super().__init__(parent=parent, *args, **kwargs)
-        self.setupUi()
-        self.fileToModify.lineEdit.textChanged.connect(self.clearCombos)
-        self.button.subscribe(self.execute)
-        self.can_process = False
-
-    def setupUi(self):
-        self.fileToModify = FileInput("Αρχείο προς επεξεργασία:",
-                                      orientation=VERTICAL)
-        self.fileToModify.setBrowseCallback(self.readInputFile)
-        self.colCombo1 = ComboInput("Στήλη εφαρμογής")
-
-        self.destination = FileOutput("Αποθήκευση αρχείου:",
-                                      orientation=VERTICAL)
-
-        self.buttonLayout = QHBoxLayout()
-        self.status = StatusIndicator(status='', size=self.width() - BTWIDTH)
-        self.status.setStyle(make_stylesheet(grey))
-        self.button = Button("Εκτέλεση")
-        self.buttonLayout.addWidget(self.status)
-        self.buttonLayout.addWidget(self.button)
-
-        self.pageLayout = QVBoxLayout()
-        self.pageLayout.addWidget(self.fileToModify)
-        self.pageLayout.addWidget(self.colCombo1)
-        self.pageLayout.addWidget(self.destination)
-        self.pageLayout.addStretch()
-        self.pageLayout.addLayout(self.buttonLayout)
-        self.setLayout(self.pageLayout)
-
-    def mask_output(self, text=None):
-        if text is None:
-            self.status.disable()
-            self.status.setStyle(make_stylesheet(grey))
-        else:
-            self.status.enable(text)
-            self.status.setStyle(make_stylesheet(teal))
-
-    def getParams(self):
-        _params = {'src': self.fileToModify.getText(),
-                   'col': self.colCombo1.getCurrentText(),
-                   'dst': self.destination.getText()}
-
-        return _params
-
-    def readInputFile(self):
-        _file = self.fileToModify.getText()
-        _df = pd.read_excel(_file)
-        _cols = _df.columns.tolist()
-
-        self.colCombo1.addItems(_cols)
-
-    def clearCombos(self):
-        self.colCombo1.clearItems()
-
-    def assert_process_capabilities(self):
-        bools = []
-        for key, value in self.getParams().items():
-            if value:
-                bools.append(True)
-            else:
-                bools.append(False)
-
-        self.can_process = all(bools)
-
-    def execute(self):
-        self.assert_process_capabilities()
-        if authorizer.user_is_licensed("sort_run"):
-            if self.can_process:
-                params = self.getParams()
-                sort_file(**params)
-                self.mask_output("Ολοκληρώθηκε")
-            else:
-                show_popup("Συμπλήρωσε τα απαραίτητα πεδία")
-        else:
-            show_popup("You are not authorized",
-                       "Contact support")
-
-
-class EditWindow(QWidget):
-    def __init__(self, parent=None, *args, **kwargs):
-        super().__init__(parent=parent, *args, **kwargs)
-        self.setupUi()
-
-    def setupUi(self):
-        self.setStyleSheet(make_color(light_grey))
-        self.setWindowTitle("atCrawl Services - Επεξεργασία Αρχείων")
-        # self.resize(500, 300)
-        self.layoutGeneral = QVBoxLayout()
-        self.pageCombo = ComboInput('Διαδικασία',
-                                    ["Ένωση αρχείων",
-                                     "Αλλαγή τιμής σε στήλη",
-                                     "Σορτάρισμα αρχείου",
-                                     "Κατέβασμα εικόνων",
-                                     "Δημιουργία εικόνων (Rellas)",
-                                     "Κόψιμο αρχείου"])
-        self.pageCombo.subscribe(self.switchPage)
-        self.stackedLayout = QStackedLayout()
-        self.page1 = MergeEdit()
-        self.stackedLayout.addWidget(self.page1)
-        self.page2 = FilterEdit()
-        self.stackedLayout.addWidget(self.page2)
-        self.page3 = SortEdit()
-        self.stackedLayout.addWidget(self.page3)
-        self.page4 = DownloadImagesEdit()
-        self.stackedLayout.addWidget(self.page4)
-        self.page5 = CreateImagesEdit()
-        self.stackedLayout.addWidget(self.page5)
-        self.page6 = SplitFileEdit()
-        self.stackedLayout.addWidget(self.page6)
-        self.layoutGeneral.addWidget(self.pageCombo)
-        self.layoutGeneral.addLayout(self.stackedLayout)
-        self.setLayout(self.layoutGeneral)
-
-    def switchPage(self):
-        self.stackedLayout.setCurrentIndex(self.pageCombo.getCurrentIndex())
-
-
 if __name__ == '__main__':
-    app = QApplication([])
-    volume = EditWindow()
-    volume.show()
-    app.exec_()
+    import sys
+
+    app = QApplication(sys.argv)
+    ui = FileInput()
+    ui.show()
+    sys.exit(app.exec_())

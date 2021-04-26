@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from atcrawl.gui.qutils import *
-from atcrawl.gui.widgets import *
-from atcrawl.gui.welcome_design import *
 from atcrawl.crawlers import *
+from atcrawl.gui.edit import EditWindow
+from atcrawl.gui.welcome_design import *
+from atcrawl.gui.widgets import *
+from atcrawl.gui.worker import Worker
 from PyQt5.QtCore import QThreadPool
 
 
@@ -39,9 +40,11 @@ class WelcomeUI(Ui_WelcomeUI):
         self.ui.show()
 
 
-class CrawlerUI(Atcrawl):
-    def __init__(self):
-        super().__init__()
+class CrawlerUI(QWidget):
+    def __init__(self, parent=None, *args, **kwargs):
+        super(CrawlerUI, self).__init__(parent=parent, *args, **kwargs)
+        self.setupUi()
+
         self.crawler: CrawlEngine = CrawlEngine('None')
         self.auth = None
 
@@ -68,6 +71,83 @@ class CrawlerUI(Atcrawl):
         self.buttonCollect.clicked.connect(self.start_collecting)
         self.buttonStop.clicked.connect(self.stop_collecting)
         self.buttonReset.clicked.connect(self.reset)
+
+    def setupUi(self):
+        self.setStyleSheet(make_color(light_grey))
+        self.setWindowTitle("atCrawl Services")
+        self.resize(500, 350)
+        self.buttonLaunch = Button('launch')
+        self.buttonCollect = Button('collect')
+        self.buttonStop = Button('stop')
+        self.buttonReset = Button('reset')
+        self.buttonTerminate = Button('terminate')
+        self.checkMeta = CheckInput('MetaCheck')
+        self.inputUrl = InputParameter('URL')
+        self.inputMeta0 = InputParameter('Meta0')
+        self.inputMeta0.setMinimumWidth(200)
+        self.inputMeta1 = InputParameter('Meta1')
+        self.inputMeta1.setMinimumWidth(200)
+        self.inputMeta2 = InputParameter('Meta2')
+        self.inputMeta2.setMinimumWidth(200)
+        self.inputMeta3 = IntInputParameter('Meta3', value_range=(-99, 99))
+        self.inputMeta3.setMinimumWidth(200)
+        self.inputMeta4 = InputParameter('Meta4')
+        self.inputMeta4.setOffset(100)
+        self.inputMeta5 = InputParameter('Meta5')
+        self.inputMeta5.setOffset(100)
+        self.inputMeta6 = InputParameter('Meta6')
+        self.inputMeta6.setOffset(100)
+        self.inputMeta7 = InputParameter('Meta7')
+        self.inputMeta7.setOffset(100)
+        self.inputFilename = FileNameInput('Filename')
+        self.inputFilename.setMinimumWidth(200)
+        self.outputFolder = FolderInput('Folder')
+        self.outputFolder.setOffset(100)
+        self.statusBrowser = StatusIndicator('Browser', 'offline', size=60)
+        self.statusCrawler = StatusIndicator('Crawler', 'offline', size=60)
+        self.statusGeneral = StatusIndicator(status='', size=self.width())
+        self.statusGeneral.setStyle(make_stylesheet(grey))
+        self.layoutGui = QHBoxLayout()
+        self.layoutLeft = QVBoxLayout()
+        self.layoutTop = QHBoxLayout()
+        self.layoutParams = QHBoxLayout()
+        self.layoutSmall = QVBoxLayout()
+        self.layoutBig = QVBoxLayout()
+        self.layoutBottom = QVBoxLayout()
+        self.layoutButtons = QVBoxLayout()
+        self.layoutStatus = QHBoxLayout()
+        self.layoutTop.addWidget(self.inputUrl)
+        self.layoutSmall.addWidget(self.inputMeta0, 0, Qt.AlignLeft)
+        self.layoutSmall.addWidget(self.inputMeta1, 0, Qt.AlignLeft)
+        self.layoutSmall.addWidget(self.inputMeta2, 0, Qt.AlignLeft)
+        self.layoutSmall.addWidget(self.inputMeta3, 0, Qt.AlignLeft)
+        self.layoutSmall.addStretch()
+        self.layoutSmall.addWidget(self.inputFilename, 0, Qt.AlignLeft)
+        self.layoutBig.addWidget(self.inputMeta4)
+        self.layoutBig.addWidget(self.inputMeta5)
+        self.layoutBig.addWidget(self.inputMeta6)
+        self.layoutBig.addWidget(self.inputMeta7)
+        self.layoutBig.addStretch()
+        self.layoutBig.addWidget(self.outputFolder)
+        self.layoutButtons.addWidget(self.checkMeta)
+        self.layoutButtons.addWidget(self.buttonLaunch)
+        self.layoutButtons.addWidget(self.buttonCollect)
+        self.layoutButtons.addWidget(self.buttonStop)
+        self.layoutButtons.addWidget(self.buttonReset)
+        self.layoutButtons.addWidget(self.buttonTerminate)
+        self.layoutStatus.addWidget(self.statusBrowser)
+        self.layoutStatus.addWidget(self.statusCrawler)
+        self.layoutStatus.addStretch()
+        self.layoutStatus.addWidget(self.statusGeneral, 1)
+        self.layoutParams.addLayout(self.layoutSmall)
+        self.layoutParams.addLayout(self.layoutBig)
+        self.layoutBottom.addLayout(self.layoutStatus)
+        self.layoutLeft.addLayout(self.layoutTop)
+        self.layoutLeft.addLayout(self.layoutParams)
+        self.layoutLeft.addLayout(self.layoutBottom)
+        self.layoutGui.addLayout(self.layoutLeft)
+        self.layoutGui.addLayout(self.layoutButtons)
+        self.setLayout(self.layoutGui)
 
     def open_file(self):
         if self.output is not None:

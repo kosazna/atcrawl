@@ -1,20 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5.QtCore import QObject, QRunnable, pyqtSlot, pyqtSignal
-from PyQt5.QtWidgets import QMessageBox
 import traceback
 import sys
-
-
-def show_popup(main_text, info='', icon=QMessageBox.Information):
-    msg = QMessageBox()
-    msg.setWindowTitle("atCrawl Dialog")
-    msg.setText(main_text)
-    msg.setIcon(icon)
-    msg.setStandardButtons(QMessageBox.Ok)
-    msg.setDefaultButton(QMessageBox.Ok)
-    msg.setInformativeText(info)
-    msg.exec_()
 
 
 class WorkerSignals(QObject):

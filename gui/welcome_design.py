@@ -15,7 +15,8 @@ class Ui_WelcomeUI(object):
         WelcomeUI.setObjectName("WelcomeUI")
         WelcomeUI.resize(350, 428)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/layers/static/main_layer.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/layers/static/main_layer.png"),
+                       QtGui.QIcon.Normal, QtGui.QIcon.Off)
         WelcomeUI.setWindowIcon(icon)
         WelcomeUI.setStyleSheet("background-color: rgb(101, 104, 114);")
         self.centralwidget = QtWidgets.QWidget(WelcomeUI)
@@ -33,10 +34,10 @@ class Ui_WelcomeUI(object):
         font.setKerning(True)
         self.bt_skroutz.setFont(font)
         self.bt_skroutz.setStyleSheet("background-color: qlineargradient(spread:pad, x1:0, y1:0.5, x2:1, y2:0.5, stop:0 rgba(13, 5, 81, 255), stop:1 rgba(36, 176, 189, 255));\n"
-"color: rgb(255, 255, 255);\n"
-"border-width:10px;\n"
-"border-radius:20px;\n"
-"")
+                                      "color: rgb(255, 255, 255);\n"
+                                      "border-width:10px;\n"
+                                      "border-radius:20px;\n"
+                                      "")
         self.bt_skroutz.setCheckable(False)
         self.bt_skroutz.setPopupMode(QtWidgets.QToolButton.InstantPopup)
         self.bt_skroutz.setToolButtonStyle(QtCore.Qt.ToolButtonFollowStyle)
@@ -59,10 +60,10 @@ class Ui_WelcomeUI(object):
         self.bt_antallaktika.setWhatsThis("")
         self.bt_antallaktika.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.bt_antallaktika.setStyleSheet("background-color: qlineargradient(spread:pad, x1:0, y1:0.5, x2:1, y2:0.5, stop:0 rgba(13, 5, 81, 255), stop:1 rgba(36, 176, 189, 255));\n"
-"color: rgb(255, 255, 255);\n"
-"border-width:10px;\n"
-"border-radius:20px;\n"
-"")
+                                           "color: rgb(255, 255, 255);\n"
+                                           "border-width:10px;\n"
+                                           "border-radius:20px;\n"
+                                           "")
         self.bt_antallaktika.setCheckable(False)
         self.bt_antallaktika.setAutoRepeatDelay(-3)
         self.bt_antallaktika.setPopupMode(QtWidgets.QToolButton.InstantPopup)
@@ -94,10 +95,10 @@ class Ui_WelcomeUI(object):
         font.setKerning(True)
         self.bt_edit.setFont(font)
         self.bt_edit.setStyleSheet("background-color: qlineargradient(spread:pad, x1:0, y1:0.5, x2:1, y2:0.5, stop:0 rgba(13, 5, 81, 255), stop:1 rgba(36, 176, 189, 255));\n"
-"color: rgb(255, 255, 255);\n"
-"border-width:10px;\n"
-"border-radius:20px;\n"
-"")
+                                   "color: rgb(255, 255, 255);\n"
+                                   "border-width:10px;\n"
+                                   "border-radius:20px;\n"
+                                   "")
         self.bt_edit.setCheckable(False)
         self.bt_edit.setPopupMode(QtWidgets.QToolButton.InstantPopup)
         self.bt_edit.setToolButtonStyle(QtCore.Qt.ToolButtonFollowStyle)
@@ -117,10 +118,10 @@ class Ui_WelcomeUI(object):
         font.setKerning(True)
         self.bt_rellas.setFont(font)
         self.bt_rellas.setStyleSheet("background-color: qlineargradient(spread:pad, x1:0, y1:0.5, x2:1, y2:0.5, stop:0 rgba(13, 5, 81, 255), stop:1 rgba(36, 176, 189, 255));\n"
-"color: rgb(255, 255, 255);\n"
-"border-width:10px;\n"
-"border-radius:20px;\n"
-"")
+                                     "color: rgb(255, 255, 255);\n"
+                                     "border-width:10px;\n"
+                                     "border-radius:20px;\n"
+                                     "")
         self.bt_rellas.setCheckable(False)
         self.bt_rellas.setPopupMode(QtWidgets.QToolButton.InstantPopup)
         self.bt_rellas.setToolButtonStyle(QtCore.Qt.ToolButtonFollowStyle)
@@ -140,10 +141,10 @@ class Ui_WelcomeUI(object):
         font.setKerning(True)
         self.bt_gbg.setFont(font)
         self.bt_gbg.setStyleSheet("background-color: qlineargradient(spread:pad, x1:0, y1:0.5, x2:1, y2:0.5, stop:0 rgba(13, 5, 81, 255), stop:1 rgba(36, 176, 189, 255));\n"
-"color: rgb(255, 255, 255);\n"
-"border-width:10px;\n"
-"border-radius:20px;\n"
-"")
+                                  "color: rgb(255, 255, 255);\n"
+                                  "border-width:10px;\n"
+                                  "border-radius:20px;\n"
+                                  "")
         self.bt_gbg.setCheckable(False)
         self.bt_gbg.setPopupMode(QtWidgets.QToolButton.InstantPopup)
         self.bt_gbg.setToolButtonStyle(QtCore.Qt.ToolButtonFollowStyle)
@@ -166,12 +167,13 @@ class Ui_WelcomeUI(object):
         _translate = QtCore.QCoreApplication.translate
         WelcomeUI.setWindowTitle(_translate("WelcomeUI", "atCrawl"))
         self.bt_skroutz.setText(_translate("WelcomeUI", "skroutz.gr"))
-        self.bt_antallaktika.setText(_translate("WelcomeUI", "antallaktikaonline.gr"))
+        self.bt_antallaktika.setText(_translate(
+            "WelcomeUI", "antallaktikaonline.gr"))
         self.header.setHtml(_translate("WelcomeUI", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'Century Gothic\'; font-size:10pt; font-weight:600; font-style:normal;\">\n"
-"<p align=\"right\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt; font-style:italic; color:#dadada;\">atCrawl Services</span></p></body></html>"))
+                                       "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+                                       "p, li { white-space: pre-wrap; }\n"
+                                       "</style></head><body style=\" font-family:\'Century Gothic\'; font-size:10pt; font-weight:600; font-style:normal;\">\n"
+                                       "<p align=\"right\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt; font-style:italic; color:#dadada;\">atCrawl Services</span></p></body></html>"))
         self.bt_edit.setText(_translate("WelcomeUI", "Επεξεργασία Αρχείων"))
         self.bt_rellas.setText(_translate("WelcomeUI", "rellasamortiser.gr"))
         self.bt_gbg.setText(_translate("WelcomeUI", "gbg-eshop.gr"))

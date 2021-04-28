@@ -20,12 +20,8 @@ HORIZONTAL = 'H'
 VERTICAL = 'V'
 PATH_PLACEHOLDER = "Paste path here or browse..."
 
-labelFont = QFont()
-labelFont.setFamily(FONT)
-labelFont.setPointSize(FONTSIZE)
-btFont = QFont()
-btFont.setFamily(FONT)
-btFont.setPointSize(FONTSIZE)
+labelFont = QFont(FONT, FONTSIZE)
+btFont = QFont(FONT, FONTSIZE)
 btFont.setBold(True)
 
 visuals = {
@@ -34,7 +30,7 @@ visuals = {
     'button_width': 80,
     'font': "Segoe UI",
     'fontsize': 10,
-    'label' : '',
+    'label': '',
     'path_placeholder': "Paste path here or browse...",
     'orientation': HORIZONTAL,
     'completer': None,
@@ -43,8 +39,10 @@ visuals = {
     'checked': True,
     'combo_items': None,
     'status': '',
-    'status_size': 250
+    'status_size': 250,
+    'base_folder': ''
 }
+
 
 def show_popup(main_text, info='', icon=QMessageBox.Information):
     msg = QMessageBox()
@@ -107,11 +105,17 @@ class FileNameInput(QWidget):
     def setOffset(self, offset):
         self.label.setFixedWidth(offset)
 
-    def setMaximumWidth(self, maxw):
+    def setMaximumEditWidth(self, maxw):
         self.lineEdit.setMaximumWidth(maxw)
 
-    def setMinimumWidth(self, minw):
+    def setMinimumEditWidth(self, minw):
         self.lineEdit.setMinimumWidth(minw)
+
+    def setMaximumLabelWidth(self, maxw):
+        self.label.setMaximumWidth(maxw)
+
+    def setMinimumLabelWidth(self, minw):
+        self.label.setMinimumWidth(minw)
 
 
 class FolderInput(QWidget):
@@ -120,7 +124,7 @@ class FolderInput(QWidget):
                  placeholder=PATH_PLACEHOLDER,
                  parent=None,
                  orientation=HORIZONTAL,
-                 first_visit = '',
+                 first_visit='',
                  *args,
                  **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
@@ -128,6 +132,7 @@ class FolderInput(QWidget):
         self.lastVisit = first_visit
         self.button.clicked.connect(self.browse)
         self.lineEdit.textChanged.connect(lambda x: self.pathExists(x))
+        self.browseCallback = None
 
     def setupUi(self, label, placeholder, orientation):
         self.label = QLabel()
@@ -169,6 +174,12 @@ class FolderInput(QWidget):
             self.lineEdit.setText(file_path)
             self.lastVisit = file_path
 
+            if self.browseCallback is not None:
+                self.browseCallback()
+
+    def setBrowseCallback(self, func):
+        self.browseCallback = func
+
     def getText(self):
         return self.lineEdit.text()
 
@@ -182,17 +193,33 @@ class FolderInput(QWidget):
     def setOffset(self, offset):
         self.label.setFixedWidth(offset)
 
+    def setMaximumEditWidth(self, maxw):
+        self.lineEdit.setMaximumWidth(maxw)
+
+    def setMinimumEditWidth(self, minw):
+        self.lineEdit.setMinimumWidth(minw)
+
+    def setMaximumLabelWidth(self, maxw):
+        self.label.setMaximumWidth(maxw)
+
+    def setMinimumLabelWidth(self, minw):
+        self.label.setMinimumWidth(minw)
+
     def pathExists(self, path):
         if path:
             if os.path.exists(path):
                 if os.path.isdir(path):
                     self.lineEdit.setStyleSheet(make_stylesheet(border=green))
+                    self.lineEdit.setToolTip("OK")
                 else:
                     self.lineEdit.setStyleSheet(make_stylesheet(border=yellow))
+                    self.lineEdit.setToolTip("Path should be a folder")
             else:
                 self.lineEdit.setStyleSheet(make_stylesheet(border=red))
+                self.lineEdit.setToolTip("Path does not exist")
         else:
             self.lineEdit.setStyleSheet(make_stylesheet(border=grey))
+            self.lineEdit.setToolTip("")
 
 
 class FileInput(QWidget):
@@ -201,7 +228,7 @@ class FileInput(QWidget):
                  placeholder=PATH_PLACEHOLDER,
                  parent=None,
                  orientation=HORIZONTAL,
-                 first_visit = '',
+                 first_visit='',
                  *args,
                  **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
@@ -272,17 +299,33 @@ class FileInput(QWidget):
     def setOffset(self, offset):
         self.label.setFixedWidth(offset)
 
+    def setMaximumEditWidth(self, maxw):
+        self.lineEdit.setMaximumWidth(maxw)
+
+    def setMinimumEditWidth(self, minw):
+        self.lineEdit.setMinimumWidth(minw)
+
+    def setMaximumLabelWidth(self, maxw):
+        self.label.setMaximumWidth(maxw)
+
+    def setMinimumLabelWidth(self, minw):
+        self.label.setMinimumWidth(minw)
+
     def pathExists(self, path):
         if path:
             if os.path.exists(path):
                 if os.path.isfile(path):
                     self.lineEdit.setStyleSheet(make_stylesheet(border=green))
+                    self.lineEdit.setToolTip("OK")
                 else:
                     self.lineEdit.setStyleSheet(make_stylesheet(border=yellow))
+                    self.lineEdit.setToolTip("Path should be a file")
             else:
                 self.lineEdit.setStyleSheet(make_stylesheet(border=red))
+                self.lineEdit.setToolTip("Path does not exist")
         else:
             self.lineEdit.setStyleSheet(make_stylesheet(border=grey))
+            self.lineEdit.setToolTip("")
 
 
 class FileOutput(QWidget):
@@ -291,7 +334,7 @@ class FileOutput(QWidget):
                  placeholder=PATH_PLACEHOLDER,
                  parent=None,
                  orientation=HORIZONTAL,
-                 first_visit = '',
+                 first_visit='',
                  *args,
                  **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
@@ -353,6 +396,18 @@ class FileOutput(QWidget):
     def setOffset(self, offset):
         self.label.setFixedWidth(offset)
 
+    def setMaximumEditWidth(self, maxw):
+        self.lineEdit.setMaximumWidth(maxw)
+
+    def setMinimumEditWidth(self, minw):
+        self.lineEdit.setMinimumWidth(minw)
+
+    def setMaximumLabelWidth(self, maxw):
+        self.label.setMaximumWidth(maxw)
+
+    def setMinimumLabelWidth(self, minw):
+        self.label.setMinimumWidth(minw)
+
 
 class InputParameter(QWidget):
     def __init__(self,
@@ -410,11 +465,17 @@ class InputParameter(QWidget):
     def setPlaceholder(self, text):
         self.lineEdit.setPlaceholderText(text)
 
-    def setMaximumWidth(self, maxw):
+    def setMaximumEditWidth(self, maxw):
         self.lineEdit.setMaximumWidth(maxw)
 
-    def setMinimumWidth(self, minw):
+    def setMinimumEditWidth(self, minw):
         self.lineEdit.setMinimumWidth(minw)
+
+    def setMaximumLabelWidth(self, maxw):
+        self.label.setMaximumWidth(maxw)
+
+    def setMinimumLabelWidth(self, minw):
+        self.label.setMinimumWidth(minw)
 
     def setOffset(self, offset):
         self.label.setFixedWidth(offset)
@@ -486,11 +547,17 @@ class IntInputParameter(QWidget):
     def setPlaceholder(self, text):
         self.lineEdit.setPlaceholderText(text)
 
-    def setMaximumWidth(self, maxw):
+    def setMaximumEditWidth(self, maxw):
         self.lineEdit.setMaximumWidth(maxw)
 
-    def setMinimumWidth(self, minw):
+    def setMinimumEditWidth(self, minw):
         self.lineEdit.setMinimumWidth(minw)
+
+    def setMaximumLabelWidth(self, maxw):
+        self.label.setMaximumWidth(maxw)
+
+    def setMinimumLabelWidth(self, minw):
+        self.label.setMinimumWidth(minw)
 
     def setOffset(self, offset):
         self.label.setFixedWidth(offset)
@@ -543,6 +610,12 @@ class ComboInput(QWidget):
 
     def subscribe(self, func):
         self.comboEdit.currentIndexChanged.connect(func)
+
+    def setMaximumLabelWidth(self, maxw):
+        self.label.setMaximumWidth(maxw)
+
+    def setMinimumLabelWidth(self, minw):
+        self.label.setMinimumWidth(minw)
 
 
 class CheckInput(QCheckBox):

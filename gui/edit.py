@@ -4,6 +4,7 @@ from atcrawl.utilities import *
 
 cwd = str(paths.get_base_folder())
 
+
 class SplitFileEdit(QWidget):
     def __init__(self, parent=None, *args, **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
@@ -132,11 +133,14 @@ class DownloadImagesEdit(QWidget):
 
     def readInputFile(self):
         _file = self.fileToModify.getText()
-        _df = pd.read_excel(_file)
-        _cols = _df.columns.tolist()
+        if os.path.exists(_file):
+            _file_ext = os.path.splitext(_file)[1]
+            if _file_ext in ['.xlsx', '.xls']:
+                _df = pd.read_excel(_file)
+                _cols = _df.columns.tolist()
 
-        self.colCombo1.addItems(_cols)
-        self.colCombo2.addItems(_cols)
+                self.colCombo1.addItems(_cols)
+                self.colCombo2.addItems(_cols)
 
     def clearCombos(self):
         self.colCombo1.clearItems()
@@ -360,11 +364,11 @@ class FilterEdit(QWidget):
         self.combosLayout.addWidget(self.colCombo2)
         self.paramsLayout = QHBoxLayout()
         self.paramFilter = InputParameter("Φίλτρο:")
-        self.paramFilter.setMinimumWidth(200)
+        self.paramFilter.setMinimumEditWidth(200)
         self.paramTrue = InputParameter("Τιμή για θετικές:")
-        self.paramTrue.setMaximumWidth(50)
+        self.paramTrue.setMaximumEditWidth(50)
         self.paramFalse = InputParameter("Τιμή για αρνητικές:")
-        self.paramFalse.setMaximumWidth(50)
+        self.paramFalse.setMaximumEditWidth(50)
         self.paramsLayout.addWidget(self.paramFilter)
         self.paramsLayout.addWidget(self.paramTrue)
         self.paramsLayout.addWidget(self.paramFalse)
@@ -409,11 +413,14 @@ class FilterEdit(QWidget):
 
     def readInputFile(self):
         _file = self.fileToModify.getText()
-        _df = pd.read_excel(_file)
-        _cols = _df.columns.tolist()
+        if os.path.exists(_file):
+            _file_ext = os.path.splitext(_file)[1]
+            if _file_ext in ['.xlsx', '.xls']:
+                _df = pd.read_excel(_file)
+                _cols = _df.columns.tolist()
 
-        self.colCombo1.addItems(_cols)
-        self.colCombo2.addItems(_cols)
+                self.colCombo1.addItems(_cols)
+                self.colCombo2.addItems(_cols)
 
     def clearCombos(self):
         self.colCombo1.clearItems()
@@ -492,10 +499,13 @@ class SortEdit(QWidget):
 
     def readInputFile(self):
         _file = self.fileToModify.getText()
-        _df = pd.read_excel(_file)
-        _cols = _df.columns.tolist()
+        if os.path.exists(_file):
+            _file_ext = os.path.splitext(_file)[1]
+            if _file_ext in ['.xlsx', '.xls']:
+                _df = pd.read_excel(_file)
+                _cols = _df.columns.tolist()
 
-        self.colCombo1.addItems(_cols)
+                self.colCombo1.addItems(_cols)
 
     def clearCombos(self):
         self.colCombo1.clearItems()

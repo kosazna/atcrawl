@@ -1,0 +1,53 @@
+/* #lineEdit{
+    background-color: #f8f8f8;
+    border: 1px solid #6C757D;
+    color: #212529;
+    border-radius: 3px;
+}
+
+#lineEdit:focus{
+    border: 1px solid #0D6EFD;
+    } */
+
+#MainWidget {
+  background-color: #d6d6d6;
+}
+
+#InputDefault {
+  background-color: #f8f8f8;
+  border: 1px solid #6c757d;
+  color: #212529;
+  border-radius: 3px;
+}
+
+#InputDefault:focus {
+  border: 1px solid #0d6efd;
+}
+
+#InputOk {
+  border: 1px solid #2ad66b;
+  background-color: #f8f8f8;
+  color: #212529;
+  border-radius: 3px;
+}
+
+#InputWarn {
+  border: 1px solid #FFC107;
+  background-color: #f8f8f8;
+  color: #212529;
+  border-radius: 3px;
+}
+
+#InputError {
+  border: 1px solid #EF3E4F;
+  background-color: #f8f8f8;
+  color: #212529;
+  border-radius: 3px;
+}
+
+#FolderInput QToolButton {
+  background-color: #f8f8f8;
+  border: 1px solid #6c757d;
+  color: #212529;
+  border-radius: 3px;
+}

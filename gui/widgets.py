@@ -14,15 +14,15 @@ from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QCompleter,
 HEIGHT = 25
 HOFFSET = 55
 BTWIDTH = 80
-FONTSIZE = 10
-FONT = "Segoe UI"
+# FONTSIZE = 10
+# FONT = "Segoe UI"
 HORIZONTAL = 'H'
 VERTICAL = 'V'
 PATH_PLACEHOLDER = "Paste path here or browse..."
 
-labelFont = QFont(FONT, FONTSIZE)
-btFont = QFont(FONT, FONTSIZE)
-btFont.setBold(True)
+# labelFont = QFont(FONT, FONTSIZE)
+# btFont = QFont(FONT, FONTSIZE)
+# btFont.setBold(True)
 
 stylesheet = open("D:/.temp/.dev/.aztool/atcrawl/gui/style.css").read()
 
@@ -48,7 +48,7 @@ visuals = {
 
 def show_popup(main_text, info='', icon=QMessageBox.Information):
     msg = QMessageBox()
-    msg.setFont(labelFont)
+    # msg.setFont(labelFont)
     msg.setWindowTitle("atCrawl Dialog")
     msg.setText(main_text)
     msg.setIcon(icon)
@@ -72,13 +72,13 @@ class FileNameInput(QWidget):
         self.label = QLabel()
         self.label.setText(label)
         self.label.setFixedHeight(HEIGHT)
-        self.label.setFont(labelFont)
+        # self.label.setFont(labelFont)
         self.label.setMinimumWidth(HOFFSET)
-        self.label.setStyleSheet(make_stylesheet(alpha=0))
+        self.label.setObjectName("Label")
         self.lineEdit = QLineEdit()
-        self.lineEdit.setFont(labelFont)
+        # self.lineEdit.setFont(labelFont)
         self.lineEdit.setFixedHeight(HEIGHT)
-        self.lineEdit.setStyleSheet(make_stylesheet(border=grey))
+        self.lineEdit.setObjectName("LineEdit")
         self.lineEdit.setClearButtonEnabled(True)
         self.lineEdit.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         regexp = QRegExp('[^\.\<\>:\"/\\\|\?\*]*')
@@ -120,18 +120,21 @@ class FileNameInput(QWidget):
         self.label.setMinimumWidth(minw)
 
 
-class FolderInput(QWidget):
+class IOWidget(QWidget):
+    lastVisit = ''
+    ok = ("InputOk", "Path OK")
+    warning = ("InputWarn", "Path Warning")
+    error = ("InputError", "Path does not exist")
+
     def __init__(self,
                  label='',
                  placeholder=PATH_PLACEHOLDER,
                  parent=None,
                  orientation=HORIZONTAL,
-                 first_visit='',
                  *args,
                  **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
         self.setupUi(label, placeholder, orientation)
-        self.lastVisit = first_visit
         self.button.clicked.connect(self.browse)
         self.lineEdit.textChanged.connect(lambda x: self.pathExists(x))
         self.browseCallback = None
@@ -139,25 +142,16 @@ class FolderInput(QWidget):
     def setupUi(self, label, placeholder, orientation):
         self.label = QLabel()
         self.label.setText(label)
-        self.label.setFixedHeight(HEIGHT)
-        self.label.setFont(labelFont)
-        # self.label.setStyleSheet(make_stylesheet(alpha=0))
+        self.label.setObjectName("Label")
         self.lineEdit = QLineEdit()
-        self.lineEdit.setFont(labelFont)
-        self.lineEdit.setFixedHeight(HEIGHT)
-        # self.lineEdit.setStyleSheet(make_stylesheet(border=grey))
         self.lineEdit.setObjectName("InputDefault")
-
-
         self.lineEdit.setClearButtonEnabled(True)
         self.lineEdit.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         self.setPlaceholder(placeholder)
         self.button = QToolButton()
-        self.button.setFont(btFont)
-        self.button.setFixedHeight(HEIGHT)
-        self.button.setFixedWidth(HEIGHT)
-        self.button.setText("...")
-        # self.button.setStyleSheet(make_stylesheet(border=grey))
+        self.button.setCursor(QCursor(Qt.PointingHandCursor))
+        self.button.setText("2")
+        self.button.setObjectName("Browse")
         if orientation == HORIZONTAL:
             self.label.setMinimumWidth(HOFFSET)
             layout = QHBoxLayout()
@@ -173,14 +167,9 @@ class FolderInput(QWidget):
             layout.addLayout(inner)
         self.setLayout(layout)
 
-    def browse(self):
-        file_path = QFileDialog.getExistingDirectory(directory=self.lastVisit)
-        if file_path:
-            self.lineEdit.setText(file_path)
-            self.lastVisit = file_path
-
-            if self.browseCallback is not None:
-                self.browseCallback()
+    @classmethod
+    def setLastVisit(cls, folder):
+        cls.lastVisit = folder
 
     def setBrowseCallback(self, func):
         self.browseCallback = func
@@ -213,189 +202,85 @@ class FolderInput(QWidget):
     def updateStyle(self, status):
         self.lineEdit.setObjectName(status)
         self.lineEdit.setStyleSheet(stylesheet)
-        if status == "InputOk":
-            self.lineEdit.setToolTip("OK")
-        elif status == "InputWarn":
-            self.lineEdit.setToolTip("Path should be a folder")
-        elif status == "InputError":
-            self.lineEdit.setToolTip("Path does not exist")
+        if status == self.ok[0]:
+            self.lineEdit.setToolTip(self.ok[1])
+        elif status == self.warning[0]:
+            self.lineEdit.setToolTip(self.warning[1])
+        elif status == self.error[0]:
+            self.lineEdit.setToolTip(self.error[1])
         else:
             self.lineEdit.setToolTip("")
+
+    def browse(self):
+        pass
+
+    def pathExists(self, path):
+        pass
+
+
+class FolderInput(IOWidget):
+    warning = ("InputWarn", "Path should be a folder")
+
+    def __init__(self, label="", placeholder=PATH_PLACEHOLDER, parent=None, orientation=HORIZONTAL, *args, **kwargs):
+        super().__init__(label=label, placeholder=placeholder,
+                         parent=parent, orientation=orientation, *args, **kwargs)
+
+    def browse(self):
+        file_path = QFileDialog.getExistingDirectory(directory=self.lastVisit)
+        if file_path:
+            self.lineEdit.setText(file_path)
+            IOWidget.setLastVisit(file_path)
+
+            if self.browseCallback is not None:
+                self.browseCallback()
 
     def pathExists(self, path):
         if path:
             if os.path.exists(path):
                 if os.path.isdir(path):
-                    # self.lineEdit.setStyleSheet(make_stylesheet(border=green))
-                    # self.lineEdit.setToolTip("OK")
                     self.updateStyle("InputOk")
                 else:
-                    # self.lineEdit.setStyleSheet(make_stylesheet(border=yellow))
-                    # self.lineEdit.setToolTip("Path should be a folder")
                     self.updateStyle("InputWarn")
             else:
-                # self.lineEdit.setStyleSheet(make_stylesheet(border=red))
-                # self.lineEdit.setToolTip("Path does not exist")
                 self.updateStyle("InputError")
         else:
-            # self.lineEdit.setStyleSheet(make_stylesheet(border=grey))
-            # self.lineEdit.setToolTip("")
             self.updateStyle("InputDefault")
 
 
-class FileInput(QWidget):
-    def __init__(self,
-                 label='',
-                 placeholder=PATH_PLACEHOLDER,
-                 parent=None,
-                 orientation=HORIZONTAL,
-                 first_visit='',
-                 *args,
-                 **kwargs):
-        super().__init__(parent=parent, *args, **kwargs)
-        self.setupUi(label, placeholder, orientation)
-        self.lastVisit = first_visit
-        self.button.clicked.connect(self.browse)
-        self.lineEdit.textChanged.connect(lambda x: self.pathExists(x))
-        self.browseCallback = None
+class FileInput(IOWidget):
+    warning = ("InputWarn", "Path should be a folder")
 
-    def setupUi(self, label, placeholder, orientation):
-        self.label = QLabel()
-        self.label.setText(label)
-        self.label.setFixedHeight(HEIGHT)
-        self.label.setFont(labelFont)
-        # self.label.setStyleSheet(make_stylesheet(alpha=0))
-        self.lineEdit = QLineEdit()
-        self.lineEdit.setFont(labelFont)
-        self.lineEdit.setFixedHeight(HEIGHT)
-        # self.lineEdit.setStyleSheet(make_stylesheet(border=grey))
-        self.lineEdit.setClearButtonEnabled(True)
-        self.lineEdit.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-        self.setPlaceholder(placeholder)
-        self.button = QToolButton()
-        self.button.setFont(btFont)
-        self.button.setFixedHeight(HEIGHT)
-        self.button.setFixedWidth(HEIGHT)
-        self.button.setText("...")
-        # self.button.setStyleSheet(make_stylesheet(border=grey))
-        if orientation == HORIZONTAL:
-            self.label.setMinimumWidth(HOFFSET)
-            layout = QHBoxLayout()
-            layout.addWidget(self.label)
-            layout.addWidget(self.lineEdit)
-            layout.addWidget(self.button)
-        else:
-            layout = QVBoxLayout()
-            inner = QHBoxLayout()
-            layout.addWidget(self.label)
-            inner.addWidget(self.lineEdit)
-            inner.addWidget(self.button)
-            layout.addLayout(inner)
-        self.setLayout(layout)
-        self.setLayout(layout)
+    def __init__(self, label="", placeholder=PATH_PLACEHOLDER, parent=None, orientation=HORIZONTAL, *args, **kwargs):
+        super().__init__(label=label, placeholder=placeholder,
+                         parent=parent, orientation=orientation, *args, **kwargs)
 
     def browse(self):
         filename = QFileDialog.getOpenFileName(directory=self.lastVisit)
         file_path = filename[0]
         if file_path:
             self.lineEdit.setText(file_path)
-            self.lastVisit = file_path
+            IOWidget.setLastVisit(file_path)
 
             if self.browseCallback is not None:
                 self.browseCallback()
-
-    def setBrowseCallback(self, func):
-        self.browseCallback = func
-
-    def getText(self):
-        return self.lineEdit.text()
-
-    def setText(self, text):
-        self.lineEdit.setText(text)
-        self.lastVisit = text
-
-    def setPlaceholder(self, text):
-        self.lineEdit.setPlaceholderText(text)
-
-    def setOffset(self, offset):
-        self.label.setFixedWidth(offset)
-
-    def setMaximumEditWidth(self, maxw):
-        self.lineEdit.setMaximumWidth(maxw)
-
-    def setMinimumEditWidth(self, minw):
-        self.lineEdit.setMinimumWidth(minw)
-
-    def setMaximumLabelWidth(self, maxw):
-        self.label.setMaximumWidth(maxw)
-
-    def setMinimumLabelWidth(self, minw):
-        self.label.setMinimumWidth(minw)
 
     def pathExists(self, path):
         if path:
             if os.path.exists(path):
                 if os.path.isfile(path):
-                    self.lineEdit.setStyleSheet(make_stylesheet(border=green))
-                    self.lineEdit.setToolTip("OK")
+                    self.updateStyle("InputOk")
                 else:
-                    self.lineEdit.setStyleSheet(make_stylesheet(border=yellow))
-                    self.lineEdit.setToolTip("Path should be a file")
+                    self.updateStyle("InputWarn")
             else:
-                self.lineEdit.setStyleSheet(make_stylesheet(border=red))
-                self.lineEdit.setToolTip("Path does not exist")
+                self.updateStyle("InputError")
         else:
-            self.lineEdit.setStyleSheet(make_stylesheet(border=grey))
-            self.lineEdit.setToolTip("")
+            self.updateStyle("InputDefault")
 
 
-class FileOutput(QWidget):
-    def __init__(self,
-                 label='',
-                 placeholder=PATH_PLACEHOLDER,
-                 parent=None,
-                 orientation=HORIZONTAL,
-                 first_visit='',
-                 *args,
-                 **kwargs):
-        super().__init__(parent=parent, *args, **kwargs)
-        self.setupUi(label, placeholder, orientation)
-        self.lastVisit = first_visit
-        self.button.clicked.connect(self.browse)
-
-    def setupUi(self, label, placeholder, orientation):
-        self.label = QLabel()
-        self.label.setText(label)
-        self.label.setFixedHeight(HEIGHT)
-        self.label.setFont(labelFont)
-        self.label.setStyleSheet(make_stylesheet(alpha=0))
-        self.lineEdit = QLineEdit()
-        self.lineEdit.setFont(labelFont)
-        self.lineEdit.setFixedHeight(HEIGHT)
-        self.lineEdit.setStyleSheet(make_stylesheet(border=grey))
-        self.lineEdit.setClearButtonEnabled(True)
-        self.lineEdit.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-        self.setPlaceholder(placeholder)
-        self.button = QToolButton()
-        self.button.setFont(btFont)
-        self.button.setFixedHeight(HEIGHT)
-        self.button.setFixedWidth(HEIGHT)
-        self.button.setText("...")
-        self.button.setStyleSheet(make_stylesheet(border=grey))
-        if orientation == HORIZONTAL:
-            self.label.setMinimumWidth(HOFFSET)
-            layout = QHBoxLayout()
-            layout.addWidget(self.label)
-            layout.addWidget(self.lineEdit)
-            layout.addWidget(self.button)
-        else:
-            layout = QVBoxLayout()
-            inner = QHBoxLayout()
-            layout.addWidget(self.label)
-            inner.addWidget(self.lineEdit)
-            inner.addWidget(self.button)
-            layout.addLayout(inner)
-        self.setLayout(layout)
+class FileOutput(IOWidget):
+    def __init__(self, label="", placeholder=PATH_PLACEHOLDER, parent=None, orientation=HORIZONTAL, *args, **kwargs):
+        super().__init__(label=label, placeholder=placeholder,
+                         parent=parent, orientation=orientation, *args, **kwargs)
 
     def browse(self):
         filename = QFileDialog.getSaveFileName(directory=self.lastVisit)
@@ -403,31 +288,6 @@ class FileOutput(QWidget):
         if file_path:
             self.lineEdit.setText(file_path)
             self.lastVisit = file_path
-
-    def getText(self):
-        return self.lineEdit.text()
-
-    def setText(self, text):
-        self.lineEdit.setText(text)
-        self.lastVisit = text
-
-    def setPlaceholder(self, text):
-        self.lineEdit.setPlaceholderText(text)
-
-    def setOffset(self, offset):
-        self.label.setFixedWidth(offset)
-
-    def setMaximumEditWidth(self, maxw):
-        self.lineEdit.setMaximumWidth(maxw)
-
-    def setMinimumEditWidth(self, minw):
-        self.lineEdit.setMinimumWidth(minw)
-
-    def setMaximumLabelWidth(self, maxw):
-        self.label.setMaximumWidth(maxw)
-
-    def setMinimumLabelWidth(self, minw):
-        self.label.setMinimumWidth(minw)
 
 
 class InputParameter(QWidget):
@@ -447,12 +307,12 @@ class InputParameter(QWidget):
         self.label = QLabel()
         self.label.setText(label)
         self.label.setFixedHeight(HEIGHT)
-        self.label.setFont(labelFont)
-        self.label.setStyleSheet(make_stylesheet(alpha=0))
+        # self.label.setFont(labelFont)
+        self.label.setObjectName("Label")
         self.lineEdit = QLineEdit()
-        self.lineEdit.setFont(labelFont)
+        # self.lineEdit.setFont(labelFont)
         self.lineEdit.setFixedHeight(HEIGHT)
-        self.lineEdit.setStyleSheet(make_stylesheet(border=grey))
+        self.lineEdit.setObjectName("LineEdit")
         self.lineEdit.setClearButtonEnabled(True)
         self.lineEdit.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         if hidden:
@@ -527,15 +387,15 @@ class IntInputParameter(QWidget):
         self.label = QLabel()
         self.label.setText(label)
         self.label.setFixedHeight(HEIGHT)
-        self.label.setFont(labelFont)
-        self.label.setStyleSheet(make_stylesheet(alpha=0))
+        # self.label.setFont(labelFont)
+        self.label.setObjectName("Label")
         self.validator = QIntValidator()
         if value_range is not None:
             self.validator.setRange(*value_range)
         self.lineEdit = QLineEdit()
-        self.lineEdit.setFont(labelFont)
+        # self.lineEdit.setFont(labelFont)
         self.lineEdit.setFixedHeight(HEIGHT)
-        self.lineEdit.setStyleSheet(make_stylesheet(border=grey))
+        self.lineEdit.setObjectName("LineEdit")
         self.lineEdit.setValidator(self.validator)
         self.lineEdit.setClearButtonEnabled(True)
         self.lineEdit.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
@@ -598,11 +458,11 @@ class ComboInput(QWidget):
         self.label = QLabel()
         self.label.setText(label)
         self.label.setFixedHeight(HEIGHT)
-        self.label.setFont(labelFont)
-        self.label.setStyleSheet(make_stylesheet(alpha=0))
+        # self.label.setFont(labelFont)
+        self.label.setObjectName("Label")
         self.label.setMinimumWidth(HOFFSET)
         self.comboEdit = QComboBox()
-        self.comboEdit.setFont(labelFont)
+        # self.comboEdit.setFont(labelFont)
         self.comboEdit.setFixedHeight(HEIGHT)
         self.comboEdit.setStyleSheet(make_stylesheet(border=grey))
         self.comboEdit.setSizeAdjustPolicy(
@@ -647,7 +507,7 @@ class CheckInput(QCheckBox):
     def setupUi(self, label, checked):
         self.setText(label)
         self.setFixedHeight(HEIGHT)
-        self.setFont(labelFont)
+        # self.setFont(labelFont)
         self.setChecked(checked)
         self.setStyleSheet(make_stylesheet(white, alpha=0))
 
@@ -670,10 +530,7 @@ class Button(QToolButton):
 
     def setupUi(self, label):
         self.setText(label)
-        self.setFixedHeight(HEIGHT)
-        self.setFont(btFont)
-        self.setStyleSheet(make_stylesheet(blue))
-        self.setMinimumWidth(BTWIDTH)
+        self.setObjectName("Button")
         self.setCursor(QCursor(Qt.PointingHandCursor))
         # self.setCheckable(True)
 
@@ -709,14 +566,14 @@ class StatusIndicator(QWidget):
         layout = QHBoxLayout()
         if label:
             self.label = QLabel()
-            self.label.setFont(labelFont)
+            # self.label.setFont(labelFont)
             self.label.setText(label)
-            self.label.setStyleSheet(make_stylesheet(alpha=0))
+            self.label.setObjectName("Label")
             self.label.setFixedHeight(HEIGHT)
             self.label.setFixedWidth(HOFFSET)
             layout.addWidget(self.label)
         self.button = QToolButton()
-        self.button.setFont(btFont)
+        # self.button.setFont(btFont)
         self.button.setText(status)
         self.button.setFixedHeight(HEIGHT)
         self.button.setMinimumWidth(size)
@@ -768,7 +625,6 @@ class Dummy(QWidget):
         self.layoutGeneral = QVBoxLayout()
         self.layoutButtons = QVBoxLayout()
         self.folderInput = FolderInput("Folder", parent=self)
-        self.folderInput.setObjectName("FolderInput")
         self.fileInput = FileInput("File In", parent=self)
         self.fileOutput = FileOutput("File Out", parent=self)
         self.input = InputParameter("Input", parent=self)
@@ -778,8 +634,7 @@ class Dummy(QWidget):
         self.button1 = Button("accept", parent=self)
         self.button2 = Button("decline", parent=self)
         self.button3 = Button("process", parent=self)
-        self.status.button.setFont(QFont("Webdings", 20))
-        self.status.button.setText('q')
+
         self.status.setStyle(make_stylesheet(dark, foreground=teal))
 
         self.layoutGeneral.addWidget(self.folderInput)

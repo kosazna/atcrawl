@@ -1,16 +1,7 @@
-/* #lineEdit{
-    background-color: #f8f8f8;
-    border: 1px solid #6C757D;
-    color: #212529;
-    border-radius: 3px;
-}
-
-#lineEdit:focus{
-    border: 1px solid #0D6EFD;
-    } */
-
 #MainWidget {
   background-color: #d6d6d6;
+  font-family: "Segoe UI";
+  font: 15px;
 }
 
 #InputDefault {
@@ -18,6 +9,10 @@
   border: 1px solid #6c757d;
   color: #212529;
   border-radius: 3px;
+  font-family: "Segoe UI";
+  font: 15px;
+  font-style: italic;
+  min-height: 25px;
 }
 
 #InputDefault:focus {
@@ -29,25 +24,72 @@
   background-color: #f8f8f8;
   color: #212529;
   border-radius: 3px;
+  font-family: "Segoe UI";
+  font: 15px;
+  min-height: 25px;
 }
 
 #InputWarn {
-  border: 1px solid #FFC107;
+  border: 1px solid #ffc107;
   background-color: #f8f8f8;
   color: #212529;
   border-radius: 3px;
+  font-family: "Segoe UI";
+  font: 15px;
+  min-height: 25px;
 }
 
 #InputError {
-  border: 1px solid #EF3E4F;
+  border: 1px solid #ef3e4f;
   background-color: #f8f8f8;
   color: #212529;
   border-radius: 3px;
+  font-family: "Segoe UI";
+  font: 15px;
+  min-height: 25px;
 }
 
-#FolderInput QToolButton {
+#Browse {
   background-color: #f8f8f8;
   border: 1px solid #6c757d;
   color: #212529;
   border-radius: 3px;
+  font-family: "Webdings";
+  font: 15px;
+  min-height: 25px;
+  width: 25px;
+  margin: 2px 0 0 0;
+}
+
+#LineEdit {
+  background-color: #f8f8f8;
+  border: 1px solid #6c757d;
+  color: #212529;
+  border-radius: 3px;
+  font-family: "Segoe UI";
+  font: 15px;
+  min-height: 25px;
+}
+
+#LineEdit:focus {
+  border: 1px solid #0d6efd;
+}
+
+#Label {
+  background-color: transparent;
+  color: #212529;
+  font-family: "Segoe UI";
+  font: 15px;
+  min-height: 25px;
+}
+
+#Button{
+  background-color: #0D6EFD;
+  color: #212529;
+  border-radius: 3px;
+  font-family: "Segoe UI";
+  font: 15px;
+  font-weight: bold;
+  min-height: 25px;
+  min-width: 80px;
 }

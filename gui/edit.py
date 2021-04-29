@@ -14,9 +14,11 @@ class SplitFileEdit(QWidget):
 
     def setupUi(self):
         self.fileToModify = FileInput("Αρχείο προς επεξεργασία:",
-                                      orientation=VERTICAL)
+                                      orientation=VERTICAL,
+                                      first_visit=cwd)
         self.destination = FolderInput("Αποθήκευση αρχέιων στον φάκελο:",
-                                       orientation=VERTICAL)
+                                       orientation=VERTICAL,
+                                       first_visit=cwd)
         self.splitRatio = IntInputParameter("Σπάσιμο αρχείου ανά:",
                                             orientation=VERTICAL)
 
@@ -46,7 +48,7 @@ class SplitFileEdit(QWidget):
     def getParams(self):
         _params = {'filepath': self.fileToModify.getText(),
                    'destination': self.destination.getText(),
-                   'k': self.splitRatio.getText()}
+                   'k': int(self.splitRatio.getText())}
 
         return _params
 
@@ -84,7 +86,8 @@ class DownloadImagesEdit(QWidget):
 
     def setupUi(self):
         self.fileToModify = FileInput("Αρχείο προς επεξεργασία:",
-                                      orientation=VERTICAL)
+                                      orientation=VERTICAL,
+                                      first_visit=cwd)
         self.fileToModify.setBrowseCallback(self.readInputFile)
         self.combosLayout = QHBoxLayout()
         self.colCombo1 = ComboInput("Στήλη ονόματος εικόνας")
@@ -96,7 +99,8 @@ class DownloadImagesEdit(QWidget):
         self.prefix = InputParameter("Link μπροστά από το όνομα της εικόνας:",
                                      orientation=VERTICAL)
         self.destination = FolderInput("Αποθήκευση αρχέιων στον φάκελο:",
-                                       orientation=VERTICAL)
+                                       orientation=VERTICAL,
+                                       first_visit=cwd)
         self.destination.setText(paths.get_images_export())
         self.buttonLayout = QHBoxLayout()
         self.status = StatusIndicator(status='', size=self.width() - BTWIDTH)
@@ -199,11 +203,14 @@ class CreateImagesEdit(QWidget):
 
     def setupUi(self):
         self.fileToModify = FileInput("Αρχείο προς επεξεργασία:",
-                                      orientation=VERTICAL)
+                                      orientation=VERTICAL,
+                                      first_visit=cwd)
         self.source = FolderInput("Φάκελος πρωτότυπων εικόνων:",
-                                  orientation=VERTICAL)
+                                  orientation=VERTICAL,
+                                  first_visit=cwd)
         self.destination = FolderInput("Αποθήκευση αρχέιων στον φάκελο:",
-                                       orientation=VERTICAL)
+                                       orientation=VERTICAL,
+                                       first_visit=cwd)
         self.prefix = InputParameter("Link μπροστά από το όνομα της εικόνας:",
                                      orientation=VERTICAL)
         self.source.setText(paths.get_images_import())
@@ -275,7 +282,8 @@ class MergeEdit(QWidget):
 
     def setupUi(self):
         self.source = FolderInput("Φάκελος αρχείων:",
-                                  orientation=VERTICAL)
+                                  orientation=VERTICAL,
+                                  first_visit=cwd)
         self.colsLayout1 = QHBoxLayout()
         self.newColName1 = InputParameter("Νέα στήλη 1")
         self.newColName1.setOffset(80)
@@ -286,7 +294,8 @@ class MergeEdit(QWidget):
         self.colsLayout1.addWidget(self.newColName1)
         self.colsLayout1.addWidget(self.newColValue1)
         self.destination = FileOutput("Αποθήκευση αρχείου:",
-                                      orientation=VERTICAL)
+                                      orientation=VERTICAL,
+                                      first_visit=cwd)
         self.buttonLayout = QHBoxLayout()
         self.status = StatusIndicator(status='', size=self.width() - BTWIDTH)
         self.status.setStyle(make_stylesheet(grey))
@@ -353,7 +362,8 @@ class FilterEdit(QWidget):
 
     def setupUi(self):
         self.fileToModify = FileInput("Αρχείο προς επεξεργασία:",
-                                      orientation=VERTICAL)
+                                      orientation=VERTICAL,
+                                      first_visit=cwd)
         self.fileToModify.setBrowseCallback(self.readInputFile)
         self.combosLayout = QHBoxLayout()
         self.colCombo1 = ComboInput("Στήλη εφαρμογής")
@@ -373,7 +383,8 @@ class FilterEdit(QWidget):
         self.paramsLayout.addWidget(self.paramTrue)
         self.paramsLayout.addWidget(self.paramFalse)
         self.destination = FileOutput("Αποθήκευση αρχείου:",
-                                      orientation=VERTICAL)
+                                      orientation=VERTICAL,
+                                      first_visit=cwd)
 
         self.buttonLayout = QHBoxLayout()
         self.status = StatusIndicator(status='', size=self.width() - BTWIDTH)
@@ -460,12 +471,14 @@ class SortEdit(QWidget):
 
     def setupUi(self):
         self.fileToModify = FileInput("Αρχείο προς επεξεργασία:",
-                                      orientation=VERTICAL)
+                                      orientation=VERTICAL,
+                                      first_visit=cwd)
         self.fileToModify.setBrowseCallback(self.readInputFile)
         self.colCombo1 = ComboInput("Στήλη εφαρμογής")
 
         self.destination = FileOutput("Αποθήκευση αρχείου:",
-                                      orientation=VERTICAL)
+                                      orientation=VERTICAL,
+                                      first_visit=cwd)
 
         self.buttonLayout = QHBoxLayout()
         self.status = StatusIndicator(status='', size=self.width() - BTWIDTH)

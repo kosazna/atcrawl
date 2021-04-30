@@ -37,7 +37,6 @@ else:
 
 def show_popup(main_text, info='', icon=QMessageBox.Information):
     msg = QMessageBox()
-    # msg.setFont(labelFont)
     msg.setWindowTitle("atCrawl Dialog")
     msg.setText(main_text)
     msg.setIcon(icon)

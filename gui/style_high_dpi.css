@@ -1,7 +1,5 @@
 #MainWidget {
   background-color: #d6d6d6;
-  font-family: "Segoe UI";
-  font: 14px;
 }
 
 #InputDefault {
@@ -127,7 +125,7 @@
   font-weight: bold;
   max-height: 25px;
   min-height: 25px;
-  min-width: 70px;
+  min-width: 80px;
 }
 
 #Check {

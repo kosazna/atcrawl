@@ -1,0 +1,182 @@
+#MainWidget {
+  background-color: #d6d6d6;
+  font-family: "Segoe UI";
+  font: 12px;
+}
+
+#InputDefault {
+  background-color: #f8f8f8;
+  border: 1px solid #6c757d;
+  color: #212529;
+  border-radius: 3px;
+  font-family: "Segoe UI";
+  font: 12px;
+  font-style: italic;
+  max-height: 22px;
+  min-height: 22px;
+}
+
+#InputDefault:focus {
+  border: 1px outset #22b4ee;
+}
+
+#InputOk {
+  border: 1px solid #2ad66b;
+  background-color: #f8f8f8;
+  color: #212529;
+  border-radius: 3px;
+  font-family: "Segoe UI";
+  font: 12px;
+  max-height: 22px;
+  min-height: 22px;
+}
+
+#InputWarn {
+  border: 1px solid #ffc107;
+  background-color: #f8f8f8;
+  color: #212529;
+  border-radius: 3px;
+  font-family: "Segoe UI";
+  font: 12px;
+  max-height: 22px;
+  min-height: 22px;
+}
+
+#InputError {
+  border: 1px solid #ef3e4f;
+  background-color: #f8f8f8;
+  color: #212529;
+  border-radius: 3px;
+  font-family: "Segoe UI";
+  font: 12px;
+  max-height: 22px;
+  min-height: 22px;
+}
+
+#Browse {
+  background-color: #f8f8f8;
+  border: 1px solid #6c757d;
+  color: #212529;
+  border-radius: 3px;
+  font-family: "Webdings";
+  font: 15px;
+  max-width: 22px;
+  min-width: 22px;
+  max-height: 22px;
+  min-height: 22px;
+}
+
+#LineEditSmall {
+  background-color: #f8f8f8;
+  border: 1px solid #6c757d;
+  color: #212529;
+  border-radius: 3px;
+  font-family: "Segoe UI";
+  font: 12px;
+  max-height: 22px;
+  min-height: 22px;
+  width: 200px;
+}
+
+#LineEditBig {
+  background-color: #f8f8f8;
+  border: 1px solid #6c757d;
+  color: #212529;
+  border-radius: 3px;
+  font-family: "Segoe UI";
+  font: 12px;
+  max-height: 22px;
+  min-height: 22px;
+  width: 300px;
+}
+
+#LineEditSmall:focus {
+  border: 1px outset #22b4ee;
+}
+#LineEditBig:focus {
+  border: 1px outset #22b4ee;
+}
+
+#LabelSmall {
+  background-color: transparent;
+  color: #212529;
+  font-family: "Segoe UI";
+  font: 12px;
+  font-weight: bold;
+  max-height: 22px;
+  min-height: 22px;
+  min-width: 50px;
+}
+
+#LabelBig {
+  background-color: transparent;
+  color: #212529;
+  font-family: "Segoe UI";
+  font: 12px;
+  font-weight: bold;
+  max-height: 22px;
+  min-height: 22px;
+  min-width: 85px;
+}
+
+#Button {
+  background-color: #0d6efd;
+  color: #212529;
+  border-radius: 3px;
+  font-family: "Segoe UI";
+  font: 13px;
+  font-weight: bold;
+  max-height: 22px;
+  min-height: 22px;
+  min-width: 70px;
+}
+
+#Check {
+  background-color: #f8f8f8;
+  color: #212529;
+  border-radius: 3px;
+  font-family: "Segoe UI";
+  font: 12px;
+  max-height: 22px;
+  min-height: 22px;
+}
+
+#Combo {
+  background-color: #f8f8f8;
+  border: 1px solid #6c757d;
+  color: #212529;
+  border-radius: 3px;
+  font-family: "Segoe UI";
+  font: 12px;
+  max-height: 22px;
+  min-height: 22px;
+}
+
+#CompleterPopup {
+  border: 1px outset #22b4ee;
+  color: #212529;
+  border-radius: 3px;
+}
+
+#StatusBig {
+  background-color: #212529;
+  color: #212529;
+  border-radius: 5px;
+  font-family: "Segoe UI";
+  font: 13px;
+  max-height: 22px;
+  min-height: 22px;
+  width: 500px;
+}
+
+#StatusSmall {
+  background-color: #ef3e4f;
+  color: #212529;
+  border-radius: 5px;
+  font-family: "Segoe UI";
+  font: 13px;
+  font-weight: bold;
+  max-height: 22px;
+  min-height: 22px;
+  width: 70px;
+}

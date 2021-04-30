@@ -2,7 +2,7 @@
 from atcrawl.gui.widgets import *
 from atcrawl.utilities import *
 
-cwd = str(paths.get_base_folder())
+cwd = paths.get_base_folder()
 
 
 class SplitFileEdit(QWidget):
@@ -23,8 +23,7 @@ class SplitFileEdit(QWidget):
                                             orientation=VERTICAL)
 
         self.buttonLayout = QHBoxLayout()
-        self.status = StatusIndicator(status='', size=self.width() - BTWIDTH)
-        self.status.setStyle(make_stylesheet(grey))
+        self.status = StatusIndicator(status='')
         self.button = Button("Εκτέλεση")
         self.buttonLayout.addWidget(self.status)
         self.buttonLayout.addWidget(self.button)
@@ -102,8 +101,7 @@ class DownloadImagesEdit(QWidget):
                                        )
         self.destination.setText(paths.get_images_export())
         self.buttonLayout = QHBoxLayout()
-        self.status = StatusIndicator(status='', size=self.width() - BTWIDTH)
-        self.status.setStyle(make_stylesheet(grey))
+        self.status = StatusIndicator(status='')
         self.button = Button("Εκτέλεση")
         self.buttonLayout.addWidget(self.status)
         self.buttonLayout.addWidget(self.button)
@@ -212,8 +210,7 @@ class CreateImagesEdit(QWidget):
         self.source.setText(paths.get_images_import())
         self.destination.setText(paths.get_images_export())
         self.buttonLayout = QHBoxLayout()
-        self.status = StatusIndicator(status='', size=self.width() - BTWIDTH)
-        self.status.setStyle(make_stylesheet(grey))
+        self.status = StatusIndicator(status='')
         self.button = Button("Εκτέλεση")
         self.buttonLayout.addWidget(self.status)
         self.buttonLayout.addWidget(self.button)
@@ -291,8 +288,7 @@ class MergeEdit(QWidget):
         self.destination = FileOutput("Αποθήκευση αρχείου:",
                                       orientation=VERTICAL)
         self.buttonLayout = QHBoxLayout()
-        self.status = StatusIndicator(status='', size=self.width() - BTWIDTH)
-        self.status.setStyle(make_stylesheet(grey))
+        self.status = StatusIndicator(status='')
         self.button = Button("Εκτέλεση")
         self.buttonLayout.addWidget(self.status)
         self.buttonLayout.addWidget(self.button)
@@ -379,8 +375,7 @@ class FilterEdit(QWidget):
                                       orientation=VERTICAL)
 
         self.buttonLayout = QHBoxLayout()
-        self.status = StatusIndicator(status='', size=self.width() - BTWIDTH)
-        self.status.setStyle(make_stylesheet(grey))
+        self.status = StatusIndicator(status='')
         self.button = Button("Εκτέλεση")
         self.buttonLayout.addWidget(self.status)
         self.buttonLayout.addWidget(self.button)
@@ -471,8 +466,7 @@ class SortEdit(QWidget):
                                       orientation=VERTICAL)
 
         self.buttonLayout = QHBoxLayout()
-        self.status = StatusIndicator(status='', size=self.width() - BTWIDTH)
-        self.status.setStyle(make_stylesheet(grey))
+        self.status = StatusIndicator(status='')
         self.button = Button("Εκτέλεση")
         self.buttonLayout.addWidget(self.status)
         self.buttonLayout.addWidget(self.button)
@@ -543,7 +537,8 @@ class EditWindow(QWidget):
         self.setupUi()
 
     def setupUi(self):
-        self.setStyleSheet(make_color(light_grey))
+        self.setObjectName("MainWidget")
+        self.setStyleSheet(lowDpiStyle)
         self.setWindowTitle("atCrawl Services - Επεξεργασία Αρχείων")
         self.layoutGeneral = QVBoxLayout()
         self.pageCombo = ComboInput('Διαδικασία',

@@ -3,7 +3,7 @@
 #MainWidget {
   background-color: #d6d6d6;
   font-family: "Segoe UI";
-  font: 12px;
+  font: 14px;
 }
 
 #InputDefault {
@@ -12,9 +12,9 @@
   color: #212529;
   border-radius: 3px;
   font-family: "Segoe UI";
-  font: 12px;
+  font: 14px;
   font-style: italic;
-  min-height: 22px;
+  min-height: 25px;
 }
 
 #InputDefault:focus {
@@ -27,8 +27,8 @@
   color: #212529;
   border-radius: 3px;
   font-family: "Segoe UI";
-  font: 12px;
-  min-height: 22px;
+  font: 14px;
+  min-height: 25px;
 }
 
 #InputWarn {
@@ -37,8 +37,8 @@
   color: #212529;
   border-radius: 3px;
   font-family: "Segoe UI";
-  font: 12px;
-  min-height: 22px;
+  font: 14px;
+  min-height: 25px;
 }
 
 #InputError {
@@ -47,8 +47,8 @@
   color: #212529;
   border-radius: 3px;
   font-family: "Segoe UI";
-  font: 12px;
-  min-height: 22px;
+  font: 14px;
+  min-height: 25px;
 }
 
 #Browse {
@@ -58,8 +58,8 @@
   border-radius: 3px;
   font-family: "Webdings";
   font: 15px;
-  min-height: 22px;
-  width: 22px;
+  min-height: 25px;
+  width: 25px;
 }
 
 #LineEdit {
@@ -68,8 +68,8 @@
   color: #212529;
   border-radius: 3px;
   font-family: "Segoe UI";
-  font: 12px;
-  min-height: 22px;
+  font: 14px;
+  min-height: 25px;
 }
 
 #LineEdit:focus {
@@ -80,9 +80,9 @@
   background-color: transparent;
   color: #212529;
   font-family: "Segoe UI";
-  font: 12px;
+  font: 14px;
   font-weight: bold;
-  min-height: 22px;
+  min-height: 25px;
 }
 
 #Button{
@@ -90,8 +90,27 @@
   color: #212529;
   border-radius: 3px;
   font-family: "Segoe UI";
-  font: 14px;
+  font: 15px;
   font-weight: bold;
-  min-height: 22px;
+  min-height: 25px;
   min-width: 80px;
+}
+
+#Check {
+  background-color: #f8f8f8;
+  color: #212529;
+  border-radius: 3px;
+  font-family: "Segoe UI";
+  font: 15px;
+  min-height: 25px;
+}
+
+#Combo {
+  background-color: #f8f8f8;
+  border: 1px inset #6c757d;
+  color: #212529;
+  border-radius: 3px;
+  font-family: "Segoe UI";
+  font: 15px;
+  min-height: 25px;
 }

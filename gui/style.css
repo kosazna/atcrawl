@@ -1,52 +1,54 @@
+
+
 #MainWidget {
   background-color: #d6d6d6;
   font-family: "Segoe UI";
-  font: 15px;
+  font: 12px;
 }
 
 #InputDefault {
   background-color: #f8f8f8;
-  border: 1px solid #6c757d;
+  border: 1px inset #6c757d;
   color: #212529;
   border-radius: 3px;
   font-family: "Segoe UI";
-  font: 15px;
+  font: 12px;
   font-style: italic;
-  min-height: 25px;
+  min-height: 22px;
 }
 
 #InputDefault:focus {
-  border: 1px solid #0d6efd;
+  border: 1px outset #22b4ee;
 }
 
 #InputOk {
-  border: 1px solid #2ad66b;
+  border: 1px inset #2ad66b;
   background-color: #f8f8f8;
   color: #212529;
   border-radius: 3px;
   font-family: "Segoe UI";
-  font: 15px;
-  min-height: 25px;
+  font: 12px;
+  min-height: 22px;
 }
 
 #InputWarn {
-  border: 1px solid #ffc107;
+  border: 1px inset #ffc107;
   background-color: #f8f8f8;
   color: #212529;
   border-radius: 3px;
   font-family: "Segoe UI";
-  font: 15px;
-  min-height: 25px;
+  font: 12px;
+  min-height: 22px;
 }
 
 #InputError {
-  border: 1px solid #ef3e4f;
+  border: 1px inset #ef3e4f;
   background-color: #f8f8f8;
   color: #212529;
   border-radius: 3px;
   font-family: "Segoe UI";
-  font: 15px;
-  min-height: 25px;
+  font: 12px;
+  min-height: 22px;
 }
 
 #Browse {
@@ -56,31 +58,31 @@
   border-radius: 3px;
   font-family: "Webdings";
   font: 15px;
-  min-height: 25px;
-  width: 25px;
-  margin: 2px 0 0 0;
+  min-height: 22px;
+  width: 22px;
 }
 
 #LineEdit {
   background-color: #f8f8f8;
-  border: 1px solid #6c757d;
+  border: 1px inset #6c757d;
   color: #212529;
   border-radius: 3px;
   font-family: "Segoe UI";
-  font: 15px;
-  min-height: 25px;
+  font: 12px;
+  min-height: 22px;
 }
 
 #LineEdit:focus {
-  border: 1px solid #0d6efd;
+  border: 1px outset #22b4ee;
 }
 
 #Label {
   background-color: transparent;
   color: #212529;
   font-family: "Segoe UI";
-  font: 15px;
-  min-height: 25px;
+  font: 12px;
+  font-weight: bold;
+  min-height: 22px;
 }
 
 #Button{
@@ -88,8 +90,8 @@
   color: #212529;
   border-radius: 3px;
   font-family: "Segoe UI";
-  font: 15px;
+  font: 14px;
   font-weight: bold;
-  min-height: 25px;
+  min-height: 22px;
   min-width: 80px;
 }

@@ -688,6 +688,10 @@ if __name__ == '__main__':
     import sys
 
     app = QApplication(sys.argv)
+    screen = app.screens()[0]
+    dpi = screen.physicalDotsPerInch()
+    print(screen)
+    print(dpi)
     ui = Dummy()
     ui.show()
     sys.exit(app.exec_())

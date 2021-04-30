@@ -11,7 +11,6 @@
   border-radius: 3px;
   font-family: "Segoe UI";
   font: 14px;
-  font-style: italic;
   max-height: 25px;
   min-height: 25px;
 }
@@ -105,7 +104,7 @@
   font-weight: bold;
   max-height: 25px;
   min-height: 25px;
-  min-width: 50px;
+  min-width: 65px;
 }
 
 #LabelBig {
@@ -116,7 +115,7 @@
   font-weight: bold;
   max-height: 25px;
   min-height: 25px;
-  min-width: 85px;
+  min-width: 100px;
 }
 
 #Button {

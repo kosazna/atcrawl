@@ -74,7 +74,7 @@ class CrawlerUI(QWidget):
 
     def setupUi(self):
         self.setObjectName("MainWidget")
-        self.setStyleSheet(lowDpiStyle)
+        self.setStyleSheet(cssGuide)
         self.setWindowTitle("atCrawl Services")
         # self.resize(500, 350)
         self.buttonLaunch = Button('launch')

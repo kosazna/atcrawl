@@ -538,7 +538,7 @@ class EditWindow(QWidget):
 
     def setupUi(self):
         self.setObjectName("MainWidget")
-        self.setStyleSheet(lowDpiStyle)
+        self.setStyleSheet(cssGuide)
         self.setWindowTitle("atCrawl Services - Επεξεργασία Αρχείων")
         self.layoutGeneral = QVBoxLayout()
         self.pageCombo = ComboInput('Διαδικασία',

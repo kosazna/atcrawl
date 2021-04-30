@@ -15,9 +15,24 @@ HORIZONTAL = 'H'
 VERTICAL = 'V'
 PATH_PLACEHOLDER = "Paste path here or browse..."
 
-lowDpiStyle = open("D:/.temp/.dev/.aztool/atcrawl/gui/style_low_dpi.css").read()
-highDpiStyle = open(
-    "D:/.temp/.dev/.aztool/atcrawl/gui/style_high_dpi.css").read()
+
+def get_dpi():
+    import sys
+    from PyQt5.QtWidgets import QApplication
+    app = QApplication(sys.argv)
+    screen = app.screens()[0]
+    dpi = screen.physicalDotsPerInch()
+    app.quit()
+
+    return int(dpi)
+
+
+if get_dpi() < 120:
+    cssGuide = open(
+        "D:/.temp/.dev/.aztool/atcrawl/gui/style_low_dpi.css").read()
+else:
+    cssGuide = open(
+        "D:/.temp/.dev/.aztool/atcrawl/gui/style_high_dpi.css").read()
 
 
 def show_popup(main_text, info='', icon=QMessageBox.Information):
@@ -171,7 +186,7 @@ class IOWidget(QWidget):
 
     def updateStyle(self, status):
         self.lineEdit.setObjectName(status)
-        self.lineEdit.setStyleSheet(lowDpiStyle)
+        self.lineEdit.setStyleSheet(cssGuide)
         if status == self.ok[0]:
             self.lineEdit.setToolTip(self.ok[1])
         elif status == self.warning[0]:
@@ -371,7 +386,7 @@ class InputParameter(QWidget):
             _completer.setModelSorting(QCompleter.CaseInsensitivelySortedModel)
             _completer.setFilterMode(Qt.MatchContains)
             _completer.popup().setObjectName("CompleterPopup")
-            _completer.popup().setStyleSheet(lowDpiStyle)
+            _completer.popup().setStyleSheet(cssGuide)
             self.lineEdit.setCompleter(_completer)
 
 
@@ -607,6 +622,7 @@ class Dummy(QWidget):
 
     def setupUi(self):
         self.setObjectName("MainWidget")
+        self.setStyleSheet(cssGuide)
         self.layout = QVBoxLayout()
         self.layoutTop = QHBoxLayout()
         self.layoutGeneral = QVBoxLayout()
@@ -656,14 +672,7 @@ class Dummy(QWidget):
 
 if __name__ == '__main__':
     import sys
-
     app = QApplication(sys.argv)
-    screen = app.screens()[0]
-    dpi = screen.physicalDotsPerInch()
     ui = Dummy()
-    if dpi > 120:
-        ui.setStylesheet(highDpiStyle)
-    else:
-        ui.setStyleSheet(lowDpiStyle)
     ui.show()
     sys.exit(app.exec_())

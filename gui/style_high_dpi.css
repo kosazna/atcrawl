@@ -1,5 +1,3 @@
-
-
 #MainWidget {
   background-color: #d6d6d6;
   font-family: "Segoe UI";
@@ -8,46 +6,50 @@
 
 #InputDefault {
   background-color: #f8f8f8;
-  border: 1px inset #6c757d;
+  border: 1px solid #6c757d;
   color: #212529;
   border-radius: 3px;
   font-family: "Segoe UI";
   font: 14px;
   font-style: italic;
+  max-height: 25px;
   min-height: 25px;
 }
 
 #InputDefault:focus {
-  border: 1px outset #22b4ee;
+  border: 1px outset #25b4ee;
 }
 
 #InputOk {
-  border: 1px inset #2ad66b;
+  border: 1px solid #2ad66b;
   background-color: #f8f8f8;
   color: #212529;
   border-radius: 3px;
   font-family: "Segoe UI";
   font: 14px;
+  max-height: 25px;
   min-height: 25px;
 }
 
 #InputWarn {
-  border: 1px inset #ffc107;
+  border: 1px solid #ffc107;
   background-color: #f8f8f8;
   color: #212529;
   border-radius: 3px;
   font-family: "Segoe UI";
   font: 14px;
+  max-height: 25px;
   min-height: 25px;
 }
 
 #InputError {
-  border: 1px inset #ef3e4f;
+  border: 1px solid #ef3e4f;
   background-color: #f8f8f8;
   color: #212529;
   border-radius: 3px;
   font-family: "Segoe UI";
   font: 14px;
+  max-height: 25px;
   min-height: 25px;
 }
 
@@ -58,42 +60,75 @@
   border-radius: 3px;
   font-family: "Webdings";
   font: 15px;
+  max-width: 25px;
+  min-width: 25px;
+  max-height: 25px;
   min-height: 25px;
-  width: 25px;
 }
 
-#LineEdit {
+#LineEditSmall {
   background-color: #f8f8f8;
-  border: 1px inset #6c757d;
+  border: 1px solid #6c757d;
   color: #212529;
   border-radius: 3px;
   font-family: "Segoe UI";
   font: 14px;
+  max-height: 25px;
   min-height: 25px;
+  width: 200px;
 }
 
-#LineEdit:focus {
-  border: 1px outset #22b4ee;
+#LineEditBig {
+  background-color: #f8f8f8;
+  border: 1px solid #6c757d;
+  color: #212529;
+  border-radius: 3px;
+  font-family: "Segoe UI";
+  font: 14px;
+  max-height: 25px;
+  min-height: 25px;
+  width: 300px;
 }
 
-#Label {
+#LineEditSmall:focus {
+  border: 1px outset #25b4ee;
+}
+#LineEditBig:focus {
+  border: 1px outset #25b4ee;
+}
+
+#LabelSmall {
   background-color: transparent;
   color: #212529;
   font-family: "Segoe UI";
   font: 14px;
   font-weight: bold;
+  max-height: 25px;
   min-height: 25px;
+  min-width: 50px;
 }
 
-#Button{
-  background-color: #0D6EFD;
+#LabelBig {
+  background-color: transparent;
+  color: #212529;
+  font-family: "Segoe UI";
+  font: 14px;
+  font-weight: bold;
+  max-height: 25px;
+  min-height: 25px;
+  min-width: 85px;
+}
+
+#Button {
+  background-color: #0d6efd;
   color: #212529;
   border-radius: 3px;
   font-family: "Segoe UI";
   font: 15px;
   font-weight: bold;
+  max-height: 25px;
   min-height: 25px;
-  min-width: 80px;
+  min-width: 70px;
 }
 
 #Check {
@@ -101,16 +136,47 @@
   color: #212529;
   border-radius: 3px;
   font-family: "Segoe UI";
-  font: 15px;
+  font: 14px;
+  max-height: 25px;
   min-height: 25px;
 }
 
 #Combo {
   background-color: #f8f8f8;
-  border: 1px inset #6c757d;
+  border: 1px solid #6c757d;
   color: #212529;
   border-radius: 3px;
   font-family: "Segoe UI";
-  font: 15px;
+  font: 14px;
+  max-height: 25px;
   min-height: 25px;
+}
+
+#CompleterPopup {
+  border: 1px outset #25b4ee;
+  color: #212529;
+  border-radius: 3px;
+}
+
+#StatusBig {
+  background-color: #212529;
+  color: #212529;
+  border-radius: 5px;
+  font-family: "Segoe UI";
+  font: 13px;
+  max-height: 25px;
+  min-height: 25px;
+  width: 500px;
+}
+
+#StatusSmall {
+  background-color: #ef3e4f;
+  color: #212529;
+  border-radius: 5px;
+  font-family: "Segoe UI";
+  font: 13px;
+  font-weight: bold;
+  max-height: 25px;
+  min-height: 25px;
+  width: 70px;
 }

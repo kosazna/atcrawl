@@ -116,8 +116,56 @@
   min-width: 85px;
 }
 
-#Button {
+#BlueButton {
   background-color: #0d6efd;
+  color: #212529;
+  border-radius: 3px;
+  font-family: "Segoe UI";
+  font: 13px;
+  font-weight: bold;
+  max-height: 22px;
+  min-height: 22px;
+  min-width: 80px;
+}
+
+#GreenButton {
+  background-color: #2ad66b;
+  color: #212529;
+  border-radius: 3px;
+  font-family: "Segoe UI";
+  font: 13px;
+  font-weight: bold;
+  max-height: 22px;
+  min-height: 22px;
+  min-width: 80px;
+}
+
+#YellowButton {
+  background-color: #ffc107;
+  color: #212529;
+  border-radius: 3px;
+  font-family: "Segoe UI";
+  font: 13px;
+  font-weight: bold;
+  max-height: 22px;
+  min-height: 22px;
+  min-width: 80px;
+}
+
+#RedButton {
+  background-color: #ef3e4f;
+  color: #212529;
+  border-radius: 3px;
+  font-family: "Segoe UI";
+  font: 13px;
+  font-weight: bold;
+  max-height: 22px;
+  min-height: 22px;
+  min-width: 80px;
+}
+
+#GreyButton {
+  background-color: #6c757d;
   color: #212529;
   border-radius: 3px;
   font-family: "Segoe UI";
@@ -155,19 +203,57 @@
   border-radius: 3px;
 }
 
-#StatusBig {
-  background-color: #212529;
+#StatusBigDisabled {
+  background-color: #6C757D;
   color: #212529;
   border-radius: 5px;
   font-family: "Segoe UI";
   font: 13px;
+  font-weight: bold;
   max-height: 22px;
   min-height: 22px;
-  width: 500px;
+  width: 600px;
 }
 
-#StatusSmall {
+#StatusBigEnabled {
+  background-color: #20c997;
+  color: #212529;
+  border-radius: 5px;
+  font-family: "Segoe UI";
+  font: 13px;
+  font-weight: bold;
+  max-height: 22px;
+  min-height: 22px;
+  width: 600px;
+}
+
+#StatusSmallOffline {
   background-color: #ef3e4f;
+  color: #212529;
+  border-radius: 5px;
+  font-family: "Segoe UI";
+  font: 13px;
+  font-weight: bold;
+  max-height: 22px;
+  min-height: 22px;
+  width: 70px;
+}
+
+#StatusSmallIdle {
+  background-color: #ffc107;
+  color: #212529;
+  border-radius: 5px;
+  font-family: "Segoe UI";
+  font: 13px;
+  font-weight: bold;
+  max-height: 22px;
+  min-height: 22px;
+  width: 70px;
+}
+
+#StatusSmallRunning,
+#StatusSmallOnline {
+  background-color: #2ad66b;
   color: #212529;
   border-radius: 5px;
   font-family: "Segoe UI";

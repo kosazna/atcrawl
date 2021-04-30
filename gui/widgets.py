@@ -537,24 +537,25 @@ class Button(QToolButton):
 
     def setupUi(self, label):
         self.setText(label)
-        self.setObjectName("Button")
+        self.setObjectName("BlueButton")
         self.setCursor(QCursor(Qt.PointingHandCursor))
 
     def disable(self):
         self.setEnabled(False)
-        self.setStyleSheet(make_stylesheet(grey))
+        self.setStyle(f"GreyButton")
         self.setCursor(QCursor(Qt.ForbiddenCursor))
 
     def enable(self, color):
         self.setEnabled(True)
-        self.setStyleSheet(make_stylesheet(color))
+        self.setStyle(f"{color.name.capitalize()}Button")
         self.setCursor(QCursor(Qt.PointingHandCursor))
 
     def subscribe(self, func):
         self.clicked.connect(func)
 
-    def setStyle(self, style):
-        self.setStyleSheet(style)
+    def setStyle(self, object_name):
+        self.setObjectName(object_name)
+        self.setStyleSheet(cssGuide)
 
 
 class StatusIndicator(QWidget):
@@ -578,22 +579,32 @@ class StatusIndicator(QWidget):
             self.label.setText(label)
             self.label.setObjectName("LabelSmall")
             layout.addWidget(self.label)
-            self.button.setObjectName("StatusSmall")
+            self.button.setObjectName("StatusSmallOffline")
             layout.addWidget(self.button, 1, alignment=Qt.AlignLeft)
+            self.has_label = True
         else:
-            self.button.setObjectName("StatusBig")
+            self.button.setObjectName("StatusBigDisabled")
             layout.addWidget(self.button)
+            self.has_label = False
 
         self.setLayout(layout)
 
-    def disable(self):
+    def disable(self, text=''):
         self.button.setEnabled(False)
-        self.button.setText('')
+        self.setText(text)
+        if self.has_label:
+            self.setStyle(f"StatusSmall{text.capitalize()}")
+        else:
+            self.setStyle("StatusBigDisabled")
 
     def enable(self, text=''):
         self.button.setEnabled(True)
-        self.button.setText(text)
         self.button.setCursor(QCursor(Qt.PointingHandCursor))
+        self.setText(text)
+        if self.has_label:
+            self.setStyle(f"StatusSmall{text.capitalize()}")
+        else:
+            self.setStyle("StatusBigEnabled")
 
     def setText(self, text):
         self.button.setText(text)
@@ -601,8 +612,9 @@ class StatusIndicator(QWidget):
     def getText(self):
         return self.button.text()
 
-    def setStyle(self, style):
-        self.button.setStyleSheet(style)
+    def setStyle(self, object_name):
+        self.button.setObjectName(object_name)
+        self.button.setStyleSheet(cssGuide)
 
     def subscribe(self, func):
         self.button.clicked.connect(func)

@@ -206,29 +206,22 @@ class CrawlerUI(QWidget):
     def mask_output(self, text=None):
         if text is None:
             self.statusGeneral.disable()
-            self.statusGeneral.setStyle(make_stylesheet(grey))
         else:
             self.statusGeneral.enable(text)
-            self.statusGeneral.setStyle(make_stylesheet(teal))
 
     def change_browser_status(self, status):
         if status == 'online':
-            self.statusBrowser.setStyle(make_stylesheet(green))
-            self.statusBrowser.setText(status)
+            self.statusBrowser.disable(status)
         else:
-            self.statusBrowser.setStyle(make_stylesheet(red))
-            self.statusBrowser.setText(status)
+            self.statusBrowser.disable(status)
 
     def change_crawler_status(self, status):
         if status == 'running':
-            self.statusCrawler.setStyle(make_stylesheet(green))
-            self.statusCrawler.setText(status)
+            self.statusCrawler.disable(status)
         elif status == 'offline':
-            self.statusCrawler.setStyle(make_stylesheet(red))
-            self.statusCrawler.setText(status)
+            self.statusCrawler.disable(status)
         else:
-            self.statusCrawler.setStyle(make_stylesheet(yellow))
-            self.statusCrawler.setText(status)
+            self.statusCrawler.disable(status)
 
     def count_parsed(self):
         try:

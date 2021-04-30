@@ -202,6 +202,8 @@
   border: 1px outset #22b4ee;
   color: #212529;
   border-radius: 3px;
+  font-family: "Segoe UI";
+  font: 13px;
 }
 
 #StatusBigDisabled {

@@ -477,7 +477,7 @@ class ComboInput(QWidget):
             QComboBox.SizeAdjustPolicy.AdjustToContents)
         layout = QHBoxLayout()
         layout.addWidget(self.label)
-        layout.addWidget(self.comboEdit, 1)
+        layout.addWidget(self.comboEdit, 1, alignment=Qt.AlignLeft)
         self.setLayout(layout)
         if items is not None:
             self.comboEdit.addItems(items)

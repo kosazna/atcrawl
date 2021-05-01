@@ -462,15 +462,16 @@ class ComboInput(QWidget):
                  label='',
                  items=None,
                  parent=None,
+                 size='Small',
                  *args,
                  **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
-        self.setupUi(label, items)
+        self.setupUi(label, items, size)
 
-    def setupUi(self, label, items):
+    def setupUi(self, label, items, size):
         self.label = QLabel()
         self.label.setText(label)
-        self.label.setObjectName("LabelSmall")
+        self.label.setObjectName(f"Label{size}")
         self.comboEdit = QComboBox()
         self.comboEdit.setObjectName("Combo")
         self.comboEdit.setSizeAdjustPolicy(

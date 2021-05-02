@@ -42,11 +42,11 @@ if __name__ == "__main__":
     else:
         from atcrawl.gui import *
         import ctypes
-        myappid = 'com.aztool.atcrawl.services.2'
+        myappid = 'com.aztool.atcrawl.app'
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
         app = QtWidgets.QApplication(sys.argv)
-        app.setWindowIcon(QIcon('atcrawl.ico'))
+        app.setWindowIcon(QIcon('appIcon.ico'))
         main_window = QtWidgets.QMainWindow()
 
         welcome_ui = WelcomeUI(main_window)

@@ -5,7 +5,7 @@ import os
 
 from atcrawl.gui.colors import *
 from PyQt5.QtCore import QRegExp, Qt
-from PyQt5.QtGui import QCursor, QFont, QIntValidator, QRegExpValidator
+from PyQt5.QtGui import QCursor, QFont, QIntValidator, QRegExpValidator, QIcon
 from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QCompleter,
                              QFileDialog, QHBoxLayout, QLabel, QLineEdit,
                              QMessageBox, QSizePolicy, QStackedLayout, QStyle,
@@ -681,10 +681,15 @@ class Dummy(QWidget):
 
         self.setLayout(self.layout)
 
+import ctypes
+myappid = 'mycompany.myproduct.subproduct.version'
+ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
 if __name__ == '__main__':
     import sys
+    
     app = QApplication(sys.argv)
     ui = Dummy()
+    
     ui.show()
     sys.exit(app.exec_())

@@ -463,9 +463,5 @@ if __name__ == '__main__':
     dpi = screen.physicalDotsPerInch()
     main_window = QtWidgets.QMainWindow()
     welcome_ui = WelcomeUI(main_window)
-    # if dpi > 120:
-    #     welcome_ui.setStylesheet(highDpiStyle)
-    # else:
-    #     welcome_ui.setStyleSheet(lowDpiStyle)
     main_window.show()
     sys.exit(app.exec_())

@@ -41,8 +41,15 @@ if __name__ == "__main__":
             print("\nΔεν έχεις πρόσβαση σε αυτή τη λειτουργία\n")
     else:
         from atcrawl.gui import *
+        try:
+            from PyQt5.QtWinExtras import QtWin
+            myappid = 'mycompany.myproduct.subproduct.version'
+            QtWin.setCurrentProcessExplicitAppUserModelID(myappid)
+        except ImportError:
+            pass
 
         app = QtWidgets.QApplication(sys.argv)
+        app.setWindowIcon(QIcon('atcrawl_icon.ico'))
         main_window = QtWidgets.QMainWindow()
 
         welcome_ui = WelcomeUI(main_window)

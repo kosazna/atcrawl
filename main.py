@@ -41,6 +41,9 @@ if __name__ == "__main__":
             print("\nΔεν έχεις πρόσβαση σε αυτή τη λειτουργία\n")
     else:
         from atcrawl.gui import *
+        import ctypes
+        myappid = 'com.aztool.atcrawl.services.2'
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
         app = QtWidgets.QApplication(sys.argv)
         app.setWindowIcon(QIcon('atcrawl.ico'))

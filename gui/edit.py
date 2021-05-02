@@ -5,10 +5,6 @@ from atcrawl.utilities import *
 
 cwd = paths.get_base_folder()
 
-# myappid = 'mycompany.myproduct.subproduct.version'
-# ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
-
-
 class SplitFileEdit(QWidget):
     def __init__(self, parent=None, *args, **kwargs):
         super().__init__(parent=parent, *args, **kwargs)

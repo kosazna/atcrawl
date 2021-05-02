@@ -7,10 +7,6 @@ from atcrawl.gui.widgets import *
 from atcrawl.gui.worker import Worker
 from PyQt5.QtCore import QThreadPool
 
-# import ctypes
-# myappid = 'mycompany.myproduct.subproduct.version'
-# ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
-
 
 class WelcomeUI(Ui_WelcomeUI):
     def __init__(self, window):

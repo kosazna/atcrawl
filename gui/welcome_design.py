@@ -14,10 +14,7 @@ class Ui_WelcomeUI(object):
     def setupUi(self, WelcomeUI):
         WelcomeUI.setObjectName("WelcomeUI")
         WelcomeUI.resize(350, 428)
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/layers/static/main_layer.png"),
-                       QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        WelcomeUI.setWindowIcon(icon)
+        WelcomeUI.setWindowIcon(QtGui.QIcon('atcrawl.ico'))
         WelcomeUI.setStyleSheet("background-color: rgb(101, 104, 114);")
         self.centralwidget = QtWidgets.QWidget(WelcomeUI)
         self.centralwidget.setObjectName("centralwidget")

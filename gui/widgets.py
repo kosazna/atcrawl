@@ -681,15 +681,11 @@ class Dummy(QWidget):
 
         self.setLayout(self.layout)
 
-import ctypes
-myappid = 'mycompany.myproduct.subproduct.version'
-ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
 if __name__ == '__main__':
     import sys
-    
+
     app = QApplication(sys.argv)
     ui = Dummy()
-    
     ui.show()
     sys.exit(app.exec_())

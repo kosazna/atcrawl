@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
+# import ctypes
 from atcrawl.gui.widgets import *
 from atcrawl.utilities import *
 
 cwd = paths.get_base_folder()
+
+# myappid = 'mycompany.myproduct.subproduct.version'
+# ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
 
 class SplitFileEdit(QWidget):
@@ -280,7 +284,8 @@ class MergeEdit(QWidget):
         self.newColName1 = InputParameter("Νέα στήλη 1", size=('Big', 'Small'))
 
         self.newColName1.setPlaceholder("Προαιρετικό")
-        self.newColValue1 = InputParameter("Τιμή στήλης 1", size=('Big', 'Small'))
+        self.newColValue1 = InputParameter(
+            "Τιμή στήλης 1", size=('Big', 'Small'))
 
         self.newColValue1.setPlaceholder("Προαιρετικό")
         self.colsLayout1.addWidget(self.newColName1)
@@ -361,9 +366,11 @@ class FilterEdit(QWidget):
         self.combosLayout.addWidget(self.colCombo1)
         self.combosLayout.addWidget(self.colCombo2)
         self.paramsLayout = QVBoxLayout()
-        self.paramFilter = InputParameter("Φίλτρο:",size=('Big', 'Small'))
-        self.paramTrue = InputParameter("Τιμή για θετικές:",size=('Big', 'Small'))
-        self.paramFalse = InputParameter("Τιμή για αρνητικές:",size=('Big', 'Small'))
+        self.paramFilter = InputParameter("Φίλτρο:", size=('Big', 'Small'))
+        self.paramTrue = InputParameter(
+            "Τιμή για θετικές:", size=('Big', 'Small'))
+        self.paramFalse = InputParameter(
+            "Τιμή για αρνητικές:", size=('Big', 'Small'))
         self.paramsLayout.addWidget(self.paramFilter)
         self.paramsLayout.addWidget(self.paramTrue)
         self.paramsLayout.addWidget(self.paramFalse)

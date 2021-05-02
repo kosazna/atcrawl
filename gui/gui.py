@@ -7,6 +7,10 @@ from atcrawl.gui.widgets import *
 from atcrawl.gui.worker import Worker
 from PyQt5.QtCore import QThreadPool
 
+# import ctypes
+# myappid = 'mycompany.myproduct.subproduct.version'
+# ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+
 
 class WelcomeUI(Ui_WelcomeUI):
     def __init__(self, window):
@@ -87,7 +91,8 @@ class CrawlerUI(QWidget):
         self.inputMeta0 = InputParameter('Meta0', size=('Small', 'Small'))
         self.inputMeta1 = InputParameter('Meta1', size=('Small', 'Small'))
         self.inputMeta2 = InputParameter('Meta2', size=('Small', 'Small'))
-        self.inputMeta3 = IntInputParameter('Meta3', value_range=(-99, 99), size=('Small', 'Small'))
+        self.inputMeta3 = IntInputParameter(
+            'Meta3', value_range=(-99, 99), size=('Small', 'Small'))
         self.inputMeta4 = InputParameter('Meta4', size=('Big', 'Big'))
         self.inputMeta5 = InputParameter('Meta5', size=('Big', 'Big'))
         self.inputMeta6 = InputParameter('Meta6', size=('Big', 'Big'))

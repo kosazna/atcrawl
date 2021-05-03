@@ -29,8 +29,6 @@ try:
 except FileNotFoundError:
     appIcon = os.path.join(BASE_DIR, 'atcrawl_app.ico')
 
-appIcon = os.path.join(BASE_DIR, STATIC, 'atcrawl_app.ico')
-
 
 CAR_BRANDS = ['Abarth',
               'Acura',

@@ -4,6 +4,7 @@
 import os
 
 from atcrawl.gui.colors import *
+from atcrawl.settings import *
 from PyQt5.QtCore import QRegExp, Qt
 from PyQt5.QtGui import QCursor, QFont, QIntValidator, QRegExpValidator, QIcon
 from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QCompleter,
@@ -28,11 +29,9 @@ def get_dpi():
 
 
 if get_dpi() < 120:
-    cssGuide = open(
-        "D:/.temp/.dev/.aztool/atcrawl/gui/style_low_dpi.css").read()
+    cssGuide = cssGuideLow
 else:
-    cssGuide = open(
-        "D:/.temp/.dev/.aztool/atcrawl/gui/style_high_dpi.css").read()
+    cssGuide = cssGuideHigh
 
 
 def show_popup(main_text, info='', icon=QMessageBox.Information):

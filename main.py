@@ -5,6 +5,7 @@ from atcrawl.cli import *
 from atcrawl.crawlers.antallaktika.cli import antallaktika_run
 from atcrawl.crawlers.skroutz.cli import skroutz_run
 from atcrawl.utilities import *
+from atcrawl.settings import *
 
 warnings.filterwarnings('ignore')
 
@@ -46,7 +47,7 @@ if __name__ == "__main__":
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
         app = QtWidgets.QApplication(sys.argv)
-        app.setWindowIcon(QIcon('atcrawl_app.ico'))
+        app.setWindowIcon(QIcon(appIcon))
         main_window = QtWidgets.QMainWindow()
 
         welcome_ui = WelcomeUI(main_window)

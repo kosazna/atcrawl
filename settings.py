@@ -24,10 +24,8 @@ except FileNotFoundError:
     cssGuideHigh = open(os.path.join(
         BASE_DIR, 'style_high_dpi.css'), 'r').read()
 
-try:
-    appIcon = os.path.join(BASE_DIR, STATIC, 'atcrawl_app.ico')
-except FileNotFoundError:
-    appIcon = os.path.join(BASE_DIR, 'atcrawl_app.ico')
+
+appIcon = 'atcrawl_app.ico'
 
 
 CAR_BRANDS = ['Abarth',

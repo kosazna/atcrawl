@@ -10,11 +10,24 @@ USER_SETTINGS = load_user_settings(USER_SETTINGS_FILE)
 BASE_DIR = os.path.abspath('.')
 STATIC = "static"
 
-cssGuideLow = open(os.path.join(
-    BASE_DIR, STATIC, 'style_low_dpi.css'), 'r').read()
+try:
+    cssGuideLow = open(os.path.join(
+        BASE_DIR, STATIC, 'style_low_dpi.css'), 'r').read()
+except FileNotFoundError:
+    cssGuideLow = open(os.path.join(
+        BASE_DIR, 'style_low_dpi.css'), 'r').read()
 
-cssGuideHigh = open(os.path.join(
-    BASE_DIR, STATIC, 'style_high_dpi.css'), 'r').read()
+try:
+    cssGuideHigh = open(os.path.join(
+        BASE_DIR, STATIC, 'style_high_dpi.css'), 'r').read()
+except FileNotFoundError:
+    cssGuideHigh = open(os.path.join(
+        BASE_DIR, 'style_high_dpi.css'), 'r').read()
+
+try:
+    appIcon = os.path.join(BASE_DIR, STATIC, 'atcrawl_app.ico')
+except FileNotFoundError:
+    appIcon = os.path.join(BASE_DIR, 'atcrawl_app.ico')
 
 appIcon = os.path.join(BASE_DIR, STATIC, 'atcrawl_app.ico')
 

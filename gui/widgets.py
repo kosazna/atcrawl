@@ -50,7 +50,7 @@ class FileNameInput(QWidget):
                  label='',
                  placeholder='',
                  parent=None,
-                 size=('Small', 'Small'),
+                 size=(70, 200),
                  *args,
                  **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
@@ -114,7 +114,7 @@ class IOWidget(QWidget):
                  placeholder=PATH_PLACEHOLDER,
                  parent=None,
                  orientation=HORIZONTAL,
-                 size='Small',
+                 size=70,
                  *args,
                  **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
@@ -209,7 +209,7 @@ class FolderInput(IOWidget):
                  placeholder=PATH_PLACEHOLDER,
                  parent=None,
                  orientation=HORIZONTAL,
-                 size="Small",
+                 size=70,
                  *args,
                  **kwargs):
         super().__init__(label=label,
@@ -250,7 +250,7 @@ class FileInput(IOWidget):
                  placeholder=PATH_PLACEHOLDER,
                  parent=None,
                  orientation=HORIZONTAL,
-                 size="Small",
+                 size=70,
                  *args,
                  **kwargs):
         super().__init__(label=label,
@@ -290,7 +290,7 @@ class FileOutput(IOWidget):
                  placeholder=PATH_PLACEHOLDER,
                  parent=None,
                  orientation=HORIZONTAL,
-                 size="Small",
+                 size=70,
                  *args,
                  **kwargs):
         super().__init__(label=label,
@@ -316,7 +316,7 @@ class InputParameter(QWidget):
                  parent=None,
                  completer=None,
                  hidden=False,
-                 size=("Small", "Small"),
+                 size=(70, 200),
                  *args,
                  **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
@@ -394,7 +394,7 @@ class IntInputParameter(QWidget):
                  orientation=HORIZONTAL,
                  value_range=None,
                  parent=None,
-                 size=("Small", "Small"),
+                 size=(70, 200),
                  *args,
                  **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
@@ -461,7 +461,7 @@ class ComboInput(QWidget):
                  label='',
                  items=None,
                  parent=None,
-                 size='Small',
+                 size=(70, 200),
                  *args,
                  **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
@@ -470,9 +470,9 @@ class ComboInput(QWidget):
     def setupUi(self, label, items, size):
         self.label = QLabel()
         self.label.setText(label)
-        self.label.setObjectName(f"Label{size}")
+        self.label.setObjectName(f"Label{size[0]}")
         self.comboEdit = QComboBox()
-        self.comboEdit.setObjectName("Combo")
+        self.comboEdit.setObjectName(f"Combo{size[1]}")
         self.comboEdit.setSizeAdjustPolicy(
             QComboBox.SizeAdjustPolicy.AdjustToContents)
         layout = QHBoxLayout()
@@ -563,12 +563,13 @@ class StatusIndicator(QWidget):
                  label='',
                  status='',
                  parent=None,
+                 size=70,
                  *args,
                  **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
-        self.setupUi(label, status)
+        self.setupUi(label, status, size)
 
-    def setupUi(self, label, status):
+    def setupUi(self, label, status, size):
         layout = QHBoxLayout()
         self.button = QToolButton()
         self.button.setText(status)
@@ -577,7 +578,7 @@ class StatusIndicator(QWidget):
         if label:
             self.label = QLabel()
             self.label.setText(label)
-            self.label.setObjectName("LabelSmall")
+            self.label.setObjectName(f"Label{size}")
             layout.addWidget(self.label)
             self.button.setObjectName("StatusSmallOffline")
             layout.addWidget(self.button, 1, alignment=Qt.AlignLeft)
@@ -639,19 +640,20 @@ class Dummy(QWidget):
         self.layoutGeneral = QVBoxLayout()
         self.layoutButtons = QVBoxLayout()
         self.layoutComboCheck = QHBoxLayout()
-        self.folderInput = FolderInput("Folder", parent=self, size='Small')
-        self.fileInput = FileInput("File In", parent=self, size='Small')
-        self.fileOutput = FileOutput("File Out", parent=self, size='Small')
+        self.folderInput = FolderInput("Folder", parent=self, size=70)
+        self.fileInput = FileInput("File In", parent=self, size=70)
+        self.fileOutput = FileOutput("File Out", parent=self, size=70)
         self.filename = FileNameInput(
-            "Filename", parent=self, size=('Small', 'Big'))
+            "Filename", parent=self, size=(70, 200))
         self.input = InputParameter(
-            "Input", parent=self, completer=['Astota', 'Asttom'], size=('Small', 'Big'))
-        self.inputInt = IntInputParameter("Int", parent=self)
-        self.combo = ComboInput("Combo", items=["1", "2", "3"], parent=self)
+            "Input", parent=self, completer=['Astota', 'Asttom'], size=(70, 200))
+        self.inputInt = IntInputParameter("Int", parent=self, size=(70, 200))
+        self.combo = ComboInput(
+            "Combo", items=["1", "2", "3"], parent=self, size=(70, 100))
         self.check = CheckInput("Check", parent=self)
         self.status = StatusIndicator(parent=self)
         self.statusSmall = StatusIndicator(
-            label='Status', status='offline', parent=self)
+            label='Status', status='offline', parent=self, size=70)
         self.button1 = Button("accept", parent=self)
         self.button2 = Button("decline", parent=self)
         self.button3 = Button("process", parent=self)

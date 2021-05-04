@@ -63,59 +63,6 @@
   min-height: 25px;
 }
 
-#LineEditSmall {
-  background-color: #f8f8f8;
-  border: 1px solid #6c757d;
-  color: #212529;
-  border-radius: 3px;
-  font-family: "Segoe UI";
-  font: 15px;
-  max-height: 25px;
-  min-height: 25px;
-  width: 200px;
-}
-
-#LineEditBig {
-  background-color: #f8f8f8;
-  border: 1px solid #6c757d;
-  color: #212529;
-  border-radius: 3px;
-  font-family: "Segoe UI";
-  font: 15px;
-  max-height: 25px;
-  min-height: 25px;
-  width: 300px;
-}
-
-#LineEditSmall:focus {
-  border: 1px outset #25b4ee;
-}
-#LineEditBig:focus {
-  border: 1px outset #25b4ee;
-}
-
-#LabelSmall {
-  background-color: transparent;
-  color: #212529;
-  font-family: "Segoe UI";
-  font: 15px;
-  font-weight: bold;
-  max-height: 25px;
-  min-height: 25px;
-  min-width: 65px;
-}
-
-#LabelBig {
-  background-color: transparent;
-  color: #212529;
-  font-family: "Segoe UI";
-  font: 15px;
-  font-weight: bold;
-  max-height: 25px;
-  min-height: 25px;
-  min-width: 100px;
-}
-
 #BlueButton {
   background-color: #0d6efd;
   color: #212529;
@@ -186,18 +133,6 @@
   min-height: 25px;
 }
 
-#Combo {
-  background-color: #f8f8f8;
-  border: 1px solid #6c757d;
-  color: #212529;
-  border-radius: 3px;
-  font-family: "Segoe UI";
-  font: 15px;
-  max-height: 25px;
-  min-height: 25px;
-  width: 250px;
-}
-
 #CompleterPopup {
   border: 1px outset #25b4ee;
   color: #212529;
@@ -265,4 +200,141 @@
   max-height: 25px;
   min-height: 25px;
   width: 70px;
+}
+
+#Combo100 {
+  background-color: #f8f8f8;
+  border: 1px solid #6c757d;
+  color: #212529;
+  border-radius: 3px;
+  font-family: "Segoe UI";
+  font: 15px;
+  max-height: 25px;
+  min-height: 25px;
+  width: 100px;
+}
+
+#Combo150 {
+  background-color: #f8f8f8;
+  border: 1px solid #6c757d;
+  color: #212529;
+  border-radius: 3px;
+  font-family: "Segoe UI";
+  font: 15px;
+  max-height: 25px;
+  min-height: 25px;
+  width: 150px;
+}
+
+#Combo200 {
+  background-color: #f8f8f8;
+  border: 1px solid #6c757d;
+  color: #212529;
+  border-radius: 3px;
+  font-family: "Segoe UI";
+  font: 15px;
+  max-height: 25px;
+  min-height: 25px;
+  width: 200px;
+}
+
+#LineEdit50 {
+  background-color: #f8f8f8;
+  border: 1px solid #6c757d;
+  color: #212529;
+  border-radius: 3px;
+  font-family: "Segoe UI";
+  font: 15px;
+  max-height: 25px;
+  min-height: 25px;
+  width: 50px;
+}
+
+#LineEdit100 {
+  background-color: #f8f8f8;
+  border: 1px solid #6c757d;
+  color: #212529;
+  border-radius: 3px;
+  font-family: "Segoe UI";
+  font: 15px;
+  max-height: 25px;
+  min-height: 25px;
+  width: 100px;
+}
+
+#LineEdit150 {
+  background-color: #f8f8f8;
+  border: 1px solid #6c757d;
+  color: #212529;
+  border-radius: 3px;
+  font-family: "Segoe UI";
+  font: 15px;
+  max-height: 25px;
+  min-height: 25px;
+  width: 150px;
+}
+
+#LineEdit200 {
+  background-color: #f8f8f8;
+  border: 1px solid #6c757d;
+  color: #212529;
+  border-radius: 3px;
+  font-family: "Segoe UI";
+  font: 15px;
+  max-height: 25px;
+  min-height: 25px;
+  width: 200px;
+}
+
+#LineEdit400 {
+  background-color: #f8f8f8;
+  border: 1px solid #6c757d;
+  color: #212529;
+  border-radius: 3px;
+  font-family: "Segoe UI";
+  font: 15px;
+  max-height: 25px;
+  min-height: 25px;
+  width: 400px;
+}
+
+#LineEdit50:focus,
+#LineEdit100:focus,
+#LineEdit150:focus,
+#LineEdit200:focus,
+#LineEdit400:focus {
+  border: 1px outset #25b4ee;
+}
+
+#Label70 {
+  background-color: transparent;
+  color: #212529;
+  font-family: "Segoe UI";
+  font: 15px;
+  font-weight: bold;
+  max-height: 25px;
+  min-height: 25px;
+  min-width: 70px;
+}
+
+#Label100 {
+  background-color: transparent;
+  color: #212529;
+  font-family: "Segoe UI";
+  font: 15px;
+  font-weight: bold;
+  max-height: 25px;
+  min-height: 25px;
+  min-width: 100px;
+}
+
+#Label150 {
+  background-color: transparent;
+  color: #212529;
+  font-family: "Segoe UI";
+  font: 15px;
+  font-weight: bold;
+  max-height: 25px;
+  min-height: 25px;
+  min-width: 150px;
 }

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# import ctypes
+
 from atcrawl.gui.widgets import *
 from atcrawl.utilities import *
 
@@ -88,10 +88,8 @@ class DownloadImagesEdit(QWidget):
                                       orientation=VERTICAL)
         self.fileToModify.setBrowseCallback(self.readInputFile)
         self.combosLayout = QHBoxLayout()
-        self.colCombo1 = ComboInput("Στήλη ονόματος εικόνας")
-        self.colCombo1.setOffset(100)
-        self.colCombo2 = ComboInput("Στήλη URL εικόνας")
-        self.colCombo2.setOffset(100)
+        self.colCombo1 = ComboInput("Όνομα εικόνας", size=(150, 150))
+        self.colCombo2 = ComboInput("URL εικόνας", size=(150, 150))
         self.combosLayout.addWidget(self.colCombo1)
         self.combosLayout.addWidget(self.colCombo2)
         self.prefix = InputParameter("Link μπροστά από το όνομα της εικόνας:",
@@ -277,11 +275,11 @@ class MergeEdit(QWidget):
         self.source = FolderInput("Φάκελος αρχείων:",
                                   orientation=VERTICAL)
         self.colsLayout1 = QVBoxLayout()
-        self.newColName1 = InputParameter("Νέα στήλη 1", size=('Big', 'Small'))
+        self.newColName1 = InputParameter("Νέα στήλη 1", size=(150, 100))
 
         self.newColName1.setPlaceholder("Προαιρετικό")
         self.newColValue1 = InputParameter(
-            "Τιμή στήλης 1", size=('Big', 'Small'))
+            "Τιμή στήλης 1", size=(150, 100))
 
         self.newColValue1.setPlaceholder("Προαιρετικό")
         self.colsLayout1.addWidget(self.newColName1)
@@ -357,16 +355,16 @@ class FilterEdit(QWidget):
         self.fileToModify.setBrowseCallback(self.readInputFile)
         self.horLayout = QHBoxLayout()
         self.combosLayout = QVBoxLayout()
-        self.colCombo1 = ComboInput("Στήλη εφαρμογής", size='Big')
-        self.colCombo2 = ComboInput("Στήλη αλλαγών", size='Big')
+        self.colCombo1 = ComboInput("Στήλη εφαρμογής", size=(150, 150))
+        self.colCombo2 = ComboInput("Στήλη αλλαγών", size=(150, 150))
         self.combosLayout.addWidget(self.colCombo1)
         self.combosLayout.addWidget(self.colCombo2)
         self.paramsLayout = QVBoxLayout()
-        self.paramFilter = InputParameter("Φίλτρο:", size=('Big', 'Small'))
+        self.paramFilter = InputParameter("Φίλτρο:", size=(150, 100))
         self.paramTrue = InputParameter(
-            "Τιμή για θετικές:", size=('Big', 'Small'))
+            "Τιμή για θετικές:", size=(150, 100))
         self.paramFalse = InputParameter(
-            "Τιμή για αρνητικές:", size=('Big', 'Small'))
+            "Τιμή για αρνητικές:", size=(150, 100))
         self.paramsLayout.addWidget(self.paramFilter)
         self.paramsLayout.addWidget(self.paramTrue)
         self.paramsLayout.addWidget(self.paramFalse)
@@ -458,7 +456,7 @@ class SortEdit(QWidget):
         self.fileToModify = FileInput("Αρχείο προς επεξεργασία:",
                                       orientation=VERTICAL)
         self.fileToModify.setBrowseCallback(self.readInputFile)
-        self.colCombo1 = ComboInput("Στήλη εφαρμογής")
+        self.colCombo1 = ComboInput("Στήλη εφαρμογής", size=(150, 150))
 
         self.destination = FileOutput("Αποθήκευση αρχείου:",
                                       orientation=VERTICAL)
@@ -545,7 +543,8 @@ class EditWindow(QWidget):
                                      "Σορτάρισμα αρχείου",
                                      "Κατέβασμα εικόνων",
                                      "Δημιουργία εικόνων (Rellas)",
-                                     "Κόψιμο αρχείου"])
+                                     "Κόψιμο αρχείου"],
+                                     size=(100, 200))
         self.pageCombo.subscribe(self.switchPage)
         self.stackedLayout = QStackedLayout()
         self.page1 = MergeEdit()

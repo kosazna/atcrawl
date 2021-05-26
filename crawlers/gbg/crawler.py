@@ -176,11 +176,11 @@ class GBG(CrawlEngine):
 
             _data['details1'] = "Μάρκα αυτοκινήτου: " + _data['brand'] + ', '
             _data['details2'] = "Μοντέλο: " + model + ', '
-            _data['details3'] = "Χρονολογία: " + year + ', '
-            _data['details4'] = "Ανταλλακτικό: " + just_title
+            _data['details3'] = "Χρονολογία: " + year
+            # _data['details4'] = "Ανταλλακτικό: " + just_title
 
             _data['details'] = _data['details1'] + _data['details2'] + \
-                _data['details3'] + _data['details4']
+                _data['details3']
 
             _data['price_after_discount'] = (_data['retail_price'].astype(
                 float) * discount_rate).round(2).astype('string')
@@ -209,10 +209,11 @@ class GBG(CrawlEngine):
                 'ΔΕ': 'ΔΕΞΙΑ',
                 'ΔΕ.': 'ΔΕΞΙΑ'}
 
-            for i in _data.itertuples():
+            for i, tit in zip(_data.itertuples(), just_title):
                 position = []
+                old_details = i.details
                 for word in word_map:
-                    if word in i.title:
+                    if word in tit:
                         if not word_map[word] in position:
                             position.append(word_map[word])
 
@@ -228,10 +229,20 @@ class GBG(CrawlEngine):
 
                     concat = ' '.join(position)
 
-                    old_details = i.details
-                    new_details = f", Πλευρά τοποθέτησης: {concat}"
+                    pos = f", Πλευρά τοποθέτησης: {concat}"
+                else:
+                    pos = ''
 
-                    _data.loc[i.Index, 'details'] = old_details + new_details
+                ant = tit.split(' ')
+
+                try:
+                    _ant = ' '.join(ant[:2])
+                except IndexError:
+                    _ant = ' '.join(ant)
+
+                ant = f", Ανταλλακτικό: {_ant}"
+
+                _data.loc[i.Index, 'details'] = old_details + pos + ant
 
             self.transformed_data = _data[gbg_properties].copy()
 

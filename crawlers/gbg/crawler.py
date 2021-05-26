@@ -163,8 +163,11 @@ class GBG(CrawlEngine):
             _data = pd.DataFrame(self.parsed)
             self.collected_data = _data.copy()
 
+            just_title = _data['title'].copy()
+
             _data['brand'] = brand
-            _data['title'] =  _data['title'] + f' {brand}' + f' {model}' + f' {year}'
+            _data['title'] = _data['title'] + \
+                f' {brand}' + f' {model}' + f' {year}'
             _data['description'] = 'Γνήσιος κωδικός: ' + _data['description']
             _data['meta_title_seo'] = meta_desc + ' ' + _data['title']
 
@@ -174,9 +177,10 @@ class GBG(CrawlEngine):
             _data['details1'] = "Μάρκα αυτοκινήτου: " + _data['brand'] + ', '
             _data['details2'] = "Μοντέλο: " + model + ', '
             _data['details3'] = "Χρονολογία: " + year + ', '
-            _data['details4'] = "Ανταλλακτικό: " + _data['title']
+            _data['details4'] = "Ανταλλακτικό: " + just_title
 
-            _data['details'] = _data['details1'] + _data['details2'] + _data['details3'] + _data['details4']
+            _data['details'] = _data['details1'] + _data['details2'] + \
+                _data['details3'] + _data['details4']
 
             _data['price_after_discount'] = (_data['retail_price'].astype(
                 float) * discount_rate).round(2).astype('string')
@@ -187,8 +191,53 @@ class GBG(CrawlEngine):
             _data['price_after_discount'] = _data['price_after_discount'].str.replace(
                 '.', ',')
 
+            words = ['ΕΜΠΡΟΣ', 'ΕΜΠ.', 'ΕΜ.' 'ΠΙΣΩ', 'ΟΠΙΣΘΕΝ', 'ΟΠ.',
+                     'ΑΝΩ', 'ΚΑΤΩ', 'ΕΣΩ', 'ΕΞΩ', 'ΕΜ/ΟΠ', 'ΑΡ', 'ΔΕ']
+
+            word_map = {
+                'ΕΜΠΡΟΣ': 'ΜΠΡΟΣΤΑ',
+                'ΕΜΠ.': 'ΜΠΡΟΣΤΑ',
+                'ΕΜ.': 'ΜΠΡΟΣΤΑ',
+                'ΠΙΣΩ': 'ΠΙΣΩ',
+                'ΟΠΙΣΘΕΝ': 'ΠΙΣΩ',
+                'ΟΠ.': 'ΠΙΣΩ',
+                'ΑΝΩ': 'ΠΑΝΩ',
+                'ΚΑΤΩ': 'ΚΑΤΩ',
+                'ΕΣΩ': 'ΕΣΩΤΕΡΙΚΑ',
+                'ΕΣΩ.': 'ΕΣΩΤΕΡΙΚΑ',
+                'ΕΞΩ': 'ΕΞΩΤΕΡΙΚΑ',
+                'ΕΞΩ.': 'ΕΞΩΤΕΡΙΚΑ',
+                'ΑΡ': 'ΑΡΙΣΤΕΡΑ',
+                'ΑΡ.': 'ΑΡΙΣΤΕΡΑ',
+                'ΔΕ': 'ΔΕΞΙΑ',
+                'ΔΕ.': 'ΔΕΞΙΑ'}
+
+            for i in _data.itertuples():
+                position = []
+                for word in word_map:
+                    if word in i.title:
+                        if not word_map[word] in position:
+                            position.append(word_map[word])
+
+                if position:
+                    if 'ΑΡΙΣΤΕΡΑ' in position and 'ΔΕΞΙΑ' in position:
+                        left = position.index('ΑΡΙΣΤΕΡΑ')
+                        right = position.index('ΔΕΞΙΑ')
+
+                        if right > left:
+                            position.pop(left)
+                        else:
+                            position.pop(right)
+
+                    concat = ' '.join(position)
+
+                    old_details = i.details
+                    new_details = f", Πλευρά τοποθέτησης: {concat}"
+
+                    _data.loc[i.Index, 'details'] = old_details + new_details
+
             self.transformed_data = _data[gbg_properties].copy()
-    
+
     def reset(self, url):
         if url is None:
             pass

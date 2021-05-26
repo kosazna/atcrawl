@@ -191,9 +191,6 @@ class GBG(CrawlEngine):
             _data['price_after_discount'] = _data['price_after_discount'].str.replace(
                 '.', ',')
 
-            words = ['ΕΜΠΡΟΣ', 'ΕΜΠ.', 'ΕΜ.' 'ΠΙΣΩ', 'ΟΠΙΣΘΕΝ', 'ΟΠ.',
-                     'ΑΝΩ', 'ΚΑΤΩ', 'ΕΣΩ', 'ΕΞΩ', 'ΕΜ/ΟΠ', 'ΑΡ', 'ΔΕ']
-
             word_map = {
                 'ΕΜΠΡΟΣ': 'ΜΠΡΟΣΤΑ',
                 'ΕΜΠ.': 'ΜΠΡΟΣΤΑ',

@@ -5,6 +5,7 @@ from atcrawl.utilities import *
 
 cwd = paths.get_base_folder()
 
+
 class SplitFileEdit(QWidget):
     def __init__(self, parent=None, *args, **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
@@ -23,7 +24,7 @@ class SplitFileEdit(QWidget):
                                             orientation=VERTICAL)
 
         self.buttonLayout = QHBoxLayout()
-        self.status = StatusIndicator(status='')
+        self.status = StatusIndicator()
         self.button = Button("Εκτέλεση")
         self.buttonLayout.addWidget(self.status)
         self.buttonLayout.addWidget(self.button)
@@ -39,10 +40,8 @@ class SplitFileEdit(QWidget):
     def mask_output(self, text=None):
         if text is None:
             self.status.disable()
-            self.status.setStyle(make_stylesheet(grey))
         else:
             self.status.enable(text)
-            self.status.setStyle(make_stylesheet(teal))
 
     def getParams(self):
         _params = {'filepath': self.fileToModify.getText(),
@@ -116,10 +115,8 @@ class DownloadImagesEdit(QWidget):
     def mask_output(self, text=None):
         if text is None:
             self.status.disable()
-            self.status.setStyle(make_stylesheet(grey))
         else:
             self.status.enable(text)
-            self.status.setStyle(make_stylesheet(teal))
 
     def getParams(self):
         _params = {'src': self.fileToModify.getText(),
@@ -225,10 +222,8 @@ class CreateImagesEdit(QWidget):
     def mask_output(self, text=None):
         if text is None:
             self.status.disable()
-            self.status.setStyle(make_stylesheet(grey))
         else:
             self.status.enable(text)
-            self.status.setStyle(make_stylesheet(teal))
 
     def getParams(self):
         _params = {'data': self.fileToModify.getText(),
@@ -302,10 +297,8 @@ class MergeEdit(QWidget):
     def mask_output(self, text=None):
         if text is None:
             self.status.disable()
-            self.status.setStyle(make_stylesheet(grey))
         else:
             self.status.enable(text)
-            self.status.setStyle(make_stylesheet(teal))
 
     def getParams(self):
         _params = {'src': self.source.getText(),
@@ -388,10 +381,8 @@ class FilterEdit(QWidget):
     def mask_output(self, text=None):
         if text is None:
             self.status.disable()
-            self.status.setStyle(make_stylesheet(grey))
         else:
             self.status.enable(text)
-            self.status.setStyle(make_stylesheet(teal))
 
     def getParams(self):
         self.assert_process_capabilities()
@@ -478,10 +469,8 @@ class SortEdit(QWidget):
     def mask_output(self, text=None):
         if text is None:
             self.status.disable()
-            self.status.setStyle(make_stylesheet(grey))
         else:
             self.status.enable(text)
-            self.status.setStyle(make_stylesheet(teal))
 
     def getParams(self):
         _params = {'src': self.fileToModify.getText(),
@@ -544,7 +533,7 @@ class EditWindow(QWidget):
                                      "Κατέβασμα εικόνων",
                                      "Δημιουργία εικόνων (Rellas)",
                                      "Κόψιμο αρχείου"],
-                                     size=(100, 200))
+                                    size=(100, 200))
         self.pageCombo.subscribe(self.switchPage)
         self.stackedLayout = QStackedLayout()
         self.page1 = MergeEdit()

@@ -199,16 +199,16 @@ def split_file(filepath, destination, k=2000):
         print(f"  - Created: {save_name}")
 
 def sort_file(src, col, dst):
-    df = pd.read_excel(src)
-    k = df[col].apply(str).apply(
-            lambda x: "<NULL>" if x.isspace() else x.strip())
+    df = pd.read_excel(src, dtype='string')
+    k = df[col].fillna("<NULL>").apply(str).apply(
+        lambda x: "<NULL>" if x.isspace() else x.strip())
     df[col] = k
     mask = df[col] == '<NULL>'
     a = df.loc[~mask].copy()
     b = df.loc[mask].copy()
     merged_df = pd.concat([a, b], ignore_index=True)
-    merged_df[col] = merged_df[col].replace('<NULL>', '')
-    merged_df.to_excel(dst, index=False)
+    merged_df[col] = merged_df[col].str.replace('<NULL>', '')
+    merged_df.to_excel(dst, index=False, na_rep='')
 
 def filter_file(src, col1, col2, pattern, val_true, val_false, dst):
     df = pd.read_excel(src)

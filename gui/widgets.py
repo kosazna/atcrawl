@@ -303,7 +303,7 @@ class FileOutput(IOWidget):
 
     def browse(self):
         filename = QFileDialog.getSaveFileName(directory=self.lastVisit)
-        file_path = filename[0]
+        file_path = filename[0] + '.xlsx'
         if file_path:
             self.lineEdit.setText(file_path)
             self.lastVisit = file_path

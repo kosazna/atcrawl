@@ -211,7 +211,7 @@ def sort_file(src, col, dst):
     merged_df.to_excel(dst, index=False, na_rep='')
 
 def filter_file(src, col1, col2, pattern, val_true, val_false, dst):
-    df = pd.read_excel(src)
+    df = pd.read_excel(src, dtype='string')
     df.loc[df[col1].str.contains(
             pattern, regex=True, na=False), col2] = val_true
 
@@ -229,7 +229,7 @@ def merge_file(src, col1, val1, dst):
             to_concat = []
 
             for _file in files:
-                df = pd.read_excel(_file)
+                df = pd.read_excel(_file, dtype='string')
 
                 new_cols = [change_col(col_name) for col_name in df.columns]
                 df.columns = new_cols
@@ -305,7 +305,7 @@ def clean_kit(text):
 
 
 def create_images(data, src_images, dst_images, prefix_images=''):
-    df = pd.read_excel(data)
+    df = pd.read_excel(data, dtype='string')
     source = list(Path(src_images).glob('*.jpg'))
     source_mapper = {image.stem: image for image in source}
 

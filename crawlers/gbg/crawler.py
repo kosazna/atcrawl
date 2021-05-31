@@ -201,7 +201,6 @@ class GBG(CrawlEngine):
             _data['details1'] = "Μάρκα αυτοκινήτου: " + _data['brand'] + ', '
             _data['details2'] = "Μοντέλο: " + model + ', '
             _data['details3'] = "Χρονολογία: " + year
-            # _data['details4'] = "Ανταλλακτικό: " + just_title
 
             _data['details'] = _data['details1'] + _data['details2'] + \
                 _data['details3']

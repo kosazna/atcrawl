@@ -160,9 +160,8 @@ class GBG(CrawlEngine):
         discount_rate = (100 + int(discount)) / 100
 
         additions = []
-        removals = []
 
-        for idx_parsed, parsed in enumerate(self.parsed):
+        for parsed in self.parsed:
             skus = parsed['description'].split(', ')
             if len(skus) > 1:
                 for idx, sku in enumerate(skus, 1):
@@ -175,13 +174,10 @@ class GBG(CrawlEngine):
                     data['retail_price'] = parsed['retail_price']
 
                     additions.append(data)
-                removals.append(idx_parsed)
+            else:
+                additions.append(parsed)
 
-        if additions:
-            for i in removals:
-                self.parsed.pop(i)
-
-            self.parsed.extend(additions)
+        self.parsed = additions
 
         if self.parsed:
             _data = pd.DataFrame(self.parsed)
@@ -269,7 +265,7 @@ class GBG(CrawlEngine):
 
             self.transformed_data = _data[gbg_properties].copy()
 
-    def reset(self, url):
+    def reset(self, url=None):
         if url is None:
             pass
         else:

@@ -176,15 +176,12 @@ class GBG(CrawlEngine):
 
                     additions.append(data)
                 removals.append(idx_parsed)
-                
 
         if additions:
             for i in removals:
                 self.parsed.pop(i)
 
             self.parsed.extend(additions)
-
-        print(self.parsed)
 
         if self.parsed:
             _data = pd.DataFrame(self.parsed)

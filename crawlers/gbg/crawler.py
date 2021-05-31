@@ -267,7 +267,7 @@ class GBG(CrawlEngine):
                 except IndexError:
                     _ant = ' '.join(ant)
 
-                ant = f", Ανταλλακτικό: {_ant}"
+                ant = f", Κατηγορία: {_ant}"
 
                 _data.loc[i.Index, 'details'] = old_details + pos + ant
 

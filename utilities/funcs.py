@@ -198,6 +198,7 @@ def split_file(filepath, destination, k=2000):
         _sub.to_excel(save_name, index=False)
         print(f"  - Created: {save_name}")
 
+
 def sort_file(src, col, dst):
     df = pd.read_excel(src, dtype='string')
     k = df[col].fillna("<NULL>").apply(str).apply(
@@ -210,10 +211,11 @@ def sort_file(src, col, dst):
     merged_df[col] = merged_df[col].str.replace('<NULL>', '')
     merged_df.to_excel(dst, index=False, na_rep='')
 
+
 def filter_file(src, col1, col2, pattern, val_true, val_false, dst):
     df = pd.read_excel(src, dtype='string')
     df.loc[df[col1].str.contains(
-            pattern, regex=True, na=False), col2] = val_true
+        pattern, regex=True, na=False), col2] = val_true
 
     if val_false:
         df.loc[~df[col1].str.contains(
@@ -221,26 +223,27 @@ def filter_file(src, col1, col2, pattern, val_true, val_false, dst):
 
     df.to_excel(dst, index=False)
 
+
 def merge_file(src, col1, val1, dst):
-        cwd = Path(src)
-        files = list(cwd.glob('*.xlsx'))
-        if files:
+    cwd = Path(src)
+    files = list(cwd.glob('*.xlsx'))
+    if files:
 
-            to_concat = []
+        to_concat = []
 
-            for _file in files:
-                df = pd.read_excel(_file, dtype='string')
+        for _file in files:
+            df = pd.read_excel(_file, dtype='string')
 
-                new_cols = [change_col(col_name) for col_name in df.columns]
-                df.columns = new_cols
-                to_concat.append(df)
+            new_cols = [change_col(col_name) for col_name in df.columns]
+            df.columns = new_cols
+            to_concat.append(df)
 
-            merged_df = pd.concat(to_concat)
+        merged_df = pd.concat(to_concat)
 
-            if col1:
-                merged_df[col1] = val1
+        if col1:
+            merged_df[col1] = val1
 
-            merged_df.to_excel(dst, index=False)
+        merged_df.to_excel(dst, index=False)
 
 
 def change_col(col_name):
@@ -302,6 +305,35 @@ def remove_overspace(text):
 
 def clean_kit(text):
     return remove_overspace(text.replace('\n', ' ').strip()).replace('; ', ';')
+
+
+def replacer(df_to_replace, replacements, column):
+    series_str = df_to_replace[column].copy()
+
+    for i in replacements.itertuples(index=False):
+        series_str = series_str.str.replace(i.word,
+                                            f"{i.replacement} ",
+                                            regex=False)
+
+    series_str = series_str.apply(remove_overspace)
+
+    return series_str
+
+
+def replace_words(data, replacements, dst_file, columns):
+    df = pd.read_excel(data, dtype='string')
+    rep = pd.read_excel(replacements, dtype='string')
+
+    destination = dst_file
+
+    for col in columns:
+        df[col] = replacer(df, rep, col)
+
+    try:
+        df.to_excel(destination, index=False)
+        print("Οι αλλαγές έγιναν.")
+    except PermissionError:
+        print("Το αρχέιο είναι ανοιχτό στο Excel. Κλείσε και ξαναπροσπάθησε.")
 
 
 def create_images(data, src_images, dst_images, prefix_images=''):

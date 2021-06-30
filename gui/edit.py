@@ -516,6 +516,79 @@ class SortEdit(QWidget):
                        "Contact support")
 
 
+class ReplaceWordsEdit(QWidget):
+    def __init__(self, parent=None, *args, **kwargs):
+        super().__init__(parent=parent, *args, **kwargs)
+        self.setupUi()
+        self.button.subscribe(self.execute)
+        self.can_process = False
+
+    def setupUi(self):
+        self.fileToModify = FileInput("Αρχείο προς επεξεργασία:",
+                                      orientation=VERTICAL)
+        self.replacements = FileInput("Αρχείο με τις αντικαταστάσεις:",
+                                      orientation=VERTICAL)
+        self.destination = FileOutput("Αποθήκευση επεξεργασμένου αρχείου:",
+                                      orientation=VERTICAL)
+
+        self.columns = InputParameter("Στήλες (διαχωρισμένες με παύλα [-])",
+                                      orientation=VERTICAL)
+
+        self.replacements.setText(paths.get_replacements())
+        self.columns.setText("title-meta_title_seo-meta_seo-details")
+        self.buttonLayout = QHBoxLayout()
+        self.status = StatusIndicator(status='')
+        self.button = Button("Εκτέλεση")
+        self.buttonLayout.addWidget(self.status)
+        self.buttonLayout.addWidget(self.button)
+
+        self.pageLayout = QVBoxLayout()
+        self.pageLayout.addWidget(self.fileToModify)
+        self.pageLayout.addWidget(self.replacements)
+        self.pageLayout.addWidget(self.destination)
+        self.pageLayout.addWidget(self.columns)
+        self.pageLayout.addStretch()
+        self.pageLayout.addLayout(self.buttonLayout)
+        self.setLayout(self.pageLayout)
+
+    def mask_output(self, text=None):
+        if text is None:
+            self.status.disable()
+        else:
+            self.status.enable(text)
+
+    def getParams(self):
+        _params = {'data': self.fileToModify.getText(),
+                   'replacements': self.replacements.getText(),
+                   'dst_file': self.destination.getText(),
+                   'columns': self.columns.getText().split('-')}
+
+        return _params
+
+    def assert_process_capabilities(self):
+        bools = []
+        for key, value in self.getParams().items():
+            if value:
+                bools.append(True)
+            else:
+                bools.append(False)
+
+        self.can_process = all(bools)
+
+    def execute(self):
+        self.assert_process_capabilities()
+        if authorizer.user_is_licensed("replace_words"):
+            if self.can_process:
+                params = self.getParams()
+                replace_words(**params)
+                self.mask_output("Ολοκληρώθηκε")
+            else:
+                show_popup("Συμπλήρωσε τα απαραίτητα πεδία")
+        else:
+            show_popup("You are not authorized",
+                       "Contact support")
+
+
 class EditWindow(QWidget):
     def __init__(self, parent=None, *args, **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
@@ -532,7 +605,8 @@ class EditWindow(QWidget):
                                      "Σορτάρισμα αρχείου",
                                      "Κατέβασμα εικόνων",
                                      "Δημιουργία εικόνων (Rellas)",
-                                     "Κόψιμο αρχείου"],
+                                     "Κόψιμο αρχείου",
+                                     "Αντικατάσταση λέξεων"],
                                     size=(100, 200))
         self.pageCombo.subscribe(self.switchPage)
         self.stackedLayout = QStackedLayout()
@@ -547,10 +621,12 @@ class EditWindow(QWidget):
         self.page5 = CreateImagesEdit()
         self.stackedLayout.addWidget(self.page5)
         self.page6 = SplitFileEdit()
+        self.stackedLayout.addWidget(self.page6)
+        self.page7 = ReplaceWordsEdit()
+        self.stackedLayout.addWidget(self.page7)
 
         IOWidget.setLastVisit(cwd)
 
-        self.stackedLayout.addWidget(self.page6)
         self.layoutGeneral.addWidget(self.pageCombo)
         self.layoutGeneral.addLayout(self.stackedLayout)
         self.setLayout(self.layoutGeneral)

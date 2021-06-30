@@ -15,6 +15,7 @@ class Paths:
         self._images_export = USER_SETTINGS.get('images_export', '')
         self._images_import = USER_SETTINGS.get('images_import', '')
         self._base_folder = USER_SETTINGS.get('base_folder', '')
+        self._replacements = USER_SETTINGS.get('replacements', '')
 
     def get_userhome(self) -> str:
         return str(self._userhome)
@@ -42,6 +43,9 @@ class Paths:
 
     def get_base_folder(self):
         return self._base_folder
+
+    def get_replacements(self):
+        return self._replacements
 
 
 

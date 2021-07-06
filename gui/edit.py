@@ -589,6 +589,88 @@ class ReplaceWordsEdit(QWidget):
                        "Contact support")
 
 
+class FindImagesEdit(QWidget):
+    def __init__(self, parent=None, *args, **kwargs):
+        super().__init__(parent=parent, *args, **kwargs)
+        self.setupUi()
+        self.fileToModify.lineEdit.textChanged.connect(self.clearCombos)
+        self.button.subscribe(self.execute)
+        self.can_process = False
+
+    def setupUi(self):
+        self.fileToModify = FileInput("Αρχείο προς επεξεργασία:",
+                                      orientation=VERTICAL)
+        self.fileToModify.setBrowseCallback(self.readInputFile)
+        self.colCombo1 = ComboInput("Στήλη με το όνομα αναζήτησης:",
+                                    size=(150, 150))
+
+        self.destination = FileOutput("Αποθήκευση αρχείου:",
+                                      orientation=VERTICAL)
+
+        self.buttonLayout = QHBoxLayout()
+        self.status = StatusIndicator(status='')
+        self.button = Button("Εκτέλεση")
+        self.buttonLayout.addWidget(self.status)
+        self.buttonLayout.addWidget(self.button)
+
+        self.pageLayout = QVBoxLayout()
+        self.pageLayout.addWidget(self.fileToModify)
+        self.pageLayout.addWidget(self.colCombo1)
+        self.pageLayout.addWidget(self.destination)
+        self.pageLayout.addStretch()
+        self.pageLayout.addLayout(self.buttonLayout)
+        self.setLayout(self.pageLayout)
+
+    def mask_output(self, text=None):
+        if text is None:
+            self.status.disable()
+        else:
+            self.status.enable(text)
+
+    def getParams(self):
+        _params = {'src': self.fileToModify.getText(),
+                   'keyword': self.colCombo1.getCurrentText(),
+                   'dst': self.destination.getText()}
+
+        return _params
+
+    def readInputFile(self):
+        _file = self.fileToModify.getText()
+        if os.path.exists(_file):
+            _file_ext = os.path.splitext(_file)[1]
+            if _file_ext in ['.xlsx', '.xls']:
+                _df = pd.read_excel(_file)
+                _cols = _df.columns.tolist()
+
+                self.colCombo1.addItems(_cols)
+
+    def clearCombos(self):
+        self.colCombo1.clearItems()
+
+    def assert_process_capabilities(self):
+        bools = []
+        for key, value in self.getParams().items():
+            if value:
+                bools.append(True)
+            else:
+                bools.append(False)
+
+        self.can_process = all(bools)
+
+    def execute(self):
+        self.assert_process_capabilities()
+        if authorizer.user_is_licensed("find_images_run"):
+            if self.can_process:
+                params = self.getParams()
+                find_images(**params)
+                self.mask_output("Ολοκληρώθηκε")
+            else:
+                show_popup("Συμπλήρωσε τα απαραίτητα πεδία")
+        else:
+            show_popup("You are not authorized",
+                       "Contact support")
+
+
 class EditWindow(QWidget):
     def __init__(self, parent=None, *args, **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
@@ -606,7 +688,8 @@ class EditWindow(QWidget):
                                      "Κατέβασμα εικόνων",
                                      "Δημιουργία εικόνων (Rellas)",
                                      "Κόψιμο αρχείου",
-                                     "Αντικατάσταση λέξεων"],
+                                     "Αντικατάσταση λέξεων",
+                                     "Αναζήτηση εικόνων (GBG)"],
                                     size=(100, 200))
         self.pageCombo.subscribe(self.switchPage)
         self.stackedLayout = QStackedLayout()
@@ -624,6 +707,8 @@ class EditWindow(QWidget):
         self.stackedLayout.addWidget(self.page6)
         self.page7 = ReplaceWordsEdit()
         self.stackedLayout.addWidget(self.page7)
+        self.page8 = FindImagesEdit()
+        self.stackedLayout.addWidget(self.page8)
 
         IOWidget.setLastVisit(cwd)
 

@@ -11,6 +11,7 @@ import time
 from pathlib import Path
 from typing import Union
 
+from atcrawl.utilities.urlfinder import google_urls
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
@@ -412,6 +413,25 @@ def download_images(urls, destination, save_names):
             else:
                 _name = name
             executor.submit(download_image, url, destination, _name)
+
+def find_images(src, keyword, dst):
+    df = pd.read_excel(src, dtype='string')
+
+    _temp = df[keyword].str.split(': ', expand=True)
+    _temp.columns = ['text', 'sku']
+    _temp['url'] = ''
+
+    for i in _temp.itertuples():
+        if i.sku != '':
+            url = google_urls(str(i.sku), 1, extensions={'.jpg'})
+            try:
+                _temp.loc[i.Index, 'url'] = url[0]
+            except IndexError:
+                continue
+
+    df['image'] = _temp['url']
+
+    df.to_excel(dst, index=False)
 
 
 def input_filename(prompt: str, suffix: str = None) -> str:

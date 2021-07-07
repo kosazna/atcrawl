@@ -2,8 +2,48 @@
 
 from atcrawl.gui.widgets import *
 from atcrawl.utilities import *
+from atcrawl.gui.worker import Worker
+from PyQt5.QtCore import QThreadPool
 
 cwd = paths.get_base_folder()
+
+class MainEdit(QWidget):
+    def __init__(self, parent=None, *args, **kwargs):
+        super().__init__(parent=parent, *args, **kwargs)
+        self.button.subscribe(self.execute)
+        self.no_validate = []
+        self.can_process = False
+        self.threadpool = QThreadPool()
+
+    def mask_output(self, text=None):
+            if text is None:
+                self.status.disable()
+            else:
+                self.status.enable(text)
+
+    def assert_process_capabilities(self):
+        bools = []
+        for key, value in self.getParams().items():
+            if key in self.no_validate:
+                continue
+            if value:
+                bools.append(True)
+            else:
+                bools.append(False)
+
+        self.can_process = all(bools)
+
+    def run_threaded_process(self, process):
+        worker = Worker(process)
+        worker.signals.finished.connect(lambda: self.mask_output("Ολοκληρώθηκε"))
+        worker.signals.progress.connect(self.mask_output)
+        self.threadpool.start(worker)
+
+    def getParams(self, *args, **kwargs):
+        pass
+
+    def execute(self, *args, **kwargs):
+        pass
 
 
 class SplitFileEdit(QWidget):

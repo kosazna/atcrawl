@@ -5,7 +5,21 @@ import traceback
 import sys
 
 
-class WorkerSignals(QObject):
+class WorkerSignalsStr(QObject):
+    '''
+    Defines the signals available from a running worker thread.
+    Supported signals are:
+    - finished: No data
+    - error:`tuple` (exctype, value, traceback.format_exc() )
+    - result: `object` data returned from processing, anything
+    - progress: `str` indicating progress metadata
+    '''
+    finished = pyqtSignal()
+    error = pyqtSignal(tuple)
+    result = pyqtSignal(object)
+    progress = pyqtSignal(str)
+
+class WorkerSignalsTuple(QObject):
     '''
     Defines the signals available from a running worker thread.
     Supported signals are:
@@ -17,7 +31,7 @@ class WorkerSignals(QObject):
     finished = pyqtSignal()
     error = pyqtSignal(tuple)
     result = pyqtSignal(object)
-    progress = pyqtSignal(str)
+    progress = pyqtSignal(tuple)
 
 
 class Worker(QRunnable):
@@ -26,13 +40,13 @@ class Worker(QRunnable):
     Inherits from QRunnable to handler worker thread setup, signals and wrap-up.
     '''
 
-    def __init__(self, fn, *args, **kwargs):
+    def __init__(self, fn, worker, *args, **kwargs):
         super(Worker, self).__init__()
         # Store constructor arguments (re-used for processing)
         self.fn = fn
         self.args = args
         self.kwargs = kwargs
-        self.signals = WorkerSignals()
+        self.signals = worker()
 
         # Add the callback to our kwargs
         self.kwargs['progress_callback'] = self.signals.progress

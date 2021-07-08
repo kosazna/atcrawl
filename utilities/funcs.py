@@ -414,12 +414,15 @@ def download_images(urls, destination, save_names):
                 _name = name
             executor.submit(download_image, url, destination, _name)
 
-def find_images(src, keyword, dst):
+def find_images(src, keyword, dst, progress_callback=None):
     df = pd.read_excel(src, dtype='string')
 
     _temp = df[keyword].str.split(': ', expand=True)
     _temp.columns = ['text', 'sku']
     _temp['url'] = ''
+
+    max_items = _temp.shape[0]
+    j = 0
 
     for i in _temp.itertuples():
         if i.sku != '':
@@ -428,6 +431,10 @@ def find_images(src, keyword, dst):
                 _temp.loc[i.Index, 'url'] = url[0]
             except IndexError:
                 continue
+
+        if progress_callback is not None:
+            j += 1
+            progress_callback.emit((j, max_items))
 
     df['image'] = _temp['url']
 

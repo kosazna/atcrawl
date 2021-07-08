@@ -4,7 +4,7 @@ from atcrawl.crawlers import *
 from atcrawl.gui.edit import EditWindow
 from atcrawl.gui.welcome_design import *
 from atcrawl.gui.widgets import *
-from atcrawl.gui.worker import Worker
+from atcrawl.gui.worker import Worker, WorkerSignalsStr
 from PyQt5.QtCore import QThreadPool
 
 
@@ -391,7 +391,7 @@ class CrawlerUI(QWidget):
         return
 
     def run_threaded_process(self, process, on_update, on_complete):
-        worker = Worker(process)
+        worker = Worker(process, WorkerSignalsStr)
         worker.signals.finished.connect(on_complete)
         worker.signals.progress.connect(on_update)
         self.threadpool.start(worker)

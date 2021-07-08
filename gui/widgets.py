@@ -10,7 +10,7 @@ from PyQt5.QtGui import QCursor, QFont, QIntValidator, QRegExpValidator, QIcon
 from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QCompleter,
                              QFileDialog, QHBoxLayout, QLabel, QLineEdit,
                              QMessageBox, QSizePolicy, QStackedLayout, QStyle,
-                             QToolButton, QVBoxLayout, QWidget)
+                             QToolButton, QVBoxLayout, QWidget, QProgressBar)
 
 HORIZONTAL = 'H'
 VERTICAL = 'V'
@@ -630,6 +630,25 @@ class StatusIndicator(QWidget):
     def setOffset(self, offset):
         self.label.setFixedWidth(offset)
 
+class ProgressBar(QProgressBar):
+    def __init__(self , parent=None, *args, **kwargs):
+        super().__init__(parent=parent, *args, **kwargs)
+        self.setupUi()
+
+    def setupUi(self):
+        self.setMinimum(0)
+        self.setMaximum(100)
+        self.setValue(0)
+        self.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.setStyle("ProgressBar")
+
+    def setStyle(self, object_name):
+        self.setObjectName(object_name)
+        self.setStyleSheet(cssGuide)
+
+    def setValueMaximum(self, current_value, maximum):
+        self.setMaximum(maximum)
+        self.setValue(current_value)
 
 class Dummy(QWidget):
     def __init__(self,
@@ -638,6 +657,8 @@ class Dummy(QWidget):
                  **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
         self.setupUi()
+        self.i = 0
+        self.button1.clicked.connect(self.changeProgress)
 
     def setupUi(self):
         self.setObjectName("MainWidget")
@@ -665,6 +686,8 @@ class Dummy(QWidget):
         self.button2 = Button("decline", parent=self)
         self.button3 = Button("process", parent=self)
 
+        self.progress = ProgressBar()
+
         self.layoutGeneral.addWidget(self.folderInput)
         self.layoutGeneral.addWidget(self.fileInput)
         self.layoutGeneral.addWidget(self.fileOutput)
@@ -686,8 +709,13 @@ class Dummy(QWidget):
 
         self.layout.addLayout(self.layoutTop)
         self.layout.addWidget(self.status)
+        self.layout.addWidget(self.progress)
 
         self.setLayout(self.layout)
+
+    def changeProgress(self):
+        self.i += 1
+        self.progress.setValueMaximum(self.i, 100)
 
 
 if __name__ == '__main__':

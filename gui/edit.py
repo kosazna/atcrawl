@@ -2,24 +2,24 @@
 
 from atcrawl.gui.widgets import *
 from atcrawl.utilities import *
-from atcrawl.gui.worker import Worker
+from atcrawl.gui.worker import Worker,  WorkerSignalsTuple
 from PyQt5.QtCore import QThreadPool
 
 cwd = paths.get_base_folder()
 
+
 class MainEdit(QWidget):
     def __init__(self, parent=None, *args, **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
-        self.button.subscribe(self.execute)
         self.no_validate = []
         self.can_process = False
         self.threadpool = QThreadPool()
 
     def mask_output(self, text=None):
-            if text is None:
-                self.status.disable()
-            else:
-                self.status.enable(text)
+        if text is None:
+            self.status.disable()
+        else:
+            self.status.enable(text)
 
     def assert_process_capabilities(self):
         bools = []
@@ -33,10 +33,10 @@ class MainEdit(QWidget):
 
         self.can_process = all(bools)
 
-    def run_threaded_process(self, process):
-        worker = Worker(process)
-        worker.signals.finished.connect(lambda: self.mask_output("Ολοκληρώθηκε"))
-        worker.signals.progress.connect(self.mask_output)
+    def run_threaded_process(self, process, on_update, on_finish):
+        worker = Worker(process, WorkerSignalsTuple)
+        worker.signals.finished.connect(on_finish)
+        worker.signals.progress.connect(on_update)
         self.threadpool.start(worker)
 
     def getParams(self, *args, **kwargs):
@@ -629,12 +629,12 @@ class ReplaceWordsEdit(QWidget):
                        "Contact support")
 
 
-class FindImagesEdit(QWidget):
+class FindImagesEdit(MainEdit):
     def __init__(self, parent=None, *args, **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
         self.setupUi()
         self.fileToModify.lineEdit.textChanged.connect(self.clearCombos)
-        self.button.subscribe(self.execute)
+        self.button.subscribe(self.start_process)
         self.can_process = False
 
     def setupUi(self):
@@ -647,10 +647,12 @@ class FindImagesEdit(QWidget):
         self.destination = FileOutput("Αποθήκευση αρχείου:",
                                       orientation=VERTICAL)
 
+        self.progressBar = ProgressBar()
+
         self.buttonLayout = QHBoxLayout()
         self.status = StatusIndicator(status='')
         self.button = Button("Εκτέλεση")
-        self.buttonLayout.addWidget(self.status)
+        self.buttonLayout.addWidget(self.progressBar)
         self.buttonLayout.addWidget(self.button)
 
         self.pageLayout = QVBoxLayout()
@@ -659,13 +661,8 @@ class FindImagesEdit(QWidget):
         self.pageLayout.addWidget(self.destination)
         self.pageLayout.addStretch()
         self.pageLayout.addLayout(self.buttonLayout)
+        self.pageLayout.addWidget(self.status)
         self.setLayout(self.pageLayout)
-
-    def mask_output(self, text=None):
-        if text is None:
-            self.status.disable()
-        else:
-            self.status.enable(text)
 
     def getParams(self):
         _params = {'src': self.fileToModify.getText(),
@@ -687,28 +684,30 @@ class FindImagesEdit(QWidget):
     def clearCombos(self):
         self.colCombo1.clearItems()
 
-    def assert_process_capabilities(self):
-        bools = []
-        for key, value in self.getParams().items():
-            if value:
-                bools.append(True)
-            else:
-                bools.append(False)
-
-        self.can_process = all(bools)
-
-    def execute(self):
+    def execute(self, progress_callback):
         self.assert_process_capabilities()
         if authorizer.user_is_licensed("find_images_run"):
             if self.can_process:
                 params = self.getParams()
-                find_images(**params)
-                self.mask_output("Ολοκληρώθηκε")
+                find_images(**params, progress_callback=progress_callback)
             else:
                 show_popup("Συμπλήρωσε τα απαραίτητα πεδία")
         else:
             show_popup("You are not authorized",
                        "Contact support")
+
+    def start_process(self):
+        self.run_threaded_process(self.execute,
+                                  self.change_process,
+                                  self.end_process)
+
+    def change_process(self, values):
+        self.progressBar.setValueMaximum(*values)
+
+    def end_process(self):
+        self.progressBar.setValue(self.progressBar.maximum())
+        self.progressBar.setStyle("ProgressBarFinished")
+        self.mask_output("Ολοκληρώθηκε")
 
 
 class EditWindow(QWidget):

@@ -414,6 +414,7 @@ def download_images(urls, destination, save_names):
                 _name = name
             executor.submit(download_image, url, destination, _name)
 
+
 def find_images(src, keyword, dst, progress_callback=None):
     df = pd.read_excel(src, dtype='string')
 
@@ -434,11 +435,13 @@ def find_images(src, keyword, dst, progress_callback=None):
 
         if progress_callback is not None:
             j += 1
-            progress_callback.emit((j, max_items))
+            progress_callback.emit((j, max_items, 'Αναζήτηση εικόνων...'))
 
     df['image'] = _temp['url']
 
     df.to_excel(dst, index=False)
+
+    progress_callback.emit((j, max_items, dst))
 
 
 def input_filename(prompt: str, suffix: str = None) -> str:

@@ -11,9 +11,15 @@ cwd = paths.get_base_folder()
 class MainEdit(QWidget):
     def __init__(self, parent=None, *args, **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
-        self.no_validate = []
+        self.no_validate = ()
         self.can_process = False
         self.threadpool = QThreadPool()
+        self.last_status = None
+        self.output = None
+
+    def open_file(self):
+        if self.output is not None:
+            os.startfile(self.output)
 
     def mask_output(self, text=None):
         if text is None:
@@ -38,6 +44,29 @@ class MainEdit(QWidget):
         worker.signals.finished.connect(on_finish)
         worker.signals.progress.connect(on_update)
         self.threadpool.start(worker)
+
+    def start_process(self):
+        self.run_threaded_process(self.execute,
+                                  self.process_updates,
+                                  self.end_process)
+
+    def process_updates(self, values):
+        self.progressBar.setValueMaximum(values[0], values[1])
+        try:
+            if values[2] is not None:
+                self.mask_output(values[2])
+                self.last_status = values[2]
+        except IndexError:
+            pass
+
+    def end_process(self):
+        self.progressBar.setValue(self.progressBar.maximum())
+        self.progressBar.setStyle("ProgressBarFinished")
+
+        if self.last_status is not None:
+            if os.path.exists(self.last_status):
+                self.status.enable(self.last_status)
+                self.output = self.last_status
 
     def getParams(self, *args, **kwargs):
         pass
@@ -77,28 +106,12 @@ class SplitFileEdit(QWidget):
         self.pageLayout.addLayout(self.buttonLayout)
         self.setLayout(self.pageLayout)
 
-    def mask_output(self, text=None):
-        if text is None:
-            self.status.disable()
-        else:
-            self.status.enable(text)
-
     def getParams(self):
         _params = {'filepath': self.fileToModify.getText(),
                    'destination': self.destination.getText(),
                    'k': int(self.splitRatio.getText())}
 
         return _params
-
-    def assert_process_capabilities(self):
-        bools = []
-        for key, value in self.getParams().items():
-            if value:
-                bools.append(True)
-            else:
-                bools.append(False)
-
-        self.can_process = all(bools)
 
     def execute(self):
         self.assert_process_capabilities()
@@ -152,12 +165,6 @@ class DownloadImagesEdit(QWidget):
         self.pageLayout.addLayout(self.buttonLayout)
         self.setLayout(self.pageLayout)
 
-    def mask_output(self, text=None):
-        if text is None:
-            self.status.disable()
-        else:
-            self.status.enable(text)
-
     def getParams(self):
         _params = {'src': self.fileToModify.getText(),
                    'img_name': self.colCombo1.getCurrentText(),
@@ -181,16 +188,6 @@ class DownloadImagesEdit(QWidget):
     def clearCombos(self):
         self.colCombo1.clearItems()
         self.colCombo2.clearItems()
-
-    def assert_process_capabilities(self):
-        bools = []
-        for key, value in self.getParams().items():
-            if value:
-                bools.append(True)
-            else:
-                bools.append(False)
-
-        self.can_process = all(bools)
 
     def execute(self):
         self.assert_process_capabilities()
@@ -232,6 +229,7 @@ class CreateImagesEdit(QWidget):
         self.setupUi()
         self.button.subscribe(self.execute)
         self.can_process = False
+        self.no_validate = ('prefix_image')
 
     def setupUi(self):
         self.fileToModify = FileInput("Αρχείο προς επεξεργασία:",
@@ -259,12 +257,6 @@ class CreateImagesEdit(QWidget):
         self.pageLayout.addLayout(self.buttonLayout)
         self.setLayout(self.pageLayout)
 
-    def mask_output(self, text=None):
-        if text is None:
-            self.status.disable()
-        else:
-            self.status.enable(text)
-
     def getParams(self):
         _params = {'data': self.fileToModify.getText(),
                    'src_images': self.source.getText(),
@@ -272,18 +264,6 @@ class CreateImagesEdit(QWidget):
                    'prefix_images': self.prefix.getText()}
 
         return _params
-
-    def assert_process_capabilities(self):
-        bools = []
-        for key, value in self.getParams().items():
-            if key == 'prefix_images':
-                continue
-            if value:
-                bools.append(True)
-            else:
-                bools.append(False)
-
-        self.can_process = all(bools)
 
     def execute(self):
         self.assert_process_capabilities()
@@ -305,6 +285,7 @@ class MergeEdit(QWidget):
         self.setupUi()
         self.button.subscribe(self.execute)
         self.can_process = False
+        self.no_validate = ('col1', 'val1')
 
     def setupUi(self):
         self.source = FolderInput("Φάκελος αρχείων:",
@@ -334,12 +315,6 @@ class MergeEdit(QWidget):
         self.pageLayout.addLayout(self.buttonLayout)
         self.setLayout(self.pageLayout)
 
-    def mask_output(self, text=None):
-        if text is None:
-            self.status.disable()
-        else:
-            self.status.enable(text)
-
     def getParams(self):
         _params = {'src': self.source.getText(),
                    'col1': self.newColName1.getText(),
@@ -347,18 +322,6 @@ class MergeEdit(QWidget):
                    'dst': self.destination.getText()}
 
         return _params
-
-    def assert_process_capabilities(self):
-        bools = []
-        for key, value in self.getParams().items():
-            if key in ['col1', 'val1']:
-                continue
-            if value:
-                bools.append(True)
-            else:
-                bools.append(False)
-
-        self.can_process = all(bools)
 
     def execute(self):
         self.assert_process_capabilities()
@@ -418,12 +381,6 @@ class FilterEdit(QWidget):
         self.pageLayout.addLayout(self.buttonLayout)
         self.setLayout(self.pageLayout)
 
-    def mask_output(self, text=None):
-        if text is None:
-            self.status.disable()
-        else:
-            self.status.enable(text)
-
     def getParams(self):
         self.assert_process_capabilities()
         _params = {'src': self.fileToModify.getText(),
@@ -450,16 +407,6 @@ class FilterEdit(QWidget):
     def clearCombos(self):
         self.colCombo1.clearItems()
         self.colCombo2.clearItems()
-
-    def assert_process_capabilities(self):
-        bools = []
-        for key, value in self.getParams().items():
-            if value:
-                bools.append(True)
-            else:
-                bools.append(False)
-
-        self.can_process = all(bools)
 
     def execute(self):
         self.assert_process_capabilities()
@@ -506,12 +453,6 @@ class SortEdit(QWidget):
         self.pageLayout.addLayout(self.buttonLayout)
         self.setLayout(self.pageLayout)
 
-    def mask_output(self, text=None):
-        if text is None:
-            self.status.disable()
-        else:
-            self.status.enable(text)
-
     def getParams(self):
         _params = {'src': self.fileToModify.getText(),
                    'col': self.colCombo1.getCurrentText(),
@@ -531,16 +472,6 @@ class SortEdit(QWidget):
 
     def clearCombos(self):
         self.colCombo1.clearItems()
-
-    def assert_process_capabilities(self):
-        bools = []
-        for key, value in self.getParams().items():
-            if value:
-                bools.append(True)
-            else:
-                bools.append(False)
-
-        self.can_process = all(bools)
 
     def execute(self):
         self.assert_process_capabilities()
@@ -591,12 +522,6 @@ class ReplaceWordsEdit(QWidget):
         self.pageLayout.addLayout(self.buttonLayout)
         self.setLayout(self.pageLayout)
 
-    def mask_output(self, text=None):
-        if text is None:
-            self.status.disable()
-        else:
-            self.status.enable(text)
-
     def getParams(self):
         _params = {'data': self.fileToModify.getText(),
                    'replacements': self.replacements.getText(),
@@ -604,16 +529,6 @@ class ReplaceWordsEdit(QWidget):
                    'columns': self.columns.getText().split('-')}
 
         return _params
-
-    def assert_process_capabilities(self):
-        bools = []
-        for key, value in self.getParams().items():
-            if value:
-                bools.append(True)
-            else:
-                bools.append(False)
-
-        self.can_process = all(bools)
 
     def execute(self):
         self.assert_process_capabilities()
@@ -628,6 +543,19 @@ class ReplaceWordsEdit(QWidget):
             show_popup("You are not authorized",
                        "Contact support")
 
+    def start_process(self):
+        self.run_threaded_process(self.execute,
+                                  self.change_process,
+                                  self.end_process)
+
+    def change_process(self, values):
+        self.progressBar.setValueMaximum(*values)
+
+    def end_process(self):
+        self.progressBar.setValue(self.progressBar.maximum())
+        self.progressBar.setStyle("ProgressBarFinished")
+        self.mask_output("Ολοκληρώθηκε")
+
 
 class FindImagesEdit(MainEdit):
     def __init__(self, parent=None, *args, **kwargs):
@@ -635,7 +563,7 @@ class FindImagesEdit(MainEdit):
         self.setupUi()
         self.fileToModify.lineEdit.textChanged.connect(self.clearCombos)
         self.button.subscribe(self.start_process)
-        self.can_process = False
+        self.status.subscribe(self.open_file)
 
     def setupUi(self):
         self.fileToModify = FileInput("Αρχείο προς επεξεργασία:",
@@ -660,8 +588,8 @@ class FindImagesEdit(MainEdit):
         self.pageLayout.addWidget(self.colCombo1)
         self.pageLayout.addWidget(self.destination)
         self.pageLayout.addStretch()
-        self.pageLayout.addLayout(self.buttonLayout)
         self.pageLayout.addWidget(self.status)
+        self.pageLayout.addLayout(self.buttonLayout)
         self.setLayout(self.pageLayout)
 
     def getParams(self):
@@ -695,19 +623,6 @@ class FindImagesEdit(MainEdit):
         else:
             show_popup("You are not authorized",
                        "Contact support")
-
-    def start_process(self):
-        self.run_threaded_process(self.execute,
-                                  self.change_process,
-                                  self.end_process)
-
-    def change_process(self, values):
-        self.progressBar.setValueMaximum(*values)
-
-    def end_process(self):
-        self.progressBar.setValue(self.progressBar.maximum())
-        self.progressBar.setStyle("ProgressBarFinished")
-        self.mask_output("Ολοκληρώθηκε")
 
 
 class EditWindow(QWidget):

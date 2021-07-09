@@ -11,9 +11,9 @@ cwd = paths.get_base_folder()
 class MainEdit(QWidget):
     def __init__(self, parent=None, *args, **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
+        self.threadpool = QThreadPool()
         self.no_validate = ()
         self.can_process = False
-        self.threadpool = QThreadPool()
         self.last_status = None
         self.output = None
 
@@ -75,11 +75,12 @@ class MainEdit(QWidget):
         pass
 
 
-class SplitFileEdit(QWidget):
+class SplitFileEdit(MainEdit):
     def __init__(self, parent=None, *args, **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
         self.setupUi()
-        self.button.subscribe(self.execute)
+        self.button.subscribe(self.start_process)
+        self.status.subscribe(self.open_file)
         self.can_process = False
 
     def setupUi(self):
@@ -113,13 +114,12 @@ class SplitFileEdit(QWidget):
 
         return _params
 
-    def execute(self):
+    def execute(self, progress_callback):
         self.assert_process_capabilities()
         if authorizer.user_is_licensed('split_file'):
             if self.can_process:
                 params = self.getParams()
-                split_file(**params)
-                self.mask_output("Ολοκληρώθηκε")
+                split_file(**params, progress_callback=progress_callback)
             else:
                 show_popup("Συμπλήρωσε τα απαραίτητα πεδία")
         else:

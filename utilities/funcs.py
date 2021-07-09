@@ -178,7 +178,7 @@ def load_user_settings(settings_file):
     return settings
 
 
-def split_file(filepath, destination, k=2000):
+def split_file(filepath, destination, k=2000, progress_callback=None):
     basename = Path(filepath).stem
 
     print("\nLoading file...\n")
@@ -197,7 +197,11 @@ def split_file(filepath, destination, k=2000):
         save_name = f"{destination}\\{basename}_{start}-{end}.xlsx"
 
         _sub.to_excel(save_name, index=False)
-        print(f"  - Created: {save_name}")
+
+        if progress_callback is not None:
+            progress_callback.emit((i, iterations, save_name))
+        else:
+            print(f"  - Created: {save_name}")
 
 
 def sort_file(src, col, dst):

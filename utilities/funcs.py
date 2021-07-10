@@ -204,7 +204,7 @@ def split_file(filepath, destination, k=2000, progress_callback=None):
             print(f"  - Created: {save_name}")
 
 
-def sort_file(src, col, dst):
+def sort_file(src, col, dst, progress_callback=None):
     df = pd.read_excel(src, dtype='string')
     k = df[col].fillna("<NULL>").apply(str).apply(
         lambda x: "<NULL>" if x.isspace() else x.strip())
@@ -216,8 +216,11 @@ def sort_file(src, col, dst):
     merged_df[col] = merged_df[col].str.replace('<NULL>', '')
     merged_df.to_excel(dst, index=False, na_rep='')
 
+    if progress_callback is not None:
+        progress_callback.emit((100, 100, dst))
 
-def filter_file(src, col1, col2, pattern, val_true, val_false, dst):
+
+def filter_file(src, col1, col2, pattern, val_true, val_false, dst, progress_callback=None):
     df = pd.read_excel(src, dtype='string')
     df.loc[df[col1].str.contains(
         pattern, regex=True, na=False), col2] = val_true
@@ -228,10 +231,17 @@ def filter_file(src, col1, col2, pattern, val_true, val_false, dst):
 
     df.to_excel(dst, index=False)
 
+    if progress_callback is not None:
+        progress_callback.emit((100, 100, dst))
 
-def merge_file(src, col1, val1, dst):
+
+def merge_file(src, col1, val1, dst, progress_callback=None):
     cwd = Path(src)
     files = list(cwd.glob('*.xlsx'))
+
+    max_items = len(files)
+    c = 0
+
     if files:
 
         to_concat = []
@@ -242,13 +252,19 @@ def merge_file(src, col1, val1, dst):
             new_cols = [change_col(col_name) for col_name in df.columns]
             df.columns = new_cols
             to_concat.append(df)
+            c += 1
 
+            if progress_callback is not None:
+                progress_callback.emit((c, max_items, "Φόρτωση Αρχείων"))
+
+        progress_callback.emit((c, max_items, "Ένωση Αρχείων"))
         merged_df = pd.concat(to_concat)
 
         if col1:
             merged_df[col1] = val1
 
         merged_df.to_excel(dst, index=False)
+        progress_callback.emit((max_items, max_items, dst))
 
 
 def change_col(col_name):
@@ -325,23 +341,34 @@ def replacer(df_to_replace, replacements, column):
     return series_str
 
 
-def replace_words(data, replacements, dst_file, columns):
+def replace_words(data, replacements, dst_file, columns, progress_callback=None):
     df = pd.read_excel(data, dtype='string')
     rep = pd.read_excel(replacements, dtype='string')
 
     destination = dst_file
+    max_items = len(columns)
+    c = 0
 
     for col in columns:
         df[col] = replacer(df, rep, col)
+        c += 1
+        if progress_callback is not None:
+            progress_callback.emit((c, max_items))
 
     try:
         df.to_excel(destination, index=False)
-        print("Οι αλλαγές έγιναν.")
+        if progress_callback is not None:
+            progress_callback.emit((max_items, max_items, destination))
+        else:
+            print("Οι αλλαγές έγιναν.")
     except PermissionError:
-        print("Το αρχέιο είναι ανοιχτό στο Excel. Κλείσε και ξαναπροσπάθησε.")
+        if progress_callback is not None:
+            progress_callback.emit((0, max_items, "Το αρχέιο είναι ανοιχτό στο Excel. Κλείσε και ξαναπροσπάθησε."))
+        else:
+            print("Το αρχέιο είναι ανοιχτό στο Excel. Κλείσε και ξαναπροσπάθησε.")
 
 
-def create_images(data, src_images, dst_images, prefix_images=''):
+def create_images(data, src_images, dst_images, prefix_images='', progress_callback=None):
     df = pd.read_excel(data, dtype='string')
     source = list(Path(src_images).glob('*.jpg'))
     source_mapper = {image.stem: image for image in source}
@@ -352,6 +379,11 @@ def create_images(data, src_images, dst_images, prefix_images=''):
         _prefix = prefix_images[:-1]
     else:
         _prefix = prefix_images
+
+    max_items = df.shape[0]
+    c = 0
+
+    progress_callback.emit((c, max_items, "Δημιουργία εικόνων"))
 
     for i in df.itertuples():
         image_name = None
@@ -368,12 +400,22 @@ def create_images(data, src_images, dst_images, prefix_images=''):
             dst = destination.joinpath(data_image_name)
             shutil.copyfile(src, dst)
             df.loc[i.Index, 'image'] = f"{_prefix}/{data_image_name}"
+            c += 1
+            progress_callback.emit((c, max_items))
 
     try:
         df.to_excel(data, index=False)
-        print("Οι εικόνες δημιουργήθηκαν.")
+        if progress_callback is not None:
+            progress_callback.emit(
+                (max_items, max_items, data))
+        else:
+            print("Οι εικόνες δημιουργήθηκαν.")
     except PermissionError:
-        print("Το αρχέιο είναι ανοιχτό στο Excel. Κλείσε και ξαναπροσπάθησε.")
+        if progress_callback is not None:
+            progress_callback.emit(
+                (0, max_items, "Το αρχέιο είναι ανοιχτό στο Excel. Κλείσε και ξαναπροσπάθησε."))
+        else:
+            print("Το αρχέιο είναι ανοιχτό στο Excel. Κλείσε και ξαναπροσπάθησε.")
 
 
 def download_image(url, destination, save_name=None):
@@ -409,14 +451,22 @@ def download_image(url, destination, save_name=None):
         print(f"Request failed -> {url}")
 
 
-def download_images(urls, destination, save_names):
+def download_images(urls, destination, save_names, progress_callback=None):
+    progress_callback.emit((0, 100, "Κατέβασμα εικόνων"))
+    
     with concurrent.futures.ThreadPoolExecutor() as executor:
+        max_items = len(urls)
+        i = 0
         for url, name in zip(urls, save_names):
             if pd.isna(name):
                 _name = 'original'
             else:
                 _name = name
             executor.submit(download_image, url, destination, _name)
+            i += 1
+
+            if progress_callback is not None:
+                progress_callback.emit((i, max_items))
 
 
 def find_images(src, keyword, dst, progress_callback=None):
@@ -427,7 +477,7 @@ def find_images(src, keyword, dst, progress_callback=None):
     _temp['url'] = ''
 
     max_items = _temp.shape[0]
-    j = 0
+    c = 0
 
     for i in _temp.itertuples():
         if i.sku != '':
@@ -438,14 +488,14 @@ def find_images(src, keyword, dst, progress_callback=None):
                 continue
 
         if progress_callback is not None:
-            j += 1
-            progress_callback.emit((j, max_items, 'Αναζήτηση εικόνων...'))
+            c += 1
+            progress_callback.emit((c, max_items, 'Αναζήτηση εικόνων...'))
 
     df['image'] = _temp['url']
 
     df.to_excel(dst, index=False)
 
-    progress_callback.emit((j, max_items, dst))
+    progress_callback.emit((max_items, max_items, dst))
 
 
 def input_filename(prompt: str, suffix: str = None) -> str:

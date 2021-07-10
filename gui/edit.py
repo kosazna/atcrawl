@@ -43,6 +43,7 @@ class MainEdit(QWidget):
         worker = Worker(process, WorkerSignalsTuple)
         worker.signals.finished.connect(on_finish)
         worker.signals.progress.connect(on_update)
+        worker.signals.popup.connect(show_popup)
         self.threadpool.start(worker)
 
     def start_process(self):
@@ -60,8 +61,9 @@ class MainEdit(QWidget):
             pass
 
     def end_process(self):
-        self.progressBar.setValue(self.progressBar.maximum())
-        self.progressBar.setStyle("ProgressBarFinished")
+        if self.can_process:
+            self.progressBar.setValue(self.progressBar.maximum())
+            self.progressBar.setStyle("ProgressBarFinished")
 
         if self.last_status is not None:
             if os.path.exists(self.last_status):
@@ -93,10 +95,12 @@ class SplitFileEdit(MainEdit):
         self.splitRatio = IntInputParameter("Σπάσιμο αρχείου ανά:",
                                             orientation=VERTICAL)
 
+        self.progressBar = ProgressBar()
+
         self.buttonLayout = QHBoxLayout()
         self.status = StatusIndicator()
         self.button = Button("Εκτέλεση")
-        self.buttonLayout.addWidget(self.status)
+        self.buttonLayout.addWidget(self.progressBar)
         self.buttonLayout.addWidget(self.button)
 
         self.pageLayout = QVBoxLayout()
@@ -104,6 +108,7 @@ class SplitFileEdit(MainEdit):
         self.pageLayout.addWidget(self.destination)
         self.pageLayout.addWidget(self.splitRatio)
         self.pageLayout.addStretch()
+        self.pageLayout.addWidget(self.status)
         self.pageLayout.addLayout(self.buttonLayout)
         self.setLayout(self.pageLayout)
 
@@ -114,25 +119,26 @@ class SplitFileEdit(MainEdit):
 
         return _params
 
-    def execute(self, progress_callback):
+    def execute(self, progress_callback, progress_popup):
         self.assert_process_capabilities()
         if authorizer.user_is_licensed('split_file'):
             if self.can_process:
                 params = self.getParams()
                 split_file(**params, progress_callback=progress_callback)
             else:
-                show_popup("Συμπλήρωσε τα απαραίτητα πεδία")
+                progress_popup.emit("Συμπλήρωσε τα απαραίτητα πεδία")
         else:
-            show_popup("You are not authorized",
-                       "Contact support")
+            progress_popup.emit("You are not authorized",
+                                "Contact support")
 
 
-class DownloadImagesEdit(QWidget):
+class DownloadImagesEdit(MainEdit):
     def __init__(self, parent=None, *args, **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
         self.setupUi()
         self.fileToModify.lineEdit.textChanged.connect(self.clearCombos)
-        self.button.subscribe(self.execute)
+        self.button.subscribe(self.start_process)
+        self.status.subscribe(self.open_file)
         self.can_process = False
 
     def setupUi(self):
@@ -147,13 +153,15 @@ class DownloadImagesEdit(QWidget):
         self.prefix = InputParameter("Link μπροστά από το όνομα της εικόνας:",
                                      orientation=VERTICAL)
         self.destination = FolderInput("Αποθήκευση αρχέιων στον φάκελο:",
-                                       orientation=VERTICAL,
-                                       )
+                                       orientation=VERTICAL)
+
+        self.progressBar = ProgressBar()
+
         self.destination.setText(paths.get_images_export())
         self.buttonLayout = QHBoxLayout()
         self.status = StatusIndicator(status='')
         self.button = Button("Εκτέλεση")
-        self.buttonLayout.addWidget(self.status)
+        self.buttonLayout.addWidget(self.progressBar)
         self.buttonLayout.addWidget(self.button)
 
         self.pageLayout = QVBoxLayout()
@@ -162,6 +170,7 @@ class DownloadImagesEdit(QWidget):
         self.pageLayout.addWidget(self.prefix)
         self.pageLayout.addWidget(self.destination)
         self.pageLayout.addStretch()
+        self.pageLayout.addWidget(self.status)
         self.pageLayout.addLayout(self.buttonLayout)
         self.setLayout(self.pageLayout)
 
@@ -189,7 +198,7 @@ class DownloadImagesEdit(QWidget):
         self.colCombo1.clearItems()
         self.colCombo2.clearItems()
 
-    def execute(self):
+    def execute(self, progress_callback, progress_popup):
         self.assert_process_capabilities()
         if authorizer.user_is_licensed("img_downloader"):
             if self.can_process:
@@ -212,24 +221,28 @@ class DownloadImagesEdit(QWidget):
 
                 new_names = f"{_prefix}/" + df[name_col] + '.jpg'
 
-                download_images(url_list, dst, name_list)
+                download_images(url_list,
+                                dst,
+                                name_list,
+                                progress_callback=progress_callback)
                 df[url_col] = new_names
                 df.to_excel(src, index=False)
-                self.mask_output("Ολοκληρώθηκε")
+                progress_callback.emit((100, 100, src))
             else:
-                show_popup("Συμπλήρωσε τα απαραίτητα πεδία")
+                progress_popup.emit("Συμπλήρωσε τα απαραίτητα πεδία")
         else:
-            show_popup("You are not authorized",
-                       "Contact support")
+            progress_popup.emit("You are not authorized",
+                                "Contact support")
 
 
-class CreateImagesEdit(QWidget):
+class CreateImagesEdit(MainEdit):
     def __init__(self, parent=None, *args, **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
         self.setupUi()
-        self.button.subscribe(self.execute)
+        self.button.subscribe(self.start_process)
+        self.status.subscribe(self.open_file)
         self.can_process = False
-        self.no_validate = ('prefix_image')
+        self.no_validate = ('prefix_images')
 
     def setupUi(self):
         self.fileToModify = FileInput("Αρχείο προς επεξεργασία:",
@@ -240,12 +253,15 @@ class CreateImagesEdit(QWidget):
                                        orientation=VERTICAL)
         self.prefix = InputParameter("Link μπροστά από το όνομα της εικόνας:",
                                      orientation=VERTICAL)
+
+        self.progressBar = ProgressBar()
+
         self.source.setText(paths.get_images_import())
         self.destination.setText(paths.get_images_export())
         self.buttonLayout = QHBoxLayout()
         self.status = StatusIndicator(status='')
         self.button = Button("Εκτέλεση")
-        self.buttonLayout.addWidget(self.status)
+        self.buttonLayout.addWidget(self.progressBar)
         self.buttonLayout.addWidget(self.button)
 
         self.pageLayout = QVBoxLayout()
@@ -254,6 +270,7 @@ class CreateImagesEdit(QWidget):
         self.pageLayout.addWidget(self.destination)
         self.pageLayout.addWidget(self.prefix)
         self.pageLayout.addStretch()
+        self.pageLayout.addWidget(self.status)
         self.pageLayout.addLayout(self.buttonLayout)
         self.setLayout(self.pageLayout)
 
@@ -265,25 +282,25 @@ class CreateImagesEdit(QWidget):
 
         return _params
 
-    def execute(self):
+    def execute(self, progress_callback, progress_popup):
         self.assert_process_capabilities()
         if authorizer.user_is_licensed("create_images"):
             if self.can_process:
                 params = self.getParams()
-                create_images(**params)
-                self.mask_output("Ολοκληρώθηκε")
+                create_images(**params, progress_callback=progress_callback)
             else:
-                show_popup("Συμπλήρωσε τα απαραίτητα πεδία")
+                progress_popup.emit("Συμπλήρωσε τα απαραίτητα πεδία")
         else:
-            show_popup("You are not authorized",
-                       "Contact support")
+            progress_popup.emit("You are not authorized",
+                                "Contact support")
 
 
-class MergeEdit(QWidget):
+class MergeEdit(MainEdit):
     def __init__(self, parent=None, *args, **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
         self.setupUi()
-        self.button.subscribe(self.execute)
+        self.button.subscribe(self.start_process)
+        self.status.subscribe(self.open_file)
         self.can_process = False
         self.no_validate = ('col1', 'val1')
 
@@ -302,16 +319,20 @@ class MergeEdit(QWidget):
         self.colsLayout1.addWidget(self.newColValue1)
         self.destination = FileOutput("Αποθήκευση αρχείου:",
                                       orientation=VERTICAL)
+
+        self.progressBar = ProgressBar()
+
         self.buttonLayout = QHBoxLayout()
         self.status = StatusIndicator(status='')
         self.button = Button("Εκτέλεση")
-        self.buttonLayout.addWidget(self.status)
+        self.buttonLayout.addWidget(self.progressBar)
         self.buttonLayout.addWidget(self.button)
         self.pageLayout = QVBoxLayout()
         self.pageLayout.addWidget(self.source)
         self.pageLayout.addLayout(self.colsLayout1)
         self.pageLayout.addWidget(self.destination)
         self.pageLayout.addStretch()
+        self.pageLayout.addWidget(self.status)
         self.pageLayout.addLayout(self.buttonLayout)
         self.setLayout(self.pageLayout)
 
@@ -323,26 +344,26 @@ class MergeEdit(QWidget):
 
         return _params
 
-    def execute(self):
+    def execute(self, progress_callback, progress_popup):
         self.assert_process_capabilities()
         if authorizer.user_is_licensed("create_images"):
             if self.can_process:
                 params = self.getParams()
-                merge_file(**params)
-                self.mask_output("Ολοκληρώθηκε")
+                merge_file(**params, progress_callback=progress_callback)
             else:
-                show_popup("Συμπλήρωσε τα απαραίτητα πεδία")
+                progress_popup.emit("Συμπλήρωσε τα απαραίτητα πεδία")
         else:
-            show_popup("You are not authorized",
-                       "Contact support")
+            progress_popup.emit("You are not authorized",
+                                "Contact support")
 
 
-class FilterEdit(QWidget):
+class FilterEdit(MainEdit):
     def __init__(self, parent=None, *args, **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
         self.setupUi()
         self.fileToModify.lineEdit.textChanged.connect(self.clearCombos)
-        self.button.subscribe(self.execute)
+        self.button.subscribe(self.start_process)
+        self.status.subscribe(self.open_file)
         self.can_process = False
 
     def setupUi(self):
@@ -361,6 +382,9 @@ class FilterEdit(QWidget):
             "Τιμή για θετικές:", size=(150, 100))
         self.paramFalse = InputParameter(
             "Τιμή για αρνητικές:", size=(150, 100))
+
+        self.progressBar = ProgressBar()
+
         self.paramsLayout.addWidget(self.paramFilter)
         self.paramsLayout.addWidget(self.paramTrue)
         self.paramsLayout.addWidget(self.paramFalse)
@@ -371,13 +395,14 @@ class FilterEdit(QWidget):
         self.buttonLayout = QHBoxLayout()
         self.status = StatusIndicator(status='')
         self.button = Button("Εκτέλεση")
-        self.buttonLayout.addWidget(self.status)
+        self.buttonLayout.addWidget(self.progressBar)
         self.buttonLayout.addWidget(self.button)
         self.pageLayout = QVBoxLayout()
         self.pageLayout.addWidget(self.fileToModify)
         self.pageLayout.addLayout(self.horLayout)
         self.pageLayout.addWidget(self.destination)
         self.pageLayout.addStretch()
+        self.pageLayout.addWidget(self.status)
         self.pageLayout.addLayout(self.buttonLayout)
         self.setLayout(self.pageLayout)
 
@@ -408,26 +433,26 @@ class FilterEdit(QWidget):
         self.colCombo1.clearItems()
         self.colCombo2.clearItems()
 
-    def execute(self):
+    def execute(self, progress_callback, progress_popup):
         self.assert_process_capabilities()
         if authorizer.user_is_licensed("filter_run"):
             if self.can_process:
                 params = self.getParams()
-                filter_file(**params)
-                self.mask_output("Ολοκληρώθηκε")
+                filter_file(**params, progress_callback=progress_callback)
             else:
-                show_popup("Συμπλήρωσε τα απαραίτητα πεδία")
+                progress_popup.emit("Συμπλήρωσε τα απαραίτητα πεδία")
         else:
-            show_popup("You are not authorized",
-                       "Contact support")
+            progress_popup.emit("You are not authorized",
+                                "Contact support")
 
 
-class SortEdit(QWidget):
+class SortEdit(MainEdit):
     def __init__(self, parent=None, *args, **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
         self.setupUi()
         self.fileToModify.lineEdit.textChanged.connect(self.clearCombos)
-        self.button.subscribe(self.execute)
+        self.button.subscribe(self.start_process)
+        self.status.subscribe(self.open_file)
         self.can_process = False
 
     def setupUi(self):
@@ -439,10 +464,12 @@ class SortEdit(QWidget):
         self.destination = FileOutput("Αποθήκευση αρχείου:",
                                       orientation=VERTICAL)
 
+        self.progressBar = ProgressBar()
+
         self.buttonLayout = QHBoxLayout()
         self.status = StatusIndicator(status='')
         self.button = Button("Εκτέλεση")
-        self.buttonLayout.addWidget(self.status)
+        self.buttonLayout.addWidget(self.progressBar)
         self.buttonLayout.addWidget(self.button)
 
         self.pageLayout = QVBoxLayout()
@@ -450,6 +477,7 @@ class SortEdit(QWidget):
         self.pageLayout.addWidget(self.colCombo1)
         self.pageLayout.addWidget(self.destination)
         self.pageLayout.addStretch()
+        self.pageLayout.addWidget(self.status)
         self.pageLayout.addLayout(self.buttonLayout)
         self.setLayout(self.pageLayout)
 
@@ -473,25 +501,25 @@ class SortEdit(QWidget):
     def clearCombos(self):
         self.colCombo1.clearItems()
 
-    def execute(self):
+    def execute(self, progress_callback, progress_popup):
         self.assert_process_capabilities()
         if authorizer.user_is_licensed("sort_run"):
             if self.can_process:
                 params = self.getParams()
-                sort_file(**params)
-                self.mask_output("Ολοκληρώθηκε")
+                sort_file(**params, progress_callback=progress_callback)
             else:
-                show_popup("Συμπλήρωσε τα απαραίτητα πεδία")
+                progress_popup.emit("Συμπλήρωσε τα απαραίτητα πεδία")
         else:
-            show_popup("You are not authorized",
-                       "Contact support")
+            progress_popup.emit("You are not authorized",
+                                "Contact support")
 
 
-class ReplaceWordsEdit(QWidget):
+class ReplaceWordsEdit(MainEdit):
     def __init__(self, parent=None, *args, **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
         self.setupUi()
-        self.button.subscribe(self.execute)
+        self.button.subscribe(self.start_process)
+        self.status.subscribe(self.open_file)
         self.can_process = False
 
     def setupUi(self):
@@ -505,12 +533,14 @@ class ReplaceWordsEdit(QWidget):
         self.columns = InputParameter("Στήλες (διαχωρισμένες με παύλα [-])",
                                       orientation=VERTICAL)
 
+        self.progressBar = ProgressBar()
+
         self.replacements.setText(paths.get_replacements())
         self.columns.setText("title-meta_title_seo-meta_seo-details")
         self.buttonLayout = QHBoxLayout()
         self.status = StatusIndicator(status='')
         self.button = Button("Εκτέλεση")
-        self.buttonLayout.addWidget(self.status)
+        self.buttonLayout.addWidget(self.progressBar)
         self.buttonLayout.addWidget(self.button)
 
         self.pageLayout = QVBoxLayout()
@@ -519,6 +549,7 @@ class ReplaceWordsEdit(QWidget):
         self.pageLayout.addWidget(self.destination)
         self.pageLayout.addWidget(self.columns)
         self.pageLayout.addStretch()
+        self.pageLayout.addWidget(self.status)
         self.pageLayout.addLayout(self.buttonLayout)
         self.setLayout(self.pageLayout)
 
@@ -530,31 +561,17 @@ class ReplaceWordsEdit(QWidget):
 
         return _params
 
-    def execute(self):
+    def execute(self, progress_callback, progress_popup):
         self.assert_process_capabilities()
         if authorizer.user_is_licensed("replace_words"):
             if self.can_process:
                 params = self.getParams()
-                replace_words(**params)
-                self.mask_output("Ολοκληρώθηκε")
+                replace_words(**params, progress_callback=progress_callback)
             else:
-                show_popup("Συμπλήρωσε τα απαραίτητα πεδία")
+                progress_popup.emit("Συμπλήρωσε τα απαραίτητα πεδία")
         else:
-            show_popup("You are not authorized",
-                       "Contact support")
-
-    def start_process(self):
-        self.run_threaded_process(self.execute,
-                                  self.change_process,
-                                  self.end_process)
-
-    def change_process(self, values):
-        self.progressBar.setValueMaximum(*values)
-
-    def end_process(self):
-        self.progressBar.setValue(self.progressBar.maximum())
-        self.progressBar.setStyle("ProgressBarFinished")
-        self.mask_output("Ολοκληρώθηκε")
+            progress_popup.emit("You are not authorized",
+                                "Contact support")
 
 
 class FindImagesEdit(MainEdit):
@@ -612,17 +629,17 @@ class FindImagesEdit(MainEdit):
     def clearCombos(self):
         self.colCombo1.clearItems()
 
-    def execute(self, progress_callback):
+    def execute(self, progress_callback, progress_popup):
         self.assert_process_capabilities()
         if authorizer.user_is_licensed("find_images_run"):
             if self.can_process:
                 params = self.getParams()
                 find_images(**params, progress_callback=progress_callback)
             else:
-                show_popup("Συμπλήρωσε τα απαραίτητα πεδία")
+                progress_popup.emit("Συμπλήρωσε τα απαραίτητα πεδία")
         else:
-            show_popup("You are not authorized",
-                       "Contact support")
+            progress_popup.emit("You are not authorized",
+                                "Contact support")
 
 
 class EditWindow(QWidget):

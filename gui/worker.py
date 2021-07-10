@@ -32,7 +32,7 @@ class WorkerSignalsTuple(QObject):
     error = pyqtSignal(tuple)
     result = pyqtSignal(object)
     progress = pyqtSignal(tuple)
-
+    popup = pyqtSignal(str)
 
 class Worker(QRunnable):
     '''
@@ -50,6 +50,7 @@ class Worker(QRunnable):
 
         # Add the callback to our kwargs
         self.kwargs['progress_callback'] = self.signals.progress
+        self.kwargs['progress_popup'] = self.signals.popup
 
     @pyqtSlot()
     def run(self):

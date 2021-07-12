@@ -150,12 +150,13 @@ class GBG(CrawlEngine):
 
     def transform(self, *args, **kwargs):
         id_cat = kwargs.get('meta2', '')
-        meta_desc = kwargs.get('meta5', '')
-        meta_seo = kwargs.get('meta6', '')
+        meta_desc = kwargs.get('meta6', '')
+        meta_seo = kwargs.get('meta7', '')
         brand = kwargs.get('meta0', '')
         discount = int(kwargs.get('meta3', 0))
         model = kwargs.get('meta1', '')
-        year = kwargs.get('meta4', '')
+        year = kwargs.get('meta5', '')
+        prefix = kwargs.get('meta4', '')
 
         discount_rate = (100 + int(discount)) / 100
 
@@ -184,6 +185,8 @@ class GBG(CrawlEngine):
             self.collected_data = _data.copy()
 
             just_title = _data['title'].copy()
+
+            _data['article_no'] = prefix + _data['article_no']
 
             _data['brand'] = brand
             _data['title'] = _data['title'] + \

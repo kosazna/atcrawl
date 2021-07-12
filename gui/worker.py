@@ -18,6 +18,7 @@ class WorkerSignalsStr(QObject):
     error = pyqtSignal(tuple)
     result = pyqtSignal(object)
     progress = pyqtSignal(str)
+    popup = pyqtSignal(str)
 
 class WorkerSignalsTuple(QObject):
     '''

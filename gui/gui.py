@@ -327,7 +327,7 @@ class CrawlerUI(QWidget):
                        "Set the url and then launch.",
                        QMessageBox.Critical)
 
-    def collect(self, progress_callback):
+    def collect(self, progress_callback, progress_popup):
         if self.crawler.NAME != 'rellasamortiser.gr':
             npage = 1
             self.crawler.pre_collect()

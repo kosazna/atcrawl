@@ -474,6 +474,8 @@ def find_images(src, keyword, dst, progress_callback=None):
 
     _temp = df[keyword].str.split(': ', expand=True)
     _temp.columns = ['text', 'sku']
+    _temp['brand'] = df['brand']
+    _temp['old_url'] = df['image']
     _temp['url'] = ''
 
     max_items = _temp.shape[0]
@@ -481,11 +483,15 @@ def find_images(src, keyword, dst, progress_callback=None):
 
     for i in _temp.itertuples():
         if i.sku != '':
-            url = google_urls(str(i.sku), 1, extensions={'.jpg'})
+            search_term = str(i.sku) + ' ' + str(i.brand)
+            url = google_urls(search_term, 1, extensions={'.jpg'})
             try:
                 _temp.loc[i.Index, 'url'] = url[0]
             except IndexError:
+                _temp.loc[i.Index, 'url'] = i.old_url
                 continue
+        else:
+            _temp.loc[i.Index, 'url'] = i.old_url
 
         if progress_callback is not None:
             c += 1

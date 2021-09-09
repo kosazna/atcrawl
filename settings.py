@@ -4,25 +4,31 @@ import os
 from pathlib import Path
 from atcrawl.utilities.funcs import load_user_settings
 
+DEBUG = True
+
 USER_SETTINGS_FILE = Path.home().joinpath(".atcrawl\\settings.json")
 USER_SETTINGS = load_user_settings(USER_SETTINGS_FILE)
 
 BASE_DIR = os.path.abspath('.')
 STATIC = "static"
 
-try:
-    cssGuideLow = open(os.path.join(
-        BASE_DIR, STATIC, 'style_low_dpi.css'), 'r').read()
-except FileNotFoundError:
-    cssGuideLow = open(os.path.join(
-        BASE_DIR, 'style_low_dpi.css'), 'r').read()
+if not DEBUG:
+    try:
+        cssGuideLow = open(os.path.join(
+            BASE_DIR, STATIC, 'style_low_dpi.css'), 'r').read()
+    except FileNotFoundError:
+        cssGuideLow = open(os.path.join(
+            BASE_DIR, 'style_low_dpi.css'), 'r').read()
 
-try:
-    cssGuideHigh = open(os.path.join(
-        BASE_DIR, STATIC, 'style_high_dpi.css'), 'r').read()
-except FileNotFoundError:
-    cssGuideHigh = open(os.path.join(
-        BASE_DIR, 'style_high_dpi.css'), 'r').read()
+    try:
+        cssGuideHigh = open(os.path.join(
+            BASE_DIR, STATIC, 'style_high_dpi.css'), 'r').read()
+    except FileNotFoundError:
+        cssGuideHigh = open(os.path.join(
+            BASE_DIR, 'style_high_dpi.css'), 'r').read()
+else:
+    cssGuideLow = ""
+    cssGuideHigh = ""
 
 
 appIcon = 'atcrawl_app.ico'

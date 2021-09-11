@@ -16,28 +16,52 @@ from atcrawl.crawlers.antallaktika2.settings import *
 
 @dataclass
 class AntallaktikaOnlineItem(Item):
-    sku: Union[str, None]
-    new_price: Union[str, float, None]
-    old_price: Union[str, float, None]
-    stock: Union[str, None]
-    img: Union[str, None]
-    recycler: Union[str, None]
-    kit: Union[str, None]
+    sku: str
+    new_price: float
+    old_price: float
+    stock: str
+    img: str
+    recycler: str
+    kit: str
 
     def __post_init__(self):
-        try:
-            _sku = self.sku.split(':')[1].strip()
-            self.sku = _sku
-        except IndexError:
+        if self.sku is None:
+            self.sku = sku.DEFAULT
+        else:
+            try:
+                _sku = self.sku.split(':')[1].strip()
+                self.sku = _sku
+            except IndexError:
+                self.sku = sku.DEFAULT
+
+        if self.new_price is None:
+            self.new_price = newprice.DEFAULT
+        else:
+            self.new_price = float(fmtnumber(num_from_text(self.new_price)))
+
+        if self.old_price is None:
+            self.old_price = oldprice.DEFAULT
+        else:
+            self.old_price = float(fmtnumber(num_from_text(self.old_price)))
+
+        if self.stock is None:
+            self.stock = stock.DEFAULT
+        else:
             pass
 
-        if self.new_price is not None:
-            self.new_price = float(fmtnumber(num_from_text(self.new_price)))
-        if self.old_price is not None:
-            self.old_price = float(fmtnumber(num_from_text(self.old_price)))
-        if self.recycler is not None:
+        if self.img is None:
+            self.img = img.DEFAULT
+        else:
+            pass
+
+        if self.recycler is None:
+            self.recycler = recycler.DEFAULT
+        else:
             self.recycler = normalize("NFKD", self.recycler.strip())
-        if self.kit is not None:
+
+        if self.kit is None:
+            self.kit = kit.DEFAULT
+        else:
             self.kit = clean_kit(self.kit)
 
 
@@ -65,13 +89,11 @@ class AntallaktikaOnline:
                 _recycler = parse(p, recycler.TAG, recycler.CLASS)
                 _kit = parse(p, kit.TAG, kit.CLASS)
 
-                # print(skus, new_prices, old_prices, stocks, imgs, recyclers, kits)
-
                 _item = AntallaktikaOnlineItem(_sku,
-                                                _new_price,
-                                                _old_price,
-                                                _stock,
-                                                _img,
-                                                _recycler,
-                                                _kit)
+                                               _new_price,
+                                               _old_price,
+                                               _stock,
+                                               _img,
+                                               _recycler,
+                                               _kit)
                 self.collection.add(_item)

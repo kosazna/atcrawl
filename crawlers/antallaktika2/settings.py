@@ -14,7 +14,7 @@ product = Element(
     NAME='product',
     TAG='div',
     CLASS='brand-products')
-    
+
 sku = Element(
     NAME='sku',
     TAG='div',
@@ -25,13 +25,13 @@ oldprice = Element(
     NAME='poldprice',
     TAG='div',
     CLASS='old_price promo',
-    DEFAULT='-1.0')
+    DEFAULT=-1)
 
 newprice = Element(
     NAME='pnewprice',
     TAG='div',
     CLASS='price',
-    DEFAULT='-1.0')
+    DEFAULT=-1)
 
 stock = Element(
     NAME='pstock',

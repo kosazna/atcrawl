@@ -42,7 +42,7 @@ class ItemCollection:
         self.nitems: int = len(self.items) if items else 0
 
     def add(self, item: Item) -> None:
-        self.items.append(item.asdict())
+        self.items.append(item)
         self.nitems += 1
         if self.types is None:
             self.types = item.types()
@@ -52,8 +52,10 @@ class ItemCollection:
         self.types = None
         self.nitems = 0
 
-    def get_data(self) -> List[dict]:
-        return self.items
+    def get_data(self, rtype: str = 'dict') -> List[dict]:
+        if rtype == 'tuple':
+            return [it.astuple() for it in self.items]
+        return [it.asdict() for it in self.items]
 
     def get_types(self) -> Union[dict, None]:
         return self.types

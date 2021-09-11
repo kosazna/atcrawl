@@ -60,10 +60,15 @@ class ItemCollection:
     def get_types(self) -> Union[dict, None]:
         return self.types
 
-    def to_dataframe(self) -> pd.DataFrame:
+    def to_dataframe(self, columns: Union[List[str], None] = None) -> pd.DataFrame:
         df = pd.DataFrame(self.items)
+
         if self.types is not None:
             df = df.astype(dtype=self.types)
+
+        if columns is not None:
+            df.columns = columns
+
         return df
 
     def backup(self):

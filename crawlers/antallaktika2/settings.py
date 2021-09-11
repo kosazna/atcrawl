@@ -4,11 +4,21 @@ from atcrawl.utilities.elements import *
 
 
 antallaktika_properties = ['article_no',
-                           'retail_price',
                            'price_after_discount',
+                           'retail_price',
                            'availability',
                            'img',
-                           'description']
+                           'recycler',
+                           'kit']
+
+antallaktika_output_properties = ['brand',
+                                  'article_no',
+                                  'retail_price',
+                                  'price_after_discount',
+                                  'availability',
+                                  'car',
+                                  'img',
+                                  'description']
 
 product = Element(
     NAME='product',

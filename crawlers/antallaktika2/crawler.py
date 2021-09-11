@@ -112,9 +112,9 @@ class AntallaktikaOnline:
         discount = int(kwargs.get('meta3', 0))
         car = kwargs.get('meta1', '0')
 
-        _data = self.collection.to_dataframe(columns=antallaktika_properties)
-
         discount_rate = (100 + int(discount)) / 100
+
+        _data = self.collection.to_dataframe(columns=antallaktika_properties)
 
         _data['description'] = _data.apply(
             lambda row: make_description(row['recycler'], row['kit']), axis=1)
@@ -128,10 +128,10 @@ class AntallaktikaOnline:
         _data['car'] = car
 
         _data['retail_price'] = _data['retail_price'].astype(
-            'string').str.replace('.', ',')
+            'string').str.replace('.', ',', regex=False)
         _data['price_after_discount'] = _data[
-            'price_after_discount'].astype('string').str.replace('.', ',')
-        _data[col_name] = _data[col_name].astype('string').str.replace('.', ',')
+            'price_after_discount'].astype('string').str.replace('.', ',', regex=False)
+        _data[col_name] = _data[col_name].astype('string').str.replace('.', ',', regex=False)
         _data = _data.drop_duplicates(
             subset=['article_no']).reset_index(drop=True)
 

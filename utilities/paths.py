@@ -47,6 +47,10 @@ class Paths:
     def get_replacements(self):
         return self._replacements
 
+    def make_paths(self):
+        if not self._atcrawl.exists():
+            self._atcrawl.mkdir(parents=True, exist_ok=True)
+
 
 
 paths = Paths()

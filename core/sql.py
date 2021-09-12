@@ -9,10 +9,10 @@ class AtcrawlSQL:
     def __init__(self, db) -> None:
         self.db = db
 
-    def update_job(self, site, site_counter, run_at, parameters, records):
+    def update_job(self, site, site_counter, collected_at, parameters, records):
         params = {'site': site,
                   'site_counter': site_counter,
-                  'run_at': run_at,
+                  'collected_at': collected_at,
                   'parameters': parameters,
                   'records': records}
         try:
@@ -35,14 +35,61 @@ class AtcrawlSQL:
             print(str(e) + " from " + self.db)
 
     def update_jobid(self, table, job_id):
-        params = {'table': table,
-                  'job_id': job_id}
+        tables = {'antallaktikaonline': update_jobid_antallaktika,
+                  'rellasamortiser': update_jobid_rellas}
+        params = {'job_id': job_id}
+        query = tables[table]
         try:
             with closing(connect(self.db)) as con:
                 with closing(con.cursor()) as cur:
-                    cur.execute(update_antallaktika, params)
+                    cur.execute(query, params)
                     con.commit()
 
+        except Error as e:
+            print(str(e) + " from " + self.db)
+
+    def update_rellas(self, data):
+        try:
+            with closing(connect(self.db)) as con:
+                with closing(con.cursor()) as cur:
+                    cur.executemany(update_rellas, data)
+                    con.commit()
+
+        except Error as e:
+            print(str(e) + " from " + self.db)
+
+    def get_last_jobid(self):
+        try:
+            with closing(connect(self.db)) as con:
+                with closing(con.cursor()) as cur:
+                    cur.execute(get_last_jobid)
+
+                    return cur.fetchone()[0]
+        except Error as e:
+            print(str(e) + " from " + self.db)
+
+    def get_site_counter(self, site):
+        params = {'site': site}
+        try:
+            with closing(connect(self.db)) as con:
+                with closing(con.cursor()) as cur:
+                    cur.execute(get_site_counter, params)
+
+                    return cur.fetchone()[0]
+        except Error as e:
+            print(str(e) + " from " + self.db)
+
+    def get_records_from_jobid(self, table, job_id):
+        tables = {'antallaktikaonline': select_antallaktika,
+                  'rellasamortiser': select_rellas}
+        params = {'job_id': job_id}
+        query = tables[table]
+        try:
+            with closing(connect(self.db)) as con:
+                with closing(con.cursor()) as cur:
+                    cur.execute(query, params)
+
+                    return cur.fetchall()
         except Error as e:
             print(str(e) + " from " + self.db)
 
@@ -170,32 +217,8 @@ class AtcrawlSQL:
     #         print(str(e) + " from " + self.db)
 
 
-# Popen(["C:/Program Files/DB Browser for SQLite/DB Browser for SQLite.exe", "D:/ktima.db"])
-asql = AtcrawlSQL("C:/Users/aznavouridis.k/.atcrawl/atcrawl.db")
+if __name__ == '__main__':
+    # Popen(["C:/Program Files/DB Browser for SQLite/DB Browser for SQLite.exe", "D:/ktima.db"])
+    asql = AtcrawlSQL("C:/Users/aznavouridis.k/.atcrawl/atcrawl.db")
 
-da = [(1,
-       '402B0029',
-       14.77,
-       16.78,
-       'ΔΙΑΘΕΣΙΜΟ',
-       'https://media.pkwteile.de/360_photos/7998953/preview.jpg',
-       '',
-       ''),
-      (1,
-      '402B1389',
-       15.82,
-       17.98,
-       'ΔΙΑΘΕΣΙΜΟ',
-       'https://media.pkwteile.de/360_photos/15784796/preview.jpg',
-       '',
-       ''),
-      (1,
-      '402B0019',
-       17.67,
-       20.08,
-       'ΔΙΑΘΕΣΙΜΟ',
-       'https://media.pkwteile.de/360_photos/7998976/preview.jpg',
-       '',
-       '')]
-
-asql.update_antallaktika(da)
+    print(asql.get_records_from_jobid('antallaktikaonline', 5))

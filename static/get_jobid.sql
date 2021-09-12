@@ -1,0 +1,4 @@
+SELECT job_id
+FROM job
+ORDER BY job_id DESC
+LIMIT 1

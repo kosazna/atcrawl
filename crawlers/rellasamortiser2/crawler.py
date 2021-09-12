@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from core.parser import multi_parse
-import pandas as pd
+from re import sub
+from atcrawl.core.parser import *
 from atcrawl.crawlers.rellasamortiser2.settings import *
 from atcrawl.utilities import *
-from atcrawl.core.parser import *
 
 manufacturers = import_rellas_brands(paths.get_rellas_path())
 
@@ -36,6 +35,8 @@ class RellasAmortiserItem(Item):
 
         if self.model is None:
             self.model = ''
+        else:
+            self.model = remove_years(self.model)
 
         self.year = extract_years(self.name)
 
@@ -50,6 +51,7 @@ class RellasAmortiser:
         self.original_name = ''
         self.follow_links = {}
         self.collection = ItemCollection()
+        self._first_request()
         self._find_follow_links()
 
     def _first_request(self):
@@ -67,18 +69,19 @@ class RellasAmortiser:
 
         if url is None:
             soup = self.follow_links[self.original_name]['soup']
+            _lname = self.original_name
         else:
             soup = request_soup(url)
             self.follow_links[lname]['soup'] = soup
+            _lname = lname
 
         _links = multi_parse(soup, sub_link.TAG, sub_link.CLASS, text=False)
 
         if _links:
-            self.follow_links[lname]['visit'] = False
+            self.follow_links[_lname]['visit'] = False
             for link in _links:
                 _name = parse(link, sub_name.SUB.TAG, sub_name.SUB.CLASS)
-                _link = parse(link, sub_link.SUB.TAG, sub_link.SUB.CLASS, text=False).get(
-                    sub_link.SUB.ATTRIBUTE)
+                _link = link.find(sub_link.SUB.TAG).get(sub_link.SUB.ATTRIBUTE)
 
                 self.follow_links[_name] = {'link': self.url,
                                             'soup': soup,
@@ -92,7 +95,7 @@ class RellasAmortiser:
     def process(self):
         for title in self.follow_links:
             if self.follow_links[title]['visit']:
-                soup = self.follow_links[title]['visit']
+                soup = self.follow_links[title]['soup']
 
                 products = multi_parse(
                     soup, product.TAG, product.CLASS, text=False)
@@ -101,11 +104,9 @@ class RellasAmortiser:
                     _sku = parse(p, sku.TAG, sku.CLASS)
                     _pname = parse(p, pname.TAG, pname.CLASS)
                     _price = parse(p, price.TAG, price.CLASS)
-                    _year = extract_years(_pname)
 
                     _item = RellasAmortiserItem(_pname,
                                                 _sku,
                                                 _price,
-                                                title,
-                                                _year)
+                                                title)
                     self.collection.add(_item)

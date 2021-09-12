@@ -2,26 +2,7 @@
 from sqlite3 import connect, Error
 from contextlib import closing
 from subprocess import Popen
-
-# update_job = open("D:/.temp/.dev/.aztool/atcrawl/static/update_job.sql").read()
-# update_antallaktika = open("../static/update_antallaktika.sql").read()
-
-update_job = """INSERT INTO
-    "job" (
-        "site",
-        "site_counter",
-        "run_at",
-        "parameters",
-        "records"
-    )
-VALUES
-    (
-        :site,
-        :site_counter,
-        :run_at,
-        :parameters,
-        :records
-    )"""
+from atcrawl.utilities.sqlstatements import *
 
 
 class AtcrawlSQL:
@@ -38,6 +19,16 @@ class AtcrawlSQL:
             with closing(connect(self.db)) as con:
                 with closing(con.cursor()) as cur:
                     cur.execute(update_job, params)
+                    con.commit()
+
+        except Error as e:
+            print(str(e) + " from " + self.db)
+
+    def update_antallaktika(self, data):
+        try:
+            with closing(connect(self.db)) as con:
+                with closing(con.cursor()) as cur:
+                    cur.executemany(update_antallaktika, data)
                     con.commit()
 
         except Error as e:
@@ -169,5 +160,30 @@ class AtcrawlSQL:
 
 # Popen(["C:/Program Files/DB Browser for SQLite/DB Browser for SQLite.exe", "D:/ktima.db"])
 asql = AtcrawlSQL("C:/Users/aznavouridis.k/.atcrawl/atcrawl.db")
-params = str({'brand': 'SKODA', 'discount': '-13', 'car': '0'})
-print(asql.update_job('antallaktikaonline.gr', 5, '2021-09-12 12:21:41', params, 204 ))
+
+da = [(1,
+       '402B0029',
+       14.77,
+       16.78,
+       'ΔΙΑΘΕΣΙΜΟ',
+       'https://media.pkwteile.de/360_photos/7998953/preview.jpg',
+       '',
+       ''),
+      (1,
+      '402B1389',
+       15.82,
+       17.98,
+       'ΔΙΑΘΕΣΙΜΟ',
+       'https://media.pkwteile.de/360_photos/15784796/preview.jpg',
+       '',
+       ''),
+      (1,
+      '402B0019',
+       17.67,
+       20.08,
+       'ΔΙΑΘΕΣΙΜΟ',
+       'https://media.pkwteile.de/360_photos/7998976/preview.jpg',
+       '',
+       '')]
+
+asql.update_antallaktika(da)

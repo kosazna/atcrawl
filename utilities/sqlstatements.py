@@ -19,7 +19,6 @@ VALUES
 
 update_antallaktika = """INSERT INTO
     "antallaktikaonline" (
-        "job_id",
         "article_no",
         "price_after_discount",
         "retail_price",
@@ -30,7 +29,6 @@ update_antallaktika = """INSERT INTO
     )
 VALUES
     (
-        :job_id,
         :article_no,
         :price_after_discount,
         :retail_price,
@@ -42,7 +40,6 @@ VALUES
 
 update_rellas = """INSERT INTO
     "rellasamortiser" (
-        "job_id",
         "title",
         "article_no",
         "retail_price",
@@ -52,7 +49,6 @@ update_rellas = """INSERT INTO
     )
 VALUES
     (
-        :job_id,
         :title,
         :article_no,
         :retail_price,
@@ -60,3 +56,10 @@ VALUES
         :year,
         :manufacturer
     )"""
+
+update_jobid = """UPDATE
+    :table
+SET
+    job_id = :job_id,
+WHERE
+    job_id IS NULL"""

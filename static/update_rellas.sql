@@ -1,6 +1,5 @@
 INSERT INTO
     "rellasamortiser" (
-        "job_id",
         "title",
         "article_no",
         "retail_price",
@@ -10,7 +9,6 @@ INSERT INTO
     )
 VALUES
     (
-        :job_id,
         :title,
         :article_no,
         :retail_price,

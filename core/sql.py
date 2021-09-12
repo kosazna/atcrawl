@@ -34,6 +34,18 @@ class AtcrawlSQL:
         except Error as e:
             print(str(e) + " from " + self.db)
 
+    def update_jobid(self, table, job_id):
+        params = {'table': table,
+                  'job_id': job_id}
+        try:
+            with closing(connect(self.db)) as con:
+                with closing(con.cursor()) as cur:
+                    cur.execute(update_antallaktika, params)
+                    con.commit()
+
+        except Error as e:
+            print(str(e) + " from " + self.db)
+
     # def get_otas(self, company_name='NAMA'):
     #     params = {'meleti': self.meleti,
     #               'company_name': company_name}

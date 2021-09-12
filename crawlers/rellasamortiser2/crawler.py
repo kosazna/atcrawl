@@ -15,6 +15,8 @@ class RellasAmortiserItem(Item):
     sku: str
     price: float
     model: str
+    year: str = ''
+    manufacturer: str = ''
 
     def __post_init__(self):
         if self.name is None:
@@ -34,6 +36,12 @@ class RellasAmortiserItem(Item):
 
         if self.model is None:
             self.model = ''
+
+        self.year = extract_years(self.name)
+
+        for man in manufacturers:
+            if man in self.name:
+                self.manufacturer = man
 
 
 class RellasAmortiser:
@@ -93,6 +101,11 @@ class RellasAmortiser:
                     _sku = parse(p, sku.TAG, sku.CLASS)
                     _pname = parse(p, pname.TAG, pname.CLASS)
                     _price = parse(p, price.TAG, price.CLASS)
+                    _year = extract_years(_pname)
 
-                    _item = RellasAmortiserItem(_pname, _sku, _price, title)
+                    _item = RellasAmortiserItem(_pname,
+                                                _sku,
+                                                _price,
+                                                title,
+                                                _year)
                     self.collection.add(_item)

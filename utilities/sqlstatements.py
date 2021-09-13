@@ -1,5 +1,29 @@
 # import sqlite3
 
+create_job = """CREATE TABLE "job" (
+    "job_id" INTEGER,
+    "site" TEXT,
+    "site_counter" INTEGER,
+    "collected_at" TEXT,
+    "parameters" TEXT,
+    "records" INTEGER,
+    "out_file" TEXT,
+    PRIMARY KEY("job_id" AUTOINCREMENT)
+);"""
+
+create_antallaktika = """CREATE TABLE "antallaktikaonline" (
+    "job_id" INTEGER,
+    "article_no" TEXT,
+    "price_after_discount" REAL,
+    "retail_price" REAL,
+    "availability" TEXT,
+    "img" TEXT,
+    "recycler" TEXT,
+    "kit" INTEGER,
+    FOREIGN KEY("job_id") REFERENCES "job"("job_id")
+);"""
+
+
 update_job = """INSERT INTO
     "job" (
         "site",
@@ -37,6 +61,17 @@ VALUES
         :recycler,
         :kit
     )"""
+
+create_rellas = """CREATE TABLE "rellasamortiser" (
+    "job_id" INTEGER,
+    "title" TEXT,
+    "article_no" TEXT,
+    "retail_price" REAL,
+    "model" TEXT,
+    "year" TEXT,
+    "manufacturer" TEXT,
+    FOREIGN KEY("job_id") REFERENCES "job"("job_id")
+);"""
 
 update_rellas = """INSERT INTO
     "rellasamortiser" (

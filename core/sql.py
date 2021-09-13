@@ -1,4 +1,5 @@
 # import sqlite3
+from pathlib import Path
 from sqlite3 import connect, Error
 from contextlib import closing
 from subprocess import Popen
@@ -10,6 +11,17 @@ from datetime import datetime
 class AtcrawlSQL:
     def __init__(self, db) -> None:
         self.db = db
+        self._check_db_exists()
+
+    def _check_db_exists(self):
+        if Path(self.db).exists():
+            pass
+        else:
+            with closing(connect(self.db)) as con:
+                with closing(con.cursor()) as cur:
+                    cur.execute(create_job)
+                    cur.execute(create_antallaktika)
+                    cur.execute(create_rellas)
 
     def update_job(self, site, site_counter, collected_at, parameters, records):
         params = {'site': site,
@@ -125,7 +137,6 @@ class AtcrawlSQL:
                               'parameters': parameters,
                               'records': collection.nitems}
                     cur.execute(update_job, params)
-                    con.commit()
 
                     cur.execute(get_last_jobid)
                     val = cur.fetchone()
@@ -134,13 +145,14 @@ class AtcrawlSQL:
                     tables = {'antallaktikaonline': update_antallaktika,
                               'rellasamortiser': update_rellas}
                     query = tables[table]
-                    cur.execute(query, collection.get_data('tuple'))
+                    cur.executemany(query, collection.get_data('tuple'))
                     con.commit()
 
                     tables = {'antallaktikaonline': update_jobid_antallaktika,
                               'rellasamortiser': update_jobid_rellas}
                     query = tables[table]
-                    cur.execute(query, {'job_id', last_job})
+                    cur.execute(query, {'job_id': last_job})
+
                     con.commit()
         except Error as e:
             print(str(e) + " from " + self.db)

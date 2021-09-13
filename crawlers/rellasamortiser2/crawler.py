@@ -50,13 +50,16 @@ class RellasAmortiser:
         self.url = url
         self.original_name = ''
         self.follow_links = {}
+        self._follow_links = None
+        self.current_url = None
+        self.total_urls = 0
         self.collection = ItemCollection()
         self._first_request()
         self._find_follow_links()
 
     def _first_request(self):
         soup = request_soup(self.url)
-        _name = parse(soup, title_name.TAG, title_name.CLASS)
+        _name = parse(soup, self.next_link_name.TAG, self.next_link_name.CLASS)
         _name = _name.split('για')[-1].strip()
         self.follow_links[_name] = {'link': self.url,
                                     'soup': soup,
@@ -64,7 +67,14 @@ class RellasAmortiser:
 
         self.original_name = _name
 
-    def _find_follow_links(self, url=None, lname=None):
+    def next_url(self):
+        try:
+            self.current_url = next(self._follow_links)
+            return True
+        except StopIteration:
+            return False
+
+    def pre_collect(self, url=None, lname=None):
         visit_next = []
 
         if url is None:
@@ -91,22 +101,26 @@ class RellasAmortiser:
 
             for _next in visit_next:
                 self._find_follow_links(_next[0], _next[1])
+        else:
+            self._follow_links = iter(self.follow_links.keys())
+            for i in self.follow_links:
+                if self.follow_links[i]['visit']:
+                    self.total_urls += 1
 
-    def process(self):
-        for title in self.follow_links:
-            if self.follow_links[title]['visit']:
-                soup = self.follow_links[title]['soup']
+    def collect(self):
+        if self.follow_links[self.next_link]['visit']:
+            soup = self.follow_links[self.next_link]['soup']
 
-                products = multi_parse(
-                    soup, product.TAG, product.CLASS, text=False)
+            products = multi_parse(
+                soup, product.TAG, product.CLASS, text=False)
 
-                for p in products:
-                    _sku = parse(p, sku.TAG, sku.CLASS)
-                    _pname = parse(p, pname.TAG, pname.CLASS)
-                    _price = parse(p, price.TAG, price.CLASS)
+            for p in products:
+                _sku = parse(p, sku.TAG, sku.CLASS)
+                _pname = parse(p, pname.TAG, pname.CLASS)
+                _price = parse(p, price.TAG, price.CLASS)
 
-                    _item = RellasAmortiserItem(_pname,
-                                                _sku,
-                                                _price,
-                                                title)
-                    self.collection.add(_item)
+                _item = RellasAmortiserItem(_pname,
+                                            _sku,
+                                            _price,
+                                            self.next_link)
+                self.collection.add(_item)

@@ -40,4 +40,4 @@ class Authorize:
         except KeyError:
             log("Access to the service can't be verified. Contact support.")
 
-# authorizer = Authorize()
+authorizer = Authorize()

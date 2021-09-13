@@ -2,7 +2,9 @@
 from sqlite3 import connect, Error
 from contextlib import closing
 from subprocess import Popen
+from atcrawl.utilities.data import ItemCollection
 from atcrawl.utilities.sqlstatements import *
+from datetime import datetime
 
 
 class AtcrawlSQL:
@@ -48,6 +50,19 @@ class AtcrawlSQL:
         except Error as e:
             print(str(e) + " from " + self.db)
 
+    def update_records(self, table, data):
+        tables = {'antallaktikaonline': update_antallaktika,
+                  'rellasamortiser': update_rellas}
+        query = tables[table]
+        try:
+            with closing(connect(self.db)) as con:
+                with closing(con.cursor()) as cur:
+                    cur.executemany(query, data)
+                    con.commit()
+
+        except Error as e:
+            print(str(e) + " from " + self.db)
+
     def update_rellas(self, data):
         try:
             with closing(connect(self.db)) as con:
@@ -64,7 +79,8 @@ class AtcrawlSQL:
                 with closing(con.cursor()) as cur:
                     cur.execute(get_last_jobid)
 
-                    return cur.fetchone()[0]
+                    val = cur.fetchone()
+                    return 1 if val is None else val[0]
         except Error as e:
             print(str(e) + " from " + self.db)
 
@@ -90,6 +106,42 @@ class AtcrawlSQL:
                     cur.execute(query, params)
 
                     return cur.fetchall()
+        except Error as e:
+            print(str(e) + " from " + self.db)
+
+    def backup(self, process: str, parameters: dict, collection: ItemCollection):
+        table = process.split('.')[0]
+        date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        try:
+            with closing(connect(self.db)) as con:
+                with closing(con.cursor()) as cur:
+                    cur.execute(get_site_counter, {'site': process})
+                    site_counter = cur.fetchone()[0] + 1
+
+                    params = {'site': process,
+                              'site_counter': site_counter,
+                              'collected_at': date,
+                              'parameters': parameters,
+                              'records': collection.nitems}
+                    cur.execute(update_job, params)
+                    con.commit()
+
+                    cur.execute(get_last_jobid)
+                    val = cur.fetchone()
+                    last_job = 1 if val is None else val[0]
+
+                    tables = {'antallaktikaonline': update_antallaktika,
+                              'rellasamortiser': update_rellas}
+                    query = tables[table]
+                    cur.execute(query, collection.get_data('tuple'))
+                    con.commit()
+
+                    tables = {'antallaktikaonline': update_jobid_antallaktika,
+                              'rellasamortiser': update_jobid_rellas}
+                    query = tables[table]
+                    cur.execute(query, {'job_id', last_job})
+                    con.commit()
         except Error as e:
             print(str(e) + " from " + self.db)
 

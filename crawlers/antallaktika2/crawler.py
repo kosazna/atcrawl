@@ -8,7 +8,7 @@
 
 import pandas as pd
 from unicodedata import normalize
-
+from atcrawl.core.sql import AtcrawlSQL
 from atcrawl.core.parser import *
 from atcrawl.core.engine import *
 from atcrawl.crawlers.antallaktika2.settings import *
@@ -67,37 +67,68 @@ class AntallaktikaOnlineItem(Item):
 
 
 class AntallaktikaOnline:
-    def __init__(self, path: str) -> None:
-        self.base_path = Path(path)
-        self.htmls = [open(f, encoding='utf-8').read()
-                      for f in self.base_path.glob('*.htm')]
-        self.npaths = len(self.htmls)
+    NAME = 'antallaktikaonline.gr'
+
+    def __init__(self, path=None) -> None:
+        self.base_path = path
+        self.htmls = []
+        self.iter_htmls = None
+        self.npaths = 0
+        self.current_html = None
         self.collection = ItemCollection()
+        self.data = None
 
-    def proccess(self):
-        for html in self.htmls:
-            soup = BeautifulSoup(html, 'lxml')
+        if path is not None:
+            self._search_files()
 
-            products = multi_parse(soup, product.TAG, product.CLASS, text=False)
+    def _search_files(self):
+        _path = Path(self.base_path)
+        _htmls = [open(f, encoding='utf-8').read() for f in _path.glob('*.htm')]
+        self.htmls = _htmls
+        self.npaths = len(_htmls)
+        self.iter_htmls = iter(_htmls)
 
-            for p in products:
-                _sku = parse(p, sku.TAG, sku.CLASS)
-                _new_price = parse(p, newprice.TAG, newprice.CLASS)
-                _old_price = parse(p, oldprice.TAG, oldprice.CLASS)
-                _stock = parse(p, stock.TAG, stock.CLASS)
-                _img_ = parse(p, img.TAG, img.CLASS, text=False)
-                _img = _img_.find(img.SUB.TAG).get(img.SUB.ATTRIBUTE)
-                _recycler = parse(p, recycler.TAG, recycler.CLASS)
-                _kit = parse(p, kit.TAG, kit.CLASS)
+    def set_init(self, path):
+        self.base_path = path
+        self._search_files()
 
-                _item = AntallaktikaOnlineItem(_sku,
-                                               _new_price,
-                                               _old_price,
-                                               _stock,
-                                               _img,
-                                               _recycler,
-                                               _kit)
-                self.collection.add(_item)
+    def backup2db(self, tranform_params: str, out_file: str):
+        sql = AtcrawlSQL(paths.get_db())
+        sql.backup(self.NAME, tranform_params, self.collection, out_file)
+
+    def go_next(self):
+        try:
+            self.current_html = next(self.iter_htmls)
+            return True
+        except StopIteration:
+            return False
+
+    def pre_collect(self):
+        pass
+
+    def collect(self):
+        soup = BeautifulSoup(self.current_html, 'lxml')
+
+        products = multi_parse(soup, product.TAG, product.CLASS, text=False)
+
+        for p in products:
+            _sku = parse(p, sku.TAG, sku.CLASS)
+            _new_price = parse(p, newprice.TAG, newprice.CLASS)
+            _old_price = parse(p, oldprice.TAG, oldprice.CLASS)
+            _stock = parse(p, stock.TAG, stock.CLASS)
+            _img_ = parse(p, img.TAG, img.CLASS, text=False)
+            _img = _img_.find(img.SUB.TAG).get(img.SUB.ATTRIBUTE)
+            _recycler = parse(p, recycler.TAG, recycler.CLASS)
+            _kit = parse(p, kit.TAG, kit.CLASS)
+
+            _item = AntallaktikaOnlineItem(_sku,
+                                           _new_price,
+                                           _old_price,
+                                           _stock,
+                                           _img,
+                                           _recycler,
+                                           _kit)
+            self.collection.add(_item)
 
     def transform(self, **kwargs):
         def make_description(d1, d2):
@@ -131,12 +162,23 @@ class AntallaktikaOnline:
             'string').str.replace('.', ',', regex=False)
         _data['price_after_discount'] = _data[
             'price_after_discount'].astype('string').str.replace('.', ',', regex=False)
-        _data[col_name] = _data[col_name].astype('string').str.replace('.', ',', regex=False)
+        _data[col_name] = _data[col_name].astype(
+            'string').str.replace('.', ',', regex=False)
         _data = _data.drop_duplicates(
             subset=['article_no']).reset_index(drop=True)
 
         keep_cols = copy(antallaktika_output_properties)
         keep_cols.insert(4, col_name)
-        _data = _data[keep_cols]
 
-        return _data
+        self.data = _data[keep_cols]
+
+    def export(self, name, folder, export_type):
+        if self.data is not None:
+            if export_type == 'csv':
+                dst = Path(folder).joinpath(f'{name}.csv')
+                self.data.to_csv(dst, index=False, sep=';')
+                print(f"\nExported csv file at:\n -> {dst}\n")
+            else:
+                dst = Path(folder).joinpath(f'{name}.xlsx')
+                self.data.to_excel(dst, index=False)
+                print(f"\nExported excel file at:\n -> {dst}\n")

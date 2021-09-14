@@ -200,7 +200,7 @@ class CrawlerUI(QWidget):
             self.inputMeta5.setLabel("Χρονολογία")
             self.inputMeta6.setLabel("Meta Title SEO")
             self.inputMeta7.setLabel("Meta SEO")
-            
+
             self.checkMeta.hide()
             self.mask_buttons('start')
             self.inputMeta0.setCompleter(CAR_BRANDS)
@@ -352,7 +352,7 @@ class CrawlerUI(QWidget):
 
             npage = 1
 
-            while not self.stopped and self.crawler.next_url():
+            while not self.stopped and self.crawler.go_next():
                 current = f"Collecting -> {self.crawler.current_url}"
                 total = f"URL {npage}/{self.crawler.total_urls}"
                 progress_callback.emit(f"{total} | {current}")
@@ -403,15 +403,20 @@ class CrawlerUI(QWidget):
                 _name = self.get_filename()
                 _folder = self.get_folder()
                 _type = 'xlsx'
+                _output = _folder + f'/{_name}.{_type}'
+                _params = self.get_params()
 
-                self.crawler.transform(**self.get_params())
+                if self.crawler.NAME in ['antallaktikaonline.gr',
+                                         'rellasamortiser.gr']:
+                    self.crawler.backup2db(_params, _output)
+
+                self.crawler.transform(**_params)
 
                 self.crawler.export(name=_name,
                                     folder=_folder,
                                     export_type=_type)
 
                 items = self.count_parsed()
-                _output = _folder + f'/{_name}.{_type}'
                 self.output = _output
                 self.mask_output(f"Items: {items} | {_output}")
 

@@ -49,16 +49,18 @@ class RellasAmortiserItem(Item):
 class RellasAmortiser:
     NAME = "rellasamortiser.gr"
 
-    def __init__(self, url='') -> None:
+    def __init__(self, url=None) -> None:
         self.url = url
-        self.original_name = ''
+        self.original_name = None
         self.follow_links = {}
         self._follow_links = None
         self.current_url = None
         self.total_urls = 0
         self.collection = ItemCollection()
-        self._first_request()
-        self._find_follow_links()
+        self.data = None
+
+        if self.url is not None:
+            self._first_request()
 
     def _first_request(self):
         soup = request_soup(self.url)
@@ -70,7 +72,11 @@ class RellasAmortiser:
 
         self.original_name = _name
 
-    def next_url(self):
+    def set_init(self, url: str):
+        self.url = url
+        self._first_request()
+
+    def go_next(self):
         try:
             self.current_url = next(self._follow_links)
             return True
@@ -180,5 +186,15 @@ class RellasAmortiser:
         _data['price_after_discount'] = _data['price_after_discount'].astype('string').str.replace(
             '.', ',')
 
-        _data = _data[rellas_output_properties]
-        return _data
+        self.data = _data[rellas_output_properties]
+
+    def export(self, name, folder, export_type):
+        if self.data is not None:
+            if export_type == 'csv':
+                dst = Path(folder).joinpath(f'{name}.csv')
+                self.data.to_csv(dst, index=False, sep=';')
+                print(f"\nExported csv file at:\n -> {dst}\n")
+            else:
+                dst = Path(folder).joinpath(f'{name}.xlsx')
+                self.data.to_excel(dst, index=False)
+                print(f"\nExported excel file at:\n -> {dst}\n")

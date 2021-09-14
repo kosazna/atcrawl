@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from atcrawl.core.sql import AtcrawlSQL
-from re import sub
 from atcrawl.core.parser import *
+from atcrawl.core.sql import AtcrawlSQL
 from atcrawl.crawlers.rellasamortiser2.settings import *
-from atcrawl.utilities import *
+from atcrawl.utilities.data import *
+from atcrawl.utilities.funcs import *
+from atcrawl.utilities.paths import *
 
 manufacturers = import_rellas_brands(paths.get_rellas_path())
 
@@ -53,7 +54,8 @@ class RellasAmortiser:
         self.url = url
         self.original_name = None
         self.follow_links = {}
-        self._follow_links = None
+        self._follow_links = []
+        self.follow_links_iter = None
         self.current_url = None
         self.total_urls = 0
         self.collection = ItemCollection()
@@ -77,11 +79,12 @@ class RellasAmortiser:
         self._first_request()
 
     def go_next(self):
-        try:
-            self.current_url = next(self._follow_links)
-            return True
-        except StopIteration:
-            return False
+        if self.follow_links_iter is not None:
+            try:
+                self.current_url = next(self.follow_links_iter)
+                return True
+            except StopIteration:
+                return False
 
     def backup2db(self, tranform_params: str, out_file: str):
         if self.collection.is_empty():
@@ -101,7 +104,10 @@ class RellasAmortiser:
             self.follow_links[lname]['soup'] = soup
             _lname = lname
 
-        _links = multi_parse(soup, sub_link.TAG, sub_link.CLASS, text=False)
+        _links = multi_parse(soup,
+                             sub_link.TAG,
+                             sub_link.CLASS,
+                             text=False)
 
         if _links:
             self.follow_links[_lname]['visit'] = False
@@ -118,28 +124,31 @@ class RellasAmortiser:
             for _next in visit_next:
                 self.pre_collect(_next[0], _next[1])
         else:
-            self._follow_links = iter(self.follow_links.keys())
             for i in self.follow_links:
                 if self.follow_links[i]['visit']:
+                    self._follow_links.append(i)
                     self.total_urls += 1
 
+            self.follow_links_iter = iter(self._follow_links)
+
     def collect(self):
-        if self.follow_links[self.current_url]['visit']:
-            soup = self.follow_links[self.current_url]['soup']
+        soup = self.follow_links[self.current_url]['soup']
 
-            products = multi_parse(
-                soup, product.TAG, product.CLASS, text=False)
+        products = multi_parse(soup,
+                               product.TAG,
+                               product.CLASS,
+                               text=False)
 
-            for p in products:
-                _sku = parse(p, sku.TAG, sku.CLASS)
-                _pname = parse(p, pname.TAG, pname.CLASS)
-                _price = parse(p, price.TAG, price.CLASS)
+        for p in products:
+            _sku = parse(p, sku.TAG, sku.CLASS)
+            _pname = parse(p, pname.TAG, pname.CLASS)
+            _price = parse(p, price.TAG, price.CLASS)
 
-                _item = RellasAmortiserItem(_pname,
-                                            _sku,
-                                            _price,
-                                            self.current_url)
-                self.collection.add(_item)
+            _item = RellasAmortiserItem(_pname,
+                                        _sku,
+                                        _price,
+                                        self.current_url)
+            self.collection.add(_item)
 
     def transform(self, **kwargs):
         id_cat = kwargs.get('meta2', '')

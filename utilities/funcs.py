@@ -11,9 +11,9 @@ import time
 from pathlib import Path
 from typing import Union
 
-from atcrawl.utilities.urlfinder import google_urls
 import pandas as pd
 import requests
+from atcrawl.utilities.urlfinder import google_urls
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 from unidecode import unidecode

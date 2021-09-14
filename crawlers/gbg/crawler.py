@@ -8,14 +8,8 @@
 
 
 import pandas as pd
-from unicodedata import normalize
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import (NoSuchElementException,
-                                        TimeoutException,
-                                        ElementClickInterceptedException,
-                                        ElementNotInteractableException,
                                         StaleElementReferenceException)
 
 from atcrawl.core.parser import *

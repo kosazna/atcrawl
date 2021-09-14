@@ -6,13 +6,15 @@
 
 # crawler for: https://www.antallaktikaonline.gr
 
-import pandas as pd
-from unicodedata import normalize
-from atcrawl.core.sql import AtcrawlSQL
-from atcrawl.core.parser import *
-from atcrawl.core.engine import *
-from atcrawl.crawlers.antallaktika2.settings import *
 from copy import copy
+from unicodedata import normalize
+
+from atcrawl.core.parser import *
+from atcrawl.core.sql import AtcrawlSQL
+from atcrawl.crawlers.antallaktika2.settings import *
+from atcrawl.utilities.data import *
+from atcrawl.utilities.funcs import *
+from atcrawl.utilities.paths import *
 
 
 @dataclass

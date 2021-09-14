@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from time import sleep
+
+from atcrawl.utilities.elements import Standby
+from atcrawl.utilities.funcs import *
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-
-from atcrawl.utilities import *
 
 
 class CrawlEngine:

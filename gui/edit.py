@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from atcrawl.gui.widgets import *
-from atcrawl.utilities import *
-from atcrawl.gui.worker import Worker,  WorkerSignalsTuple
+from atcrawl.gui.worker import Worker, WorkerSignalsTuple
+from atcrawl.utilities.auth import *
+from atcrawl.utilities.funcs import *
+from atcrawl.utilities.paths import *
 from PyQt5.QtCore import QThreadPool
 
 cwd = paths.get_base_folder()

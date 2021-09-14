@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from atcrawl.crawlers import *
+from atcrawl.core.engine import *
+from atcrawl.utilities.auth import *
+from atcrawl.utilities.paths import *
 from atcrawl.gui.edit import EditWindow
 from atcrawl.gui.welcome_design import *
 from atcrawl.gui.widgets import *
@@ -265,7 +268,8 @@ class CrawlerUI(QWidget):
         return _params
 
     def mask_buttons(self, process):
-        if self.crawler.NAME != 'rellasamortiser.gr':
+        if self.crawler.NAME in ['skroutz.gr',
+                                 'gbg-eshop.gr']:
             if process == 'launched':
                 self.buttonLaunch.disable()
                 self.buttonCollect.enable(green)
@@ -290,7 +294,8 @@ class CrawlerUI(QWidget):
                 self.buttonStop.disable()
                 self.buttonReset.disable()
                 self.buttonTerminate.disable()
-        else:
+        elif self.crawler.NAME in ['antallaktikaonline.gr',
+                                   'rellasamortiser.gr']:
             if process == 'launched':
                 self.buttonLaunch.disable()
                 self.buttonCollect.enable(green)
@@ -372,15 +377,11 @@ class CrawlerUI(QWidget):
                 self.crawler.collect()
                 npage += 1
 
-
     def start_collecting(self):
         self.stopped = False
         self.change_crawler_status('running')
         self.mask_output()
         self.mask_buttons('collecting')
-
-        if self.crawler.NAME == "antallaktikaonline.gr":
-            self.crawler.first_run = False
 
         self.run_threaded_process(self.collect,
                                   self.collecting_updates,

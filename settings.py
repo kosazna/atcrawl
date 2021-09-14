@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 from atcrawl.utilities.funcs import load_user_settings
 
-DEBUG = False
+DEBUG = True
 
 USER_SETTINGS_FILE = Path.home().joinpath(".atcrawl\\settings.json")
 USER_SETTINGS = load_user_settings(USER_SETTINGS_FILE)
@@ -13,7 +13,7 @@ USER_SETTINGS = load_user_settings(USER_SETTINGS_FILE)
 BASE_DIR = str(Path(__file__).parent)
 STATIC = "static"
 
-if not DEBUG:
+if not DEBUG or True:
     try:
         cssGuideLow = open(os.path.join(
             BASE_DIR, STATIC, 'style_low_dpi.css'), 'r').read()

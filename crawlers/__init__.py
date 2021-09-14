@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from atcrawl.crawlers.gbg.crawler import GBG
-from atcrawl.crawlers.antallaktika import *
+from atcrawl.crawlers.antallaktika2 import *
 from atcrawl.crawlers.tripadvisor import *
 from atcrawl.crawlers.skroutz import *
-from atcrawl.crawlers.rellasamortiser import *
+from atcrawl.crawlers.rellasamortiser2 import *
 
 crawler_map = {
     "antallaktikaonline.gr": AntallaktikaOnline,

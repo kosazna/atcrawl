@@ -161,7 +161,7 @@ class CrawlerUI(QWidget):
             self.inputMeta6.hide()
             self.inputMeta7.hide()
             self.checkMeta.hide()
-            self.mask_buttons('start')
+            self.mask_buttons('launched')
             self.inputMeta0.setCompleter(MANUFACTURES_BRANDS)
 
         if self.crawler.NAME == 'skroutz.gr':
@@ -329,7 +329,8 @@ class CrawlerUI(QWidget):
                        QMessageBox.Critical)
 
     def collect(self, progress_callback, progress_popup):
-        if self.crawler.NAME != 'rellasamortiser.gr':
+        if self.crawler.NAME in ['skroutz.gr',
+                                 'gbg-eshop.gr']:
             npage = 1
             self.crawler.pre_collect()
             progress_callback.emit(f"Collecting page {npage}")
@@ -345,8 +346,8 @@ class CrawlerUI(QWidget):
                 progress_callback.emit(_str)
                 self.crawler.collect(gather='single')
             progress_callback.emit(f"Pages Finished")
-        else:
-            self.crawler.set_url(self.inputUrl.getText())
+        elif self.crawler.NAME == 'rellasamortiser.gr':
+            self.crawler.set_init(self.inputUrl.getText())
             progress_callback.emit("Finding URLs...")
             self.crawler.pre_collect()
 
@@ -356,8 +357,21 @@ class CrawlerUI(QWidget):
                 current = f"Collecting -> {self.crawler.current_url}"
                 total = f"URL {npage}/{self.crawler.total_urls}"
                 progress_callback.emit(f"{total} | {current}")
-                self.crawler.collect(gather='single')
+                self.crawler.collect()
                 npage += 1
+        else:
+            self.crawler.set_init(self.inputUrl.getText())
+            progress_callback.emit(f"Found {self.crawler.npaths}")
+            self.crawler.pre_collect()
+
+            npage = 1
+
+            while not self.stopped and self.crawler.go_next():
+                total = f"Path {npage}/{self.crawler.npaths}"
+                progress_callback.emit(f"{total}")
+                self.crawler.collect()
+                npage += 1
+
 
     def start_collecting(self):
         self.stopped = False
@@ -377,9 +391,6 @@ class CrawlerUI(QWidget):
 
     def finished_collecting(self):
         self.stopped = True
-
-        if self.crawler.NAME == "antallaktikaonline.gr":
-            self.crawler.parse()
 
         self.mask_buttons('done_collecting')
 
@@ -408,7 +419,7 @@ class CrawlerUI(QWidget):
 
                 if self.crawler.NAME in ['antallaktikaonline.gr',
                                          'rellasamortiser.gr']:
-                    self.crawler.backup2db(_params, _output)
+                    self.crawler.backup2db(str(_params), _output)
 
                 self.crawler.transform(**_params)
 

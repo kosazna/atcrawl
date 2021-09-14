@@ -71,5 +71,5 @@ class ItemCollection:
 
         return df
 
-    def backup(self):
-        pass
+    def is_empty(self):
+        return True if self.nitems else False

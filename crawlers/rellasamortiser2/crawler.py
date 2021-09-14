@@ -64,7 +64,7 @@ class RellasAmortiser:
 
     def _first_request(self):
         soup = request_soup(self.url)
-        _name = parse(soup, self.next_link_name.TAG, self.next_link_name.CLASS)
+        _name = parse(soup, title_name.TAG, title_name.CLASS)
         _name = _name.split('για')[-1].strip()
         self.follow_links[_name] = {'link': self.url,
                                     'soup': soup,
@@ -84,8 +84,11 @@ class RellasAmortiser:
             return False
 
     def backup2db(self, tranform_params: str, out_file: str):
-        sql = AtcrawlSQL(paths.get_db())
-        sql.backup(self.NAME, tranform_params, self.collection, out_file)
+        if self.collection.is_empty():
+            print("Can not backup empty collection")
+        else:
+            sql = AtcrawlSQL(str(paths.get_db()))
+            sql.backup(self.NAME, tranform_params, self.collection, out_file)
 
     def pre_collect(self, url=None, lname=None):
         visit_next = []
@@ -113,7 +116,7 @@ class RellasAmortiser:
                 visit_next.append((_link, _name))
 
             for _next in visit_next:
-                self._find_follow_links(_next[0], _next[1])
+                self.pre_collect(_next[0], _next[1])
         else:
             self._follow_links = iter(self.follow_links.keys())
             for i in self.follow_links:
@@ -121,8 +124,8 @@ class RellasAmortiser:
                     self.total_urls += 1
 
     def collect(self):
-        if self.follow_links[self.next_link]['visit']:
-            soup = self.follow_links[self.next_link]['soup']
+        if self.follow_links[self.current_url]['visit']:
+            soup = self.follow_links[self.current_url]['soup']
 
             products = multi_parse(
                 soup, product.TAG, product.CLASS, text=False)
@@ -135,7 +138,7 @@ class RellasAmortiser:
                 _item = RellasAmortiserItem(_pname,
                                             _sku,
                                             _price,
-                                            self.next_link)
+                                            self.current_url)
                 self.collection.add(_item)
 
     def transform(self, **kwargs):

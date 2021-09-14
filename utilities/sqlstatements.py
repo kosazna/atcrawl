@@ -28,17 +28,19 @@ update_job = """INSERT INTO
     "job" (
         "site",
         "site_counter",
-        "collected_at",
+        "run_at",
         "parameters",
-        "records"
+        "records",
+        "out_file"
     )
 VALUES
     (
         :site,
         :site_counter,
-        :collected_at,
+        :run_at,
         :parameters,
-        :records
+        :records,
+        :out_file
     )"""
 
 update_antallaktika = """INSERT INTO

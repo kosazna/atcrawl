@@ -16,6 +16,7 @@ class Paths:
         self._images_import = USER_SETTINGS.get('images_import', '')
         self._base_folder = USER_SETTINGS.get('base_folder', '')
         self._replacements = USER_SETTINGS.get('replacements', '')
+        self._db = self._atcrawl.joinpath('atcrawl.db')
 
     def get_userhome(self) -> str:
         return str(self._userhome)
@@ -46,6 +47,9 @@ class Paths:
 
     def get_replacements(self):
         return self._replacements
+
+    def get_db(self):
+        return self._db
 
     def make_paths(self):
         if not self._atcrawl.exists():

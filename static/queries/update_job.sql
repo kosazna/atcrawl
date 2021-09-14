@@ -4,7 +4,8 @@ INSERT INTO
         "site_counter",
         "run_at",
         "parameters",
-        "records"
+        "records",
+        "out_file"
     )
 VALUES
     (
@@ -12,5 +13,6 @@ VALUES
         :site_counter,
         :run_at,
         :parameters,
-        :records
+        :records,
+        :out_file
     )

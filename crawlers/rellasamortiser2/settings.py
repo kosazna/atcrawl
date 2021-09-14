@@ -3,19 +3,26 @@
 from atcrawl.utilities.elements import *
 
 
-rellas_properties = ['brand',
+rellas_properties = ['title',
                      'article_no',
-                     'title',
-                     'description',
-                     'meta_title_seo',
-                     'details',
                      'retail_price',
-                     'price_after_discount',
-                     'id_category',
-                     'image',
-                     'meta_seo',
-                     'extra_description',
-                     'skroutz']
+                     'model',
+                     'year',
+                     'manufacturer']
+
+rellas_output_properties = ['brand',
+                            'article_no',
+                            'title',
+                            'description',
+                            'meta_title_seo',
+                            'details',
+                            'retail_price',
+                            'price_after_discount',
+                            'id_category',
+                            'image',
+                            'meta_seo',
+                            'extra_description',
+                            'skroutz']
 
 product = Element(NAME='product',
                   TAG='div',

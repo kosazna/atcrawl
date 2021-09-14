@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from atcrawl.core.sql import AtcrawlSQL
 from re import sub
 from atcrawl.core.parser import *
 from atcrawl.crawlers.rellasamortiser2.settings import *
@@ -46,6 +47,8 @@ class RellasAmortiserItem(Item):
 
 
 class RellasAmortiser:
+    NAME = "rellasamortiser.gr"
+
     def __init__(self, url='') -> None:
         self.url = url
         self.original_name = ''
@@ -73,6 +76,10 @@ class RellasAmortiser:
             return True
         except StopIteration:
             return False
+
+    def backup2db(self, tranform_params: str, out_file: str):
+        sql = AtcrawlSQL(paths.get_db())
+        sql.backup(self.NAME, tranform_params, self.collection, out_file)
 
     def pre_collect(self, url=None, lname=None):
         visit_next = []
@@ -137,41 +144,41 @@ class RellasAmortiser:
 
         discount_rate = (100 + int(discount)) / 100
 
-        if self.collected_data:
-            _data = pd.DataFrame(self.collected_data)
+        _data = self.collection.to_dataframe(columns=rellas_properties)
 
-            if brand:
-                _data['brand'] = brand
+        if brand:
+            _data['brand'] = brand
 
-            if model:
-                _data['model'] = model
+        if model:
+            _data['model'] = model
 
-            _details1 = "Μάρκα αυτοκινήτου: " + _data['brand'] + ', '
-            _details2 = "Μοντέλο: " + _data['model'] + ', '
-            _details3 = "Χρονολογία: " + _data['year'] + ', '
-            _details4 = "Κατασκευαστής: " + _data['manufacturer']
+        _details1 = "Μάρκα αυτοκινήτου: " + _data['brand'] + ', '
+        _details2 = "Μοντέλο: " + _data['model'] + ', '
+        _details3 = "Χρονολογία: " + _data['year'] + ', '
+        _details4 = "Κατασκευαστής: " + _data['manufacturer']
 
-            _data['details'] = _details1 + _details2 + _details3 + _details4
+        _data['details'] = _details1 + _details2 + _details3 + _details4
 
-            if extra_desc:
-                _data.loc[_data['details'].str.len() > 0, 'details'] = _data.loc[_data['details'].str.len(
-                ) > 0, 'details'] + f", {extra_desc}"
+        if extra_desc:
+            _data.loc[_data['details'].str.len() > 0, 'details'] = _data.loc[_data['details'].str.len(
+            ) > 0, 'details'] + f", {extra_desc}"
 
-                _data.loc[_data['details'].str.len() == 0,
-                          'details'] = extra_desc
+            _data.loc[_data['details'].str.len() == 0,
+                      'details'] = extra_desc
 
-            _data['skroutz'] = skroutz
+        _data['skroutz'] = skroutz
 
-            _data["meta_title_seo"] = meta_desc + ' ' + _data['title']
-            _data["meta_seo"] = meta_seo + ' ' + _data['title']
-            _data['id_category'] = id_cat
-            _data['price_after_discount'] = (
-                _data['retail_price'] * discount_rate).round(2)
+        _data["meta_title_seo"] = meta_desc + ' ' + _data['title']
+        _data["meta_seo"] = meta_seo + ' ' + _data['title']
+        _data['id_category'] = id_cat
+        _data['price_after_discount'] = (
+            _data['retail_price'] * discount_rate).round(2)
 
-            _data['retail_price'] = _data['retail_price'].astype(
-                'string').str.replace('.', ',')
+        _data['retail_price'] = _data['retail_price'].astype(
+            'string').str.replace('.', ',')
 
-            _data['price_after_discount'] = _data['price_after_discount'].astype('string').str.replace(
-                '.', ',')
+        _data['price_after_discount'] = _data['price_after_discount'].astype('string').str.replace(
+            '.', ',')
 
-            self.data = _data[rellas_properties].copy()
+        _data = _data[rellas_output_properties]
+        return _data

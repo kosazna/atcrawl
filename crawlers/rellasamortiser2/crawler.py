@@ -150,6 +150,11 @@ class RellasAmortiser:
                                         self.current_url)
             self.collection.add(_item)
 
+    def fast_collect(self):
+        self.pre_collect()
+        while self.go_next():
+            self.collect()
+
     def transform(self, **kwargs):
         id_cat = kwargs.get('meta2', '')
         meta_desc = kwargs.get('meta5', '')

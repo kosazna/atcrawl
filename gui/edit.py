@@ -644,6 +644,61 @@ class FindImagesEdit(MainEdit):
                                 "Contact support")
 
 
+class TitleWordsEdit(MainEdit):
+    def __init__(self, parent=None, *args, **kwargs):
+        super().__init__(parent=parent, *args, **kwargs)
+        self.setupUi()
+        self.button.subscribe(self.start_process)
+        self.status.subscribe(self.open_file)
+        self.can_process = False
+
+    def setupUi(self):
+        self.fileToModify = FileInput("Αρχείο προς επεξεργασία:",
+                                      orientation=VERTICAL)
+        self.destination = FileOutput("Αποθήκευση επεξεργασμένου αρχείου:",
+                                      orientation=VERTICAL)
+
+        self.columns = InputParameter("Στήλες (διαχωρισμένες με παύλα [-])",
+                                      orientation=VERTICAL)
+
+        self.progressBar = ProgressBar()
+
+        self.columns.setText("title-meta_title_seo-meta_seo-details")
+        self.buttonLayout = QHBoxLayout()
+        self.status = StatusIndicator(status='')
+        self.button = Button("Εκτέλεση")
+        self.buttonLayout.addWidget(self.progressBar)
+        self.buttonLayout.addWidget(self.button)
+
+        self.pageLayout = QVBoxLayout()
+        self.pageLayout.addWidget(self.fileToModify)
+        self.pageLayout.addWidget(self.destination)
+        self.pageLayout.addWidget(self.columns)
+        self.pageLayout.addStretch()
+        self.pageLayout.addWidget(self.status)
+        self.pageLayout.addLayout(self.buttonLayout)
+        self.setLayout(self.pageLayout)
+
+    def getParams(self):
+        _params = {'data': self.fileToModify.getText(),
+                   'dst_file': self.destination.getText(),
+                   'columns': self.columns.getText().split('-')}
+
+        return _params
+
+    def execute(self, progress_callback, progress_popup):
+        self.assert_process_capabilities()
+        if authorizer.user_is_licensed("title_words"):
+            if self.can_process:
+                params = self.getParams()
+                title_words(**params, progress_callback=progress_callback)
+            else:
+                progress_popup.emit("Συμπλήρωσε τα απαραίτητα πεδία")
+        else:
+            progress_popup.emit("You are not authorized",
+                                "Contact support")
+
+
 class EditWindow(QWidget):
     def __init__(self, parent=None, *args, **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
@@ -662,7 +717,8 @@ class EditWindow(QWidget):
                                      "Δημιουργία εικόνων (Rellas)",
                                      "Κόψιμο αρχείου",
                                      "Αντικατάσταση λέξεων",
-                                     "Αναζήτηση εικόνων (GBG)"],
+                                     "Αναζήτηση εικόνων (GBG)",
+                                     "Αντικατάσταση κεφαλαίων λέξεων"],
                                     size=(100, 200))
         self.pageCombo.subscribe(self.switchPage)
         self.stackedLayout = QStackedLayout()
@@ -682,6 +738,8 @@ class EditWindow(QWidget):
         self.stackedLayout.addWidget(self.page7)
         self.page8 = FindImagesEdit()
         self.stackedLayout.addWidget(self.page8)
+        self.page9 = TitleWordsEdit()
+        self.stackedLayout.addWidget(self.page9)
 
         IOWidget.setLastVisit(cwd)
 

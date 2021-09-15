@@ -135,6 +135,10 @@ class AntallaktikaOnline:
                                            _kit)
             self.collection.add(_item)
 
+    def fast_collect(self):
+        while self.go_next():
+            self.collect()
+
     def transform(self, **kwargs):
         def make_description(d1, d2):
             if d1 and d2:

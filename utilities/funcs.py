@@ -367,6 +367,31 @@ def replace_words(data, replacements, dst_file, columns, progress_callback=None)
         else:
             print("Το αρχέιο είναι ανοιχτό στο Excel. Κλείσε και ξαναπροσπάθησε.")
 
+def title_words(data, dst_file, columns, progress_callback=None):
+    df = pd.read_excel(data, dtype='string')
+
+    destination = dst_file
+    max_items = len(columns)
+    c = 0
+
+    for col in columns:
+        df[col] = df[col].str.title()
+        c += 1
+        if progress_callback is not None:
+            progress_callback.emit((c, max_items))
+
+    try:
+        df.to_excel(destination, index=False)
+        if progress_callback is not None:
+            progress_callback.emit((max_items, max_items, destination))
+        else:
+            print("Οι αλλαγές έγιναν.")
+    except PermissionError:
+        if progress_callback is not None:
+            progress_callback.emit((0, max_items, "Το αρχείο είναι ανοιχτό στο Excel. Κλείσε και ξαναπροσπάθησε."))
+        else:
+            print("Το αρχέιο είναι ανοιχτό στο Excel. Κλείσε και ξαναπροσπάθησε.")
+
 
 def create_images(data, src_images, dst_images, prefix_images='', progress_callback=None):
     df = pd.read_excel(data, dtype='string')

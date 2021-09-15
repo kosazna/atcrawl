@@ -46,6 +46,9 @@ class RellasAmortiserItem(Item):
             if man in self.name:
                 self.manufacturer = man
 
+    def __hash__(self) -> int:
+        return hash((self.name, self.sku, self.price, self.model, self.year))
+
 
 class RellasAmortiser:
     NAME = "rellasamortiser.gr"
@@ -149,6 +152,10 @@ class RellasAmortiser:
                                         _price,
                                         self.current_url)
             self.collection.add(_item)
+
+    def drop_n_sort(self):
+        self.collection.drop_duplicates()
+        self.collection.sort(('model','price'))
 
     def fast_collect(self):
         self.pre_collect()

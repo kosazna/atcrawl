@@ -3,6 +3,7 @@
 from dataclasses import astuple, dataclass, asdict
 from typing import List, Union
 import pandas as pd
+import operator
 
 
 def _get_types_from_template(dc_template) -> Union[dict, None]:
@@ -76,3 +77,13 @@ class ItemCollection:
 
     def is_empty(self):
         return False if self.nitems else True
+
+    def sort(self, key: Union[str, list, tuple]):
+        if isinstance(key, str):
+            self.items = sorted(self.items, key=operator.attrgetter(key))
+        else:
+            self.items = sorted(self.items, key=operator.attrgetter(*key))
+
+    def drop_duplicates(self):
+        self.items = list(set(self.items))
+        self.nitems = len(self.items)

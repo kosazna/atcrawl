@@ -420,6 +420,7 @@ class CrawlerUI(QWidget):
 
                 if self.crawler.NAME in ['antallaktikaonline.gr',
                                          'rellasamortiser.gr']:
+                    self.crawler.drop_n_sort()
                     self.crawler.backup2db(str(_params))
 
                 self.crawler.transform(**_params)

@@ -67,6 +67,9 @@ class AntallaktikaOnlineItem(Item):
         else:
             self.kit = clean_kit(self.kit)
 
+    def __hash__(self) -> int:
+        return hash((self.sku, self.new_price, self.old_price))
+
 
 class AntallaktikaOnline:
     NAME = 'antallaktikaonline.gr'
@@ -139,6 +142,10 @@ class AntallaktikaOnline:
         while self.go_next():
             self.collect()
 
+    def drop_n_sort(self):
+        self.collection.drop_duplicates()
+        self.collection.sort('new_price')
+
     def transform(self, **kwargs):
         def make_description(d1, d2):
             if d1 and d2:
@@ -155,7 +162,7 @@ class AntallaktikaOnline:
             discount = int(_discount)
         else:
             discount = 0
-            
+
         car = kwargs.get('meta1', '0')
 
         discount_rate = (100 + int(discount)) / 100

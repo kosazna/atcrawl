@@ -363,7 +363,7 @@ def replace_words(data, replacements, dst_file, columns, progress_callback=None)
             print("Οι αλλαγές έγιναν.")
     except PermissionError:
         if progress_callback is not None:
-            progress_callback.emit((0, max_items, "Το αρχέιο είναι ανοιχτό στο Excel. Κλείσε και ξαναπροσπάθησε."))
+            progress_callback.emit((0, max_items, "Το αρχείο είναι ανοιχτό στο Excel. Κλείσε και ξαναπροσπάθησε."))
         else:
             print("Το αρχέιο είναι ανοιχτό στο Excel. Κλείσε και ξαναπροσπάθησε.")
 

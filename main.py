@@ -2,6 +2,7 @@
 import warnings
 
 from atcrawl.cli import *
+from atcrawl.utilities.validate import *
 from atcrawl.crawlers.antallaktika.cli import antallaktika_run
 from atcrawl.crawlers.skroutz.cli import skroutz_run
 from atcrawl.utilities import *

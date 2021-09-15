@@ -149,7 +149,13 @@ class AntallaktikaOnline:
             return _d
 
         brand = kwargs.get('meta0', '')
-        discount = int(kwargs.get('meta3', 0))
+
+        _discount = kwargs.get('meta3', 0)
+        if _discount:
+            discount = _discount
+        else:
+            discount = 0
+            
         car = kwargs.get('meta1', '0')
 
         discount_rate = (100 + int(discount)) / 100

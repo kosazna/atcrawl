@@ -155,15 +155,31 @@ class RellasAmortiser:
         while self.go_next():
             self.collect()
 
+    def reset(self, url):
+        self.original_name = None
+        self.follow_links = {}
+        self._follow_links = []
+        self.follow_links_iter = None
+        self.current_url = None
+        self.total_urls = 0
+        self.collection = ItemCollection()
+        self.data = None
+        self.set_init(url)
+
     def transform(self, **kwargs):
         id_cat = kwargs.get('meta2', '')
         meta_desc = kwargs.get('meta5', '')
         meta_seo = kwargs.get('meta6', '')
         skroutz = kwargs.get('meta4', '')
         extra_desc = kwargs.get('meta7', '')
-        discount = int(kwargs.get('meta3', 0))
         brand = kwargs.get('meta0', '')
         model = kwargs.get('meta1', '')
+
+        _discount = kwargs.get('meta3', 0)
+        if _discount:
+            discount = _discount
+        else:
+            discount = 0
 
         discount_rate = (100 + int(discount)) / 100
 
@@ -172,6 +188,8 @@ class RellasAmortiser:
 
         if brand:
             _data['brand'] = brand
+        else:
+            _data['brand'] = ''
 
         if model:
             _data['model'] = model

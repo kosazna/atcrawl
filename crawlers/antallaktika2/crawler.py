@@ -79,6 +79,7 @@ class AntallaktikaOnline:
         self.current_html = None
         self.collection = ItemCollection()
         self.data = None
+        self.sql = AtcrawlSQL(paths.get_db())
 
         if path is not None:
             self._search_files()
@@ -95,8 +96,11 @@ class AntallaktikaOnline:
         self._search_files()
 
     def backup2db(self, tranform_params: str, out_file: str):
-        sql = AtcrawlSQL(paths.get_db())
-        sql.backup(self.NAME, tranform_params, self.collection, out_file)
+        if self.collection.is_empty():
+            print("\nCan not backup empty collection\n")
+        else:
+            self.sql.backup(self.NAME, tranform_params,
+                            self.collection, out_file)
 
     def go_next(self):
         try:

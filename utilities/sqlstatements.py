@@ -67,7 +67,7 @@ VALUES
 create_rellas = """CREATE TABLE "rellasamortiser" (
     "job_id" INTEGER,
     "title" TEXT,
-    "article_no" TEXT,
+    "sku" TEXT,
     "retail_price" REAL,
     "model" TEXT,
     "year" TEXT,
@@ -78,7 +78,7 @@ create_rellas = """CREATE TABLE "rellasamortiser" (
 update_rellas = """INSERT INTO
     "rellasamortiser" (
         "title",
-        "article_no",
+        "sku",
         "retail_price",
         "model",
         "year",
@@ -87,7 +87,7 @@ update_rellas = """INSERT INTO
 VALUES
     (
         :title,
-        :article_no,
+        :sku,
         :retail_price,
         :model,
         :year,
@@ -135,7 +135,7 @@ WHERE
 
 select_rellas = """SELECT
     "title",
-    "article_no",
+    "sku",
     "retail_price",
     "model",
     "year",

@@ -23,7 +23,7 @@ class RellasAmortiserItem(Item):
         if self.name is None:
             self.name = pname.DEFAULT
         else:
-            self.name = self.name.split('για')[-1].strip()
+            self.name = self.name.strip()
 
         if self.sku is None:
             self.sku = sku.DEFAULT
@@ -60,6 +60,7 @@ class RellasAmortiser:
         self.total_urls = 0
         self.collection = ItemCollection()
         self.data = None
+        self.sql = AtcrawlSQL(str(paths.get_db()))
 
         if self.url is not None:
             self._first_request()
@@ -67,7 +68,6 @@ class RellasAmortiser:
     def _first_request(self):
         soup = request_soup(self.url)
         _name = parse(soup, title_name.TAG, title_name.CLASS)
-        _name = _name.split('για')[-1].strip()
         self.follow_links[_name] = {'link': self.url,
                                     'soup': soup,
                                     'visit': True}
@@ -88,10 +88,10 @@ class RellasAmortiser:
 
     def backup2db(self, tranform_params: str, out_file: str):
         if self.collection.is_empty():
-            print("Can not backup empty collection")
+            print("\nCan not backup empty collection\n")
         else:
-            sql = AtcrawlSQL(str(paths.get_db()))
-            sql.backup(self.NAME, tranform_params, self.collection, out_file)
+            self.sql.backup(self.NAME, tranform_params,
+                            self.collection, out_file)
 
     def pre_collect(self, url=None, lname=None):
         visit_next = []
@@ -127,9 +127,10 @@ class RellasAmortiser:
             for i in self.follow_links:
                 if self.follow_links[i]['visit']:
                     self._follow_links.append(i)
-                    self.total_urls += 1
 
-            self.follow_links_iter = iter(self._follow_links)
+            _unique = list(set(self._follow_links))
+            self.follow_links_iter = iter(_unique)
+            self.total_urls = len(_unique)
 
     def collect(self):
         soup = self.follow_links[self.current_url]['soup']
@@ -163,12 +164,18 @@ class RellasAmortiser:
         discount_rate = (100 + int(discount)) / 100
 
         _data = self.collection.to_dataframe(columns=rellas_properties)
+        _data = _data.sort_values('model')
 
         if brand:
             _data['brand'] = brand
 
         if model:
             _data['model'] = model
+
+        _data['description'] = 'Γνήσιος κωδικός: ' + _data['sku']
+        _data['article_no'] = ''
+        _data['image'] = ''
+        _data['extra_description'] = _data['title']
 
         _details1 = "Μάρκα αυτοκινήτου: " + _data['brand'] + ', '
         _details2 = "Μοντέλο: " + _data['model'] + ', '
@@ -198,7 +205,8 @@ class RellasAmortiser:
         _data['price_after_discount'] = _data['price_after_discount'].astype('string').str.replace(
             '.', ',')
 
-        self.data = _data[rellas_output_properties]
+        self.data = _data[rellas_output_properties].drop_duplicates(
+            subset=['title', 'description', 'details'])
 
     def export(self, name, folder, export_type):
         if self.data is not None:

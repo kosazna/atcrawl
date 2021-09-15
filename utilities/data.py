@@ -41,6 +41,9 @@ class ItemCollection:
         self.types: Union[dict, None] = items[0].types() if items else None
         self.nitems: int = len(self.items) if items else 0
 
+    def __str__(self) -> str:
+        return f"Collection(items={self.nitems})"
+
     def add(self, item: Item) -> None:
         self.items.append(item)
         self.nitems += 1
@@ -72,4 +75,4 @@ class ItemCollection:
         return df
 
     def is_empty(self):
-        return True if self.nitems else False
+        return False if self.nitems else True

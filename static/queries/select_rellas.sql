@@ -1,6 +1,6 @@
 SELECT
     "title",
-    "article_no",
+    "sku",
     "retail_price",
     "model",
     "year",

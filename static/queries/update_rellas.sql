@@ -1,7 +1,7 @@
 INSERT INTO
     "rellasamortiser" (
         "title",
-        "article_no",
+        "sku",
         "retail_price",
         "model",
         "year",
@@ -10,7 +10,7 @@ INSERT INTO
 VALUES
     (
         :title,
-        :article_no,
+        :sku,
         :retail_price,
         :model,
         :year,

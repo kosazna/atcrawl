@@ -420,13 +420,18 @@ class CrawlerUI(QWidget):
 
                 if self.crawler.NAME in ['antallaktikaonline.gr',
                                          'rellasamortiser.gr']:
-                    self.crawler.backup2db(str(_params), _output)
+                    self.crawler.backup2db(str(_params))
 
                 self.crawler.transform(**_params)
 
                 self.crawler.export(name=_name,
                                     folder=_folder,
                                     export_type=_type)
+
+                if self.crawler.NAME in ['antallaktikaonline.gr',
+                                         'rellasamortiser.gr']:
+                    job_id = self.crawler.sql.get_last_jobid()
+                    self.crawler.sql.update_output(job_id, _output)
 
                 items = self.count_parsed()
                 self.output = _output

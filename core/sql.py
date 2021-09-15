@@ -124,7 +124,19 @@ class AtcrawlSQL:
         except Error as e:
             print(str(e) + " from " + self.db)
 
-    def backup(self, process: str, parameters: dict, collection: ItemCollection, out_file:str):
+    def update_output(self, job_id, output):
+        params = {'out_file': output,
+                  'job_id': job_id}
+        try:
+            with closing(connect(self.db)) as con:
+                with closing(con.cursor()) as cur:
+                    cur.execute(update_output, params)
+                    con.commit()
+
+        except Error as e:
+            print(str(e) + " from " + self.db)
+
+    def backup(self, process: str, parameters: dict, collection: ItemCollection):
         table = process.split('.')[0]
         date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
@@ -139,7 +151,7 @@ class AtcrawlSQL:
                               'collected_at': date,
                               'parameters': parameters,
                               'records': collection.nitems,
-                              'out_file': out_file}
+                              'out_file': ''}
                     cur.execute(update_job, params)
 
                     cur.execute(get_last_jobid)

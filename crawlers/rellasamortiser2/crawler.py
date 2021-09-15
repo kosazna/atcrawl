@@ -86,12 +86,11 @@ class RellasAmortiser:
             except StopIteration:
                 return False
 
-    def backup2db(self, tranform_params: str, out_file: str):
+    def backup2db(self, tranform_params: str):
         if self.collection.is_empty():
             print("\nCan not backup empty collection\n")
         else:
-            self.sql.backup(self.NAME, tranform_params,
-                            self.collection, out_file)
+            self.sql.backup(self.NAME, tranform_params, self.collection)
 
     def pre_collect(self, url=None, lname=None):
         visit_next = []

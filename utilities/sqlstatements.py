@@ -144,3 +144,10 @@ FROM
     rellasamortiser
 WHERE
     job_id = :job_id"""
+
+update_output = """UPDATE
+    job
+SET
+    out_file = :out_file
+WHERE
+    job_id = :job_id"""

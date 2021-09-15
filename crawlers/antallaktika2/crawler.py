@@ -152,7 +152,7 @@ class AntallaktikaOnline:
 
         _discount = kwargs.get('meta3', 0)
         if _discount:
-            discount = _discount
+            discount = int(_discount)
         else:
             discount = 0
             

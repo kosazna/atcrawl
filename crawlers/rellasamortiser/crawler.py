@@ -2,7 +2,8 @@
 
 import pandas as pd
 from atcrawl.crawlers.rellasamortiser.settings import *
-from atcrawl.utilities import *
+from atcrawl.utilities.funcs import *
+from atcrawl.utilities.paths import *
 
 manufacturers = import_rellas_brands(paths.get_rellas_path())
 

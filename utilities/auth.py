@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from getpass import getuser
 import requests
 import json
 from atcrawl.utilities.display import *
 from atcrawl.settings import DEBUG
+from pathlib import Path
 
 
 class Authorize:
@@ -23,7 +23,7 @@ class Authorize:
             pass
         else:
             self._counter = 0
-            self._current_user = getuser()
+            self._current_user = str(Path.home()).split("\\")[2]
             self._r = requests.get(Authorize.URL, headers=Authorize.HEADERS)
             self._user_access = json.loads(self._r.text)
 

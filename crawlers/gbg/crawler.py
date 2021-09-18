@@ -185,8 +185,16 @@ class GBG(CrawlEngine):
             _data['brand'] = brand
             _data['title'] = _data['title'] + \
                 f' {brand}' + f' {model}' + f' {year}'
+            
+            for idx, val in enumerate(_data['description'].tolist()):
+                if val:
+                    _old = _data.loc[idx, 'title']
+                    _new = _old + " (" + val + ")"
+                    _data.loc[idx, 'title'] = _new
+
             _data['description'] = 'Γνήσιος κωδικός: ' + _data['description']
             _data['meta_title_seo'] = meta_desc + ' ' + _data['title']
+            _data['title_description'] = _data['title']
 
             _data["meta_seo"] = meta_seo + ' ' + _data['title']
             _data['id_category'] = id_cat

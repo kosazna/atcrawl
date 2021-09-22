@@ -124,6 +124,17 @@ class AtcrawlSQL:
         except Error as e:
             print(str(e) + " from " + self.db)
 
+    def get_params_from_jobid(self, job_id):
+        params = {'job_id': job_id}
+        try:
+            with closing(connect(self.db)) as con:
+                with closing(con.cursor()) as cur:
+                    cur.execute(select_params, params)
+
+                    return cur.fetchone()
+        except Error as e:
+            print(str(e) + " from " + self.db)
+
     def update_output(self, job_id, output):
         params = {'out_file': output,
                   'job_id': job_id}
@@ -138,7 +149,7 @@ class AtcrawlSQL:
 
     def backup(self, process: str, parameters: dict, collection: ItemCollection):
         table = process.split('.')[0]
-        date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        date = datetime.now().strftime('%Y-%m-%d %H:%M')
 
         try:
             with closing(connect(self.db)) as con:
@@ -175,7 +186,7 @@ class AtcrawlSQL:
 
 
 if __name__ == '__main__':
-    # Popen(["C:/Program Files/DB Browser for SQLite/DB Browser for SQLite.exe", "D:/ktima.db"])
-    asql = AtcrawlSQL("C:/Users/aznavouridis.k/.atcrawl/atcrawl.db")
+    Popen(["C:/Program Files/DB Browser for SQLite/DB Browser for SQLite.exe", "C:/Users/aznavouridis.k/.atcrawl/atcrawl.db"])
+    # asql = AtcrawlSQL("C:/Users/aznavouridis.k/.atcrawl/atcrawl.db")
 
-    print(asql.get_records_from_jobid('antallaktikaonline', 5))
+    # print(asql.get_params_from_jobid(5))

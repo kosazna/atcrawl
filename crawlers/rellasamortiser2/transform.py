@@ -76,10 +76,10 @@ class RellasAmortiserTransform:
             self.data['retail_price'] * discount_rate).round(2)
 
         self.data['retail_price'] = self.data['retail_price'].astype(
-            'string').str.replace('.', ',')
+            'string').str.replace('.', ',', regex=False)
 
         self.data['price_after_discount'] = self.data['price_after_discount'].astype('string').str.replace(
-            '.', ',')
+            '.', ',', regex=False)
 
         self.data = self.data[rellas_output_properties].drop_duplicates(
             subset=['title', 'description', 'details'])

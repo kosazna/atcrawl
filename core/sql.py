@@ -96,6 +96,19 @@ class AtcrawlSQL:
         except Error as e:
             print(str(e) + " from " + self.db)
 
+    def get_all_jobid(self):
+        try:
+            with closing(connect(self.db)) as con:
+                with closing(con.cursor()) as cur:
+                    cur.execute("SELECT job_id FROM job ORDER BY job_id DESC")
+
+                    val = cur.fetchall()
+                    if val:
+                        return [i[0] for i in val]
+                    return val
+        except Error as e:
+            print(str(e) + " from " + self.db)
+
     def get_site_counter(self, site):
         params = {'site': site}
         try:
@@ -149,7 +162,7 @@ class AtcrawlSQL:
 
     def backup(self, process: str, parameters: dict, collection: ItemCollection):
         table = process.split('.')[0]
-        date = datetime.now().strftime('%Y-%m-%d %H:%M')
+        date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
         try:
             with closing(connect(self.db)) as con:
@@ -189,4 +202,4 @@ if __name__ == '__main__':
     # Popen(["C:/Program Files/DB Browser for SQLite/DB Browser for SQLite.exe", "C:/Users/aznavouridis.k/.atcrawl/atcrawl.db"])
     asql = AtcrawlSQL("C:/Users/aznavouridis.k/.atcrawl/atcrawl.db")
 
-    print(asql.get_records_from_jobid('antallaktikaonline', 1))
+    print(asql.get_params_from_jobid(5))

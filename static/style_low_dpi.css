@@ -202,6 +202,18 @@
   width: 70px;
 }
 
+#Combo50 {
+  background-color: #f8f8f8;
+  border: 1px solid #6c757d;
+  color: #212529;
+  border-radius: 3px;
+  font-family: "Segoe UI";
+  font: 12px;
+  max-height: 22px;
+  min-height: 22px;
+  width: 50px;
+}
+
 #Combo100 {
   background-color: #f8f8f8;
   border: 1px solid #6c757d;
@@ -304,6 +316,17 @@
 #LineEdit200:focus,
 #LineEdit400:focus {
   border: 1px outset #25b4ee;
+}
+
+#Label50 {
+  background-color: transparent;
+  color: #212529;
+  font-family: "Segoe UI";
+  font: 12px;
+  font-weight: bold;
+  max-height: 22px;
+  min-height: 22px;
+  min-width: 50px;
 }
 
 #Label70 {

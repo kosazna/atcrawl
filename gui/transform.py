@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from atcrawl.core.sql import AtcrawlSQL
 from atcrawl.crawlers import *
 from atcrawl.core.engine import *
 from atcrawl.utilities.auth import *
@@ -7,37 +8,47 @@ from atcrawl.utilities.paths import *
 from atcrawl.gui.edit import EditWindow
 from atcrawl.gui.welcome_design import *
 from atcrawl.gui.widgets import *
-from atcrawl.gui.worker import Worker, WorkerSignalsStr
-from PyQt5.QtCore import QThreadPool
+from subprocess import Popen
+
+db_browser = "C:/Program Files/DB Browser for SQLite/DB Browser for SQLite.exe"
 
 
 class TransformUI(QWidget):
     def __init__(self, parent=None, *args, **kwargs):
         super(TransformUI, self).__init__(parent=parent, *args, **kwargs)
+        self.sql = AtcrawlSQL(str(paths.get_db()))
+        self.all_jobs = [''] + list(map(str, self.sql.get_all_jobid()))
+
         self.setupUi()
 
         self.auth = None
 
-        self.url = None
-        self.old_url = None
-        self.brand = None
-        self.discount = None
         self.file_name = None
         self.folder_name = None
-        self.driver_status = False
-        self.to_export = False
-        self.nitems = 0
-        self.stopped = True
         self.output = None
+        self.site = None
+        self.data = None
+        self.job_id = None
+        self.site = None
+        self.date = None
+        self.items = None
+        self.params = None
+        self.meta_mapping = {'meta0': self.inputMeta0,
+                             'meta1': self.inputMeta1,
+                             'meta2': self.inputMeta2,
+                             'meta3': self.inputMeta3,
+                             'meta4': self.inputMeta4,
+                             'meta5': self.inputMeta5,
+                             'meta6': self.inputMeta6,
+                             'meta7': self.inputMeta7,
+                             'meta_check': self.checkMeta}
 
         self.statusGeneral.subscribe(self.open_file)
-        self.outputFolder.setText(paths.get_default_export())
+        self.buttonDb.subscribe(self.open_db)
+        self.comboJob.subscribe(self.load)
+        self.buttonTransform.subscribe(self.transform)
 
-        self.buttonLaunch.clicked.connect(self.launch)
-        self.buttonTerminate.clicked.connect(self.terminate)
-        self.buttonCollect.clicked.connect(self.start_collecting)
-        self.buttonStop.clicked.connect(self.stop_collecting)
-        self.buttonReset.clicked.connect(self.reset)
+        self.outputFolder.setText(paths.get_default_export())
 
     def setupUi(self):
         self.setObjectName("MainWidget")
@@ -45,14 +56,15 @@ class TransformUI(QWidget):
         self.setWindowTitle("atCrawl Services")
         self.resize(500, 350)
 
-        # self.buttonLaunch = Button('launch')
-        # self.buttonCollect = Button('collect')
-        # self.buttonStop = Button('stop')
-        # self.buttonReset = Button('reset')
-        # self.buttonTerminate = Button('terminate')
+        # self.comboJob = ComboInput('Job ID',items=all_jobs, size=(70, 100))
+        self.comboJob = ComboInput('Job ID', items=self.all_jobs, size=(70, 50))
+        self.statusSite = InputParameter('Site', size=(50, 100))
+        self.statusDate = InputParameter('Date', size=(50, 100))
+        self.statusItems = InputParameter('Items', size=(50, 100))
+        self.statusGeneral = StatusIndicator()
 
+        self.buttonDb = Button('open DB')
         self.buttonTransform = Button('transform')
-
 
         self.checkMeta = CheckInput('MetaCheck')
         self.inputUrl = InputParameter('URL')
@@ -68,10 +80,6 @@ class TransformUI(QWidget):
         self.inputFilename = FileNameInput('Filename', size=(70, 200))
         self.outputFolder = FolderInput('Folder', size=100)
 
-        # self.statusBrowser = StatusIndicator('Browser', 'offline')
-        # self.statusCrawler = StatusIndicator('Crawler', 'offline')
-        # self.statusGeneral = StatusIndicator()
-
         self.layoutGui = QHBoxLayout()
         self.layoutLeft = QVBoxLayout()
         self.layoutTop = QHBoxLayout()
@@ -81,7 +89,11 @@ class TransformUI(QWidget):
         self.layoutBottom = QVBoxLayout()
         self.layoutButtons = QVBoxLayout()
         self.layoutStatus = QHBoxLayout()
-        self.layoutTop.addWidget(self.inputUrl)
+        self.layoutTop.addWidget(self.comboJob)
+        self.layoutTop.addWidget(self.statusSite, 1)
+        self.layoutTop.addWidget(self.statusDate, 1)
+        self.layoutTop.addWidget(self.statusItems)
+
         self.layoutSmall.addWidget(self.inputMeta0, 0, Qt.AlignLeft)
         self.layoutSmall.addWidget(self.inputMeta1, 0, Qt.AlignLeft)
         self.layoutSmall.addWidget(self.inputMeta2, 0, Qt.AlignLeft)
@@ -94,16 +106,14 @@ class TransformUI(QWidget):
         self.layoutBig.addWidget(self.inputMeta7)
         self.layoutBig.addStretch()
         self.layoutBig.addWidget(self.outputFolder)
+
         self.layoutButtons.addWidget(self.checkMeta)
-        self.layoutButtons.addWidget(self.buttonLaunch)
-        self.layoutButtons.addWidget(self.buttonCollect)
-        self.layoutButtons.addWidget(self.buttonStop)
-        self.layoutButtons.addWidget(self.buttonReset)
-        self.layoutButtons.addWidget(self.buttonTerminate)
-        self.layoutStatus.addWidget(self.statusBrowser)
-        self.layoutStatus.addWidget(self.statusCrawler)
-        self.layoutStatus.addStretch()
-        self.layoutStatus.addWidget(self.statusGeneral, 1)
+
+        self.layoutButtons.addWidget(self.buttonDb)
+        self.layoutButtons.addWidget(self.buttonTransform)
+
+        self.layoutStatus.addWidget(self.statusGeneral)
+
         self.layoutParams.addLayout(self.layoutSmall)
         self.layoutParams.addLayout(self.layoutBig)
         self.layoutBottom.addLayout(self.layoutStatus)
@@ -115,20 +125,77 @@ class TransformUI(QWidget):
         self.setLayout(self.layoutGui)
 
     def load(self):
-        pass
+        try:
+            self.job_id = int(self.comboJob.getCurrentText())
+            jobid_params = self.sql.get_params_from_jobid(self.job_id)
+
+            self.site = jobid_params[0]
+            self.date = jobid_params[1]
+            self.items = str(jobid_params[2])
+            self.params = eval(jobid_params[3])
+
+            self.statusSite.setText(self.site)
+            self.statusDate.setText(self.date)
+            self.statusItems.setText(self.items)
+
+            self.show_all_widgets()
+
+            for key, value in self.params.items():
+                if key == 'meta_check':
+                    self.checkMeta.setChecked(value)
+                else:
+                    self.meta_mapping[key].setText(value)
+
+            self.apply_masks()
+        except ValueError:
+            pass
+
+    def transform(self):
+        _name = self.get_filename()
+        _folder = self.get_folder()
+        _type = 'xlsx'
+        _output = _folder + f'/{_name}.{_type}'
+
+        table = self.site.split('.')[0]
+        query_result = self.sql.get_records_from_jobid(table, self.job_id)
+        self.transformer = transform_map[self.site].from_db(query_result)
+        self.data = self.transformer.transform(**self.get_params())
+
+        self.export(name=_name,
+                    folder=_folder,
+                    export_type=_type)
+
+        self.output = _output
+
+        self.mask_output(f"{_output}")
+
+    def export(self, name, folder, export_type):
+        if self.data is not None:
+            if export_type == 'csv':
+                dst = Path(folder).joinpath(f'{name}.csv')
+                self.data.to_csv(dst, index=False, sep=';')
+                print(f"\nExported csv file at:\n -> {dst}\n")
+            else:
+                dst = Path(folder).joinpath(f'{name}.xlsx')
+                self.data.to_excel(dst, index=False)
+                print(f"\nExported excel file at:\n -> {dst}\n")
 
     def open_file(self):
         if self.output is not None:
             os.startfile(self.output)
 
-    def set_crawler(self, crawler_obj):
-        self.crawler = crawler_obj
+    def open_db(self):
+        Popen([db_browser, str(paths.get_db())])
 
     def set_auth(self, authorizer):
         self.auth = authorizer
 
+    def show_all_widgets(self):
+        for wi in self.meta_mapping:
+            self.meta_mapping[wi].show()
+
     def apply_masks(self):
-        if self.crawler.NAME == 'antallaktikaonline.gr':
+        if self.site == 'antallaktikaonline.gr':
             self.inputMeta0.setLabel("Brand")
             self.inputMeta1.setLabel("Car")
             self.inputMeta2.hide()
@@ -138,10 +205,9 @@ class TransformUI(QWidget):
             self.inputMeta6.hide()
             self.inputMeta7.hide()
             self.checkMeta.hide()
-            # self.mask_buttons('launched')
             self.inputMeta0.setCompleter(MANUFACTURES_BRANDS)
 
-        if self.crawler.NAME == 'skroutz.gr':
+        if self.site == 'skroutz.gr':
             self.inputMeta0.setLabel("Brand")
             self.inputMeta1.hide()
             self.inputMeta2.setLabel("ID Cat.")
@@ -152,10 +218,9 @@ class TransformUI(QWidget):
             self.inputMeta7.setLabel("Extra Details")
             self.checkMeta.setText("Λάδια")
             self.checkMeta.toggle()
-            # self.mask_buttons('start')
             self.inputMeta0.setCompleter(MANUFACTURES_BRANDS)
 
-        if self.crawler.NAME == 'rellasamortiser.gr':
+        if self.site == 'rellasamortiser.gr':
             self.inputMeta0.setLabel("Brand")
             self.inputMeta1.setLabel("Model")
             self.inputMeta2.setLabel("ID Cat.")
@@ -165,10 +230,9 @@ class TransformUI(QWidget):
             self.inputMeta6.setLabel("Meta SEO")
             self.inputMeta7.setLabel("Extra Details")
             self.checkMeta.hide()
-            # self.mask_buttons('launched')
             self.inputMeta0.setCompleter(CAR_BRANDS)
 
-        if self.crawler.NAME == 'gbg-eshop.gr':
+        if self.site == 'gbg-eshop.gr':
             self.inputMeta0.setLabel("Brand")
             self.inputMeta1.setLabel("Model")
             self.inputMeta2.setLabel("ID Cat.")
@@ -179,7 +243,6 @@ class TransformUI(QWidget):
             self.inputMeta7.setLabel("Meta SEO")
 
             self.checkMeta.hide()
-            # self.mask_buttons('start')
             self.inputMeta0.setCompleter(CAR_BRANDS)
 
     def mask_output(self, text=None):
@@ -187,27 +250,6 @@ class TransformUI(QWidget):
             self.statusGeneral.disable()
         else:
             self.statusGeneral.enable(text)
-
-    def change_browser_status(self, status):
-        if status == 'online':
-            self.statusBrowser.disable(status)
-        else:
-            self.statusBrowser.disable(status)
-
-    def change_crawler_status(self, status):
-        if status == 'running':
-            self.statusCrawler.disable(status)
-        elif status == 'offline':
-            self.statusCrawler.disable(status)
-        else:
-            self.statusCrawler.disable(status)
-
-    def count_parsed(self):
-        try:
-            self.nitems = self.crawler.data.shape[0]
-        except AttributeError:
-            self.nitems = self.crawler.transformed_data.shape[0]
-        return str(self.nitems)
 
     def get_folder(self):
         _folder = self.outputFolder.getText()
@@ -241,99 +283,11 @@ class TransformUI(QWidget):
 
         return _params
 
-    def mask_buttons(self, process):
-        if self.crawler.NAME in ['skroutz.gr',
-                                 'gbg-eshop.gr']:
-            if process == 'launched':
-                self.buttonLaunch.disable()
-                self.buttonCollect.enable(green)
-                self.buttonStop.disable()
-                self.buttonReset.enable(yellow)
-                self.buttonTerminate.enable(blue)
-            elif process == 'collecting':
-                self.buttonLaunch.disable()
-                self.buttonCollect.disable()
-                self.buttonStop.enable(red)
-                self.buttonReset.disable()
-                self.buttonTerminate.disable()
-            elif process == 'done_collecting':
-                self.buttonLaunch.disable()
-                self.buttonCollect.disable()
-                self.buttonStop.disable()
-                self.buttonReset.enable(yellow)
-                self.buttonTerminate.enable(blue)
-            else:
-                self.buttonLaunch.enable(blue)
-                self.buttonCollect.disable()
-                self.buttonStop.disable()
-                self.buttonReset.disable()
-                self.buttonTerminate.disable()
-        elif self.crawler.NAME in ['antallaktikaonline.gr',
-                                   'rellasamortiser.gr']:
-            if process == 'launched':
-                self.buttonLaunch.disable()
-                self.buttonCollect.enable(green)
-                self.buttonStop.disable()
-                self.buttonReset.disable()
-                self.buttonTerminate.disable()
-            elif process == 'collecting':
-                self.buttonLaunch.disable()
-                self.buttonCollect.disable()
-                self.buttonStop.enable(red)
-                self.buttonReset.disable()
-                self.buttonTerminate.disable()
-            elif process == 'done_collecting':
-                self.buttonLaunch.disable()
-                self.buttonCollect.enable(green)
-                self.buttonStop.disable()
-                self.buttonReset.enable(yellow)
-                self.buttonTerminate.disable()
-
-    def export(self):
-        if self.to_export:
-            if self.auth.user_is_licensed(self.crawler.NAME):
-                _name = self.get_filename()
-                _folder = self.get_folder()
-                _type = 'xlsx'
-                _output = _folder + f'/{_name}.{_type}'
-                _params = self.get_params()
-
-                if self.crawler.NAME in ['antallaktikaonline.gr',
-                                         'rellasamortiser.gr']:
-                    self.crawler.drop_n_sort()
-                    self.crawler.backup2db(str(_params))
-
-                self.crawler.transform(**_params)
-
-                self.crawler.export(name=_name,
-                                    folder=_folder,
-                                    export_type=_type)
-
-                if self.crawler.NAME in ['antallaktikaonline.gr',
-                                         'rellasamortiser.gr']:
-                    job_id = self.crawler.sql.get_last_jobid()
-                    self.crawler.sql.update_output(job_id, _output)
-
-                items = self.count_parsed()
-                self.output = _output
-                self.mask_output(f"Items: {items} | {_output}")
-
-                self.to_export = False
-            else:
-                show_popup("You are not authorized",
-                           "Contact support",
-                           QMessageBox.Information)
-        else:
-            show_popup("Nothing to export")
-
 
 if __name__ == '__main__':
-    import sys
 
-    app = QtWidgets.QApplication(sys.argv)
-    screen = app.screens()[0]
-    dpi = screen.physicalDotsPerInch()
-    main_window = QtWidgets.QMainWindow()
-    welcome_ui = WelcomeUI(main_window)
-    main_window.show()
+    import sys
+    app = QApplication(sys.argv)
+    volume = TransformUI()
+    volume.show()
     sys.exit(app.exec_())

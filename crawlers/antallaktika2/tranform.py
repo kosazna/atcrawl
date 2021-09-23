@@ -22,7 +22,7 @@ class AntallaktikaOnlineTransform:
         data = pd.DataFrame(records, columns=columns)
         return cls(data)
 
-    def transofrm(self, **kwargs):
+    def transform(self, **kwargs):
         def make_description(d1, d2):
             if d1 and d2:
                 _d = f"{d1}|{d2}"

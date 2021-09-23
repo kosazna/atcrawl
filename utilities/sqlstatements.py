@@ -153,6 +153,7 @@ WHERE
     job_id = :job_id"""
 
 select_params = """SELECT
+    site,
     collected_at,
     records,
     parameters

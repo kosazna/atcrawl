@@ -169,8 +169,8 @@ class TransformUI(QWidget):
 
             self.mask_output(f"{_output}")
         else:
-            show_popup.emit("You are not authorized",
-                            "Contact support")
+            show_popup("You are not authorized",
+                       "Contact support")
 
     def export(self, name, folder, export_type):
         if self.data is not None:

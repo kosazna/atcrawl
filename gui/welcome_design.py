@@ -13,7 +13,11 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_WelcomeUI(object):
     def setupUi(self, WelcomeUI):
         WelcomeUI.setObjectName("WelcomeUI")
-        WelcomeUI.resize(350, 428)
+        WelcomeUI.resize(350, 475)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/layers/static/main_layer.png"),
+                       QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        WelcomeUI.setWindowIcon(icon)
         WelcomeUI.setStyleSheet("background-color: rgb(101, 104, 114);")
         self.centralwidget = QtWidgets.QWidget(WelcomeUI)
         self.centralwidget.setObjectName("centralwidget")
@@ -80,7 +84,7 @@ class Ui_WelcomeUI(object):
         self.header.setObjectName("header")
         self.bt_edit = QtWidgets.QToolButton(self.centralwidget)
         self.bt_edit.setEnabled(True)
-        self.bt_edit.setGeometry(QtCore.QRect(70, 330, 221, 50))
+        self.bt_edit.setGeometry(QtCore.QRect(70, 380, 221, 50))
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
         font.setPointSize(12)
@@ -147,6 +151,29 @@ class Ui_WelcomeUI(object):
         self.bt_gbg.setAutoRaise(True)
         self.bt_gbg.setArrowType(QtCore.Qt.NoArrow)
         self.bt_gbg.setObjectName("bt_gbg")
+        self.bt_transform = QtWidgets.QToolButton(self.centralwidget)
+        self.bt_transform.setEnabled(True)
+        self.bt_transform.setGeometry(QtCore.QRect(70, 320, 221, 50))
+        font = QtGui.QFont()
+        font.setFamily("Segoe UI")
+        font.setPointSize(12)
+        font.setBold(False)
+        font.setUnderline(False)
+        font.setWeight(50)
+        font.setStrikeOut(False)
+        font.setKerning(True)
+        self.bt_transform.setFont(font)
+        self.bt_transform.setStyleSheet("background-color: qlineargradient(spread:pad, x1:0, y1:0.5, x2:1, y2:0.5, stop:0 rgba(13, 5, 81, 255), stop:1 rgba(36, 176, 189, 255));\n"
+                                        "color: rgb(255, 255, 255);\n"
+                                        "border-width:10px;\n"
+                                        "border-radius:20px;\n"
+                                        "")
+        self.bt_transform.setCheckable(False)
+        self.bt_transform.setPopupMode(QtWidgets.QToolButton.InstantPopup)
+        self.bt_transform.setToolButtonStyle(QtCore.Qt.ToolButtonFollowStyle)
+        self.bt_transform.setAutoRaise(True)
+        self.bt_transform.setArrowType(QtCore.Qt.NoArrow)
+        self.bt_transform.setObjectName("bt_transform")
         WelcomeUI.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(WelcomeUI)
         self.statusbar.setObjectName("statusbar")
@@ -173,6 +200,8 @@ class Ui_WelcomeUI(object):
         self.bt_edit.setText(_translate("WelcomeUI", "Επεξεργασία Αρχείων"))
         self.bt_rellas.setText(_translate("WelcomeUI", "rellasamortiser.gr"))
         self.bt_gbg.setText(_translate("WelcomeUI", "gbg-eshop.gr"))
+        self.bt_transform.setText(_translate(
+            "WelcomeUI", "Επεξεργασία δεδομένων"))
 
 
 if __name__ == "__main__":

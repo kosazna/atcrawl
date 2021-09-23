@@ -5,7 +5,6 @@ from atcrawl.crawlers import *
 from atcrawl.core.engine import *
 from atcrawl.utilities.auth import *
 from atcrawl.utilities.paths import *
-from atcrawl.gui.edit import EditWindow
 from atcrawl.gui.welcome_design import *
 from atcrawl.gui.widgets import *
 from subprocess import Popen
@@ -151,23 +150,27 @@ class TransformUI(QWidget):
             pass
 
     def transform(self):
-        _name = self.get_filename()
-        _folder = self.get_folder()
-        _type = 'xlsx'
-        _output = _folder + f'/{_name}.{_type}'
+        if authorizer.user_is_licensed('transform'):
+            _name = self.get_filename()
+            _folder = self.get_folder()
+            _type = 'xlsx'
+            _output = _folder + f'/{_name}.{_type}'
 
-        table = self.site.split('.')[0]
-        query_result = self.sql.get_records_from_jobid(table, self.job_id)
-        self.transformer = transform_map[self.site].from_db(query_result)
-        self.data = self.transformer.transform(**self.get_params())
+            table = self.site.split('.')[0]
+            query_result = self.sql.get_records_from_jobid(table, self.job_id)
+            self.transformer = transform_map[self.site].from_db(query_result)
+            self.data = self.transformer.transform(**self.get_params())
 
-        self.export(name=_name,
-                    folder=_folder,
-                    export_type=_type)
+            self.export(name=_name,
+                        folder=_folder,
+                        export_type=_type)
 
-        self.output = _output
+            self.output = _output
 
-        self.mask_output(f"{_output}")
+            self.mask_output(f"{_output}")
+        else:
+            show_popup.emit("You are not authorized",
+                            "Contact support")
 
     def export(self, name, folder, export_type):
         if self.data is not None:

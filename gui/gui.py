@@ -5,6 +5,7 @@ from atcrawl.core.engine import *
 from atcrawl.utilities.auth import *
 from atcrawl.utilities.paths import *
 from atcrawl.gui.edit import EditWindow
+from atcrawl.gui.transform import TransformUI
 from atcrawl.gui.welcome_design import *
 from atcrawl.gui.widgets import *
 from atcrawl.gui.worker import Worker, WorkerSignalsStr
@@ -25,6 +26,7 @@ class WelcomeUI(Ui_WelcomeUI):
         self.bt_gbg.clicked.connect(
             lambda: self.init_crawler("gbg-eshop.gr"))
         self.bt_edit.clicked.connect(self.init_tools)
+        self.bt_transform.clicked.connect(self.init_transform)
 
     def init_crawler(self, name):
         if authorizer.user_is_licensed(name):
@@ -40,6 +42,10 @@ class WelcomeUI(Ui_WelcomeUI):
 
     def init_tools(self):
         self.ui = EditWindow()
+        self.ui.show()
+
+    def init_transform(self):
+        self.ui = TransformUI()
         self.ui.show()
 
 

@@ -6,6 +6,7 @@ from atcrawl.crawlers.rellasamortiser2.settings import *
 from atcrawl.utilities.data import *
 from atcrawl.utilities.funcs import *
 from atcrawl.utilities.paths import *
+from atcrawl.crawlers.rellasamortiser2.transform import *
 
 manufacturers = import_rellas_brands(paths.get_rellas_path())
 
@@ -155,7 +156,7 @@ class RellasAmortiser:
 
     def drop_n_sort(self):
         self.collection.drop_duplicates()
-        self.collection.sort(('model','price'))
+        self.collection.sort(('model', 'price'))
 
     def fast_collect(self):
         self.pre_collect()
@@ -174,68 +175,70 @@ class RellasAmortiser:
         self.set_init(url)
 
     def transform(self, **kwargs):
-        id_cat = kwargs.get('meta2', '')
-        meta_desc = kwargs.get('meta5', '')
-        meta_seo = kwargs.get('meta6', '')
-        skroutz = kwargs.get('meta4', '')
-        extra_desc = kwargs.get('meta7', '')
-        brand = kwargs.get('meta0', '')
-        model = kwargs.get('meta1', '')
+        rat = RellasAmortiserTransform.from_collection(self.collection)
+        self.data = rat.transform(**kwargs)
+        # id_cat = kwargs.get('meta2', '')
+        # meta_desc = kwargs.get('meta5', '')
+        # meta_seo = kwargs.get('meta6', '')
+        # skroutz = kwargs.get('meta4', '')
+        # extra_desc = kwargs.get('meta7', '')
+        # brand = kwargs.get('meta0', '')
+        # model = kwargs.get('meta1', '')
 
-        _discount = kwargs.get('meta3', 0)
-        if _discount:
-            discount = int(_discount)
-        else:
-            discount = 0
+        # _discount = kwargs.get('meta3', 0)
+        # if _discount:
+        #     discount = int(_discount)
+        # else:
+        #     discount = 0
 
-        discount_rate = (100 + int(discount)) / 100
+        # discount_rate = (100 + int(discount)) / 100
 
-        _data = self.collection.to_dataframe(columns=rellas_properties)
-        _data = _data.sort_values('model')
+        # _data = self.collection.to_dataframe(columns=rellas_properties)
+        # _data = _data.sort_values('model')
 
-        if brand:
-            _data['brand'] = brand
-        else:
-            _data['brand'] = ''
+        # if brand:
+        #     _data['brand'] = brand
+        # else:
+        #     _data['brand'] = ''
 
-        if model:
-            _data['model'] = model
+        # if model:
+        #     _data['model'] = model
 
-        _data['description'] = 'Γνήσιος κωδικός: ' + _data['sku']
-        _data['article_no'] = ''
-        _data['image'] = ''
-        _data['extra_description'] = _data['title']
+        # _data['description'] = 'Γνήσιος κωδικός: ' + _data['sku']
+        # _data['article_no'] = ''
+        # _data['image'] = ''
+        # _data['extra_description'] = _data['title']
 
-        _details1 = "Μάρκα αυτοκινήτου: " + _data['brand'] + ', '
-        _details2 = "Μοντέλο: " + _data['model'] + ', '
-        _details3 = "Χρονολογία: " + _data['year'] + ', '
-        _details4 = "Κατασκευαστής: " + _data['manufacturer']
+        # _details1 = "Μάρκα αυτοκινήτου: " + _data['brand'] + ', '
+        # _details2 = "Μοντέλο: " + _data['model'] + ', '
+        # _details3 = "Χρονολογία: " + _data['year'] + ', '
+        # _details4 = "Κατασκευαστής: " + _data['manufacturer']
 
-        _data['details'] = _details1 + _details2 + _details3 + _details4
+        # _data['details'] = _details1 + _details2 + _details3 + _details4
 
-        if extra_desc:
-            _data.loc[_data['details'].str.len() > 0, 'details'] = _data.loc[_data['details'].str.len(
-            ) > 0, 'details'] + f", {extra_desc}"
+        # if extra_desc:
+        #     _data.loc[_data['details'].str.len() > 0, 'details'] = _data.loc[_data['details'].str.len(
+        #     ) > 0, 'details'] + f", {extra_desc}"
 
-            _data.loc[_data['details'].str.len() == 0,
-                      'details'] = extra_desc
+        #     _data.loc[_data['details'].str.len() == 0,
+        #               'details'] = extra_desc
 
-        _data['skroutz'] = skroutz
+        # _data['skroutz'] = skroutz
 
-        _data["meta_title_seo"] = meta_desc + ' ' + _data['title']
-        _data["meta_seo"] = meta_seo + ' ' + _data['title']
-        _data['id_category'] = id_cat
-        _data['price_after_discount'] = (
-            _data['retail_price'] * discount_rate).round(2)
+        # _data["meta_title_seo"] = meta_desc + ' ' + _data['title']
+        # _data["meta_seo"] = meta_seo + ' ' + _data['title']
+        # _data['id_category'] = id_cat
+        # _data['price_after_discount'] = (
+        #     _data['retail_price'] * discount_rate).round(2)
 
-        _data['retail_price'] = _data['retail_price'].astype(
-            'string').str.replace('.', ',')
+        # _data['retail_price'] = _data['retail_price'].astype(
+        #     'string').str.replace('.', ',')
 
-        _data['price_after_discount'] = _data['price_after_discount'].astype('string').str.replace(
-            '.', ',')
+        # _data['price_after_discount'] = _data['price_after_discount'].astype('string').str.replace(
+        #     '.', ',')
 
-        self.data = _data[rellas_output_properties].drop_duplicates(
-            subset=['title', 'description', 'details'])
+        # self.data = _data[rellas_output_properties].drop_duplicates(
+        #     subset=['title', 'description', 'details'])
 
     def export(self, name, folder, export_type):
         if self.data is not None:

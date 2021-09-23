@@ -15,6 +15,7 @@ from atcrawl.crawlers.antallaktika2.settings import *
 from atcrawl.utilities.data import *
 from atcrawl.utilities.funcs import *
 from atcrawl.utilities.paths import *
+from atcrawl.crawlers.antallaktika2.tranform import *
 
 
 @dataclass
@@ -147,52 +148,54 @@ class AntallaktikaOnline:
         self.collection.sort('new_price')
 
     def transform(self, **kwargs):
-        def make_description(d1, d2):
-            if d1 and d2:
-                _d = f"{d1}|{d2}"
-            else:
-                _d = d1 if d1 else d2
+        aot = AntallaktikaOnlineTransform.from_collection(self.collection)
+        self.data = aot.transofrm(**kwargs)
+        # def make_description(d1, d2):
+        #     if d1 and d2:
+        #         _d = f"{d1}|{d2}"
+        #     else:
+        #         _d = d1 if d1 else d2
 
-            return _d
+        #     return _d
 
-        brand = kwargs.get('meta0', '')
+        # brand = kwargs.get('meta0', '')
 
-        _discount = kwargs.get('meta3', 0)
-        if _discount:
-            discount = int(_discount)
-        else:
-            discount = 0
+        # _discount = kwargs.get('meta3', 0)
+        # if _discount:
+        #     discount = int(_discount)
+        # else:
+        #     discount = 0
 
-        car = kwargs.get('meta1', '0')
+        # car = kwargs.get('meta1', '0')
 
-        discount_rate = (100 + int(discount)) / 100
+        # discount_rate = (100 + int(discount)) / 100
 
-        _data = self.collection.to_dataframe(columns=antallaktika_properties)
+        # _data = self.collection.to_dataframe(columns=antallaktika_properties)
 
-        _data['description'] = _data.apply(
-            lambda row: make_description(row['recycler'], row['kit']), axis=1)
+        # _data['description'] = _data.apply(
+        #     lambda row: make_description(row['recycler'], row['kit']), axis=1)
 
-        new_prices = (_data['retail_price'] *
-                      discount_rate).round(2)
-        col_name = f'price_after_discount_{+discount}%'
-        _data['brand'] = brand
-        _data[col_name] = new_prices
-        _data['retail_price'] = _data['retail_price'].astype(float).round(2)
-        _data['car'] = car
+        # new_prices = (_data['retail_price'] *
+        #               discount_rate).round(2)
+        # col_name = f'price_after_discount_{+discount}%'
+        # _data['brand'] = brand
+        # _data[col_name] = new_prices
+        # _data['retail_price'] = _data['retail_price'].astype(float).round(2)
+        # _data['car'] = car
 
-        _data['retail_price'] = _data['retail_price'].astype(
-            'string').str.replace('.', ',', regex=False)
-        _data['price_after_discount'] = _data[
-            'price_after_discount'].astype('string').str.replace('.', ',', regex=False)
-        _data[col_name] = _data[col_name].astype(
-            'string').str.replace('.', ',', regex=False)
-        _data = _data.drop_duplicates(
-            subset=['article_no']).reset_index(drop=True)
+        # _data['retail_price'] = _data['retail_price'].astype(
+        #     'string').str.replace('.', ',', regex=False)
+        # _data['price_after_discount'] = _data[
+        #     'price_after_discount'].astype('string').str.replace('.', ',', regex=False)
+        # _data[col_name] = _data[col_name].astype(
+        #     'string').str.replace('.', ',', regex=False)
+        # _data = _data.drop_duplicates(
+        #     subset=['article_no']).reset_index(drop=True)
 
-        keep_cols = copy(antallaktika_output_properties)
-        keep_cols.insert(4, col_name)
+        # keep_cols = copy(antallaktika_output_properties)
+        # keep_cols.insert(4, col_name)
 
-        self.data = _data[keep_cols]
+        # self.data = _data[keep_cols]
 
     def export(self, name, folder, export_type):
         if self.data is not None:

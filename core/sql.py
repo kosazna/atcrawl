@@ -202,4 +202,4 @@ if __name__ == '__main__':
     # Popen(["C:/Program Files/DB Browser for SQLite/DB Browser for SQLite.exe", "C:/Users/aznavouridis.k/.atcrawl/atcrawl.db"])
     asql = AtcrawlSQL("C:/Users/aznavouridis.k/.atcrawl/atcrawl.db")
 
-    print(asql.get_params_from_jobid(5))
+    print(asql.get_all_jobid())

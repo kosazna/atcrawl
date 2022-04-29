@@ -56,7 +56,7 @@ class ItemCollection:
         self.types = None
         self.nitems = 0
 
-    def get_data(self, rtype: str = 'dict') -> List[dict]:
+    def get_data(self, rtype: str = 'dict') -> Union[List[dict], List[tuple]]:
         if rtype == 'tuple':
             return [it.astuple() for it in self.items]
         return [it.asdict() for it in self.items]

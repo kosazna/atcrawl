@@ -1,39 +1,66 @@
-from PyQt5 import QtWidgets
-# from mainwindow import Ui_MainWindow
+# -*- coding: utf-8 -*-
 
-class Login(QtWidgets.QDialog):
-    def __init__(self, parent=None):
-        super(Login, self).__init__(parent)
-        self.textName = QtWidgets.QLineEdit(self)
-        self.textPass = QtWidgets.QLineEdit(self)
-        self.buttonLogin = QtWidgets.QPushButton('Login', self)
-        self.buttonLogin.clicked.connect(self.handleLogin)
-        layout = QtWidgets.QVBoxLayout(self)
-        layout.addWidget(self.textName)
-        layout.addWidget(self.textPass)
-        layout.addWidget(self.buttonLogin)
+################################################################################
+# Form generated from reading UI file 'progess_barwUidno.ui'
+##
+# Created by: Qt User Interface Compiler version 5.15.2
+##
+# WARNING! All changes made in this file will be lost when recompiling UI file!
+################################################################################
 
-    def handleLogin(self):
-        if (self.textName.text() == 'foo' and
-            self.textPass.text() == 'bar'):
-            self.accept()
-        else:
-            QtWidgets.QMessageBox.warning(
-                self, 'Error', 'Bad user or password')
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
 
-class Window(QtWidgets.QMainWindow):
-    def __init__(self, parent=None):
-        super(Window, self).__init__(parent)
-        # self.ui = Ui_MainWindow()
-        # self.ui.setupUi(self)
+
+class Ui_Frame(QWidget):
+    def setupUi(self, Frame):
+        if not Frame.objectName():
+            Frame.setObjectName(u"Frame")
+        Frame.resize(620, 52)
+        Frame.setStyleSheet(u"#ProgressBar {\n"
+                            "  font-family: \"Segoe UI\";\n"
+                            "  border: 1px solid #212529;\n"
+                            "  background-color: transparent;\n"
+                            "  border-radius: 3px;\n"
+                            "  font: 12px;\n"
+                            "  font-weight: bold;\n"
+                            "  max-height: 20px;\n"
+                            "  min-height: 20px;\n"
+                            "  min-width: 150px;\n"
+                            "}\n"
+                            "\n"
+                            "#ProgressBar::chunk {\n"
+                            "  background-color: qlineargradient(spread:pad, x1:0, y1:0.5, x2:1, y2:0.5, stop:0 rgba(98, 116, 157, 255), stop:0.5 rgba(89, 135, 120, 255), stop:1 rgba(91, 192, 100, 255));\n"
+                            "}")
+        self.horizontalLayout = QHBoxLayout(Frame)
+        self.horizontalLayout.setSpacing(4)
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.horizontalLayout.setContentsMargins(4, 2, 4, 2)
+        self.ProgressBar = QProgressBar(Frame)
+        self.ProgressBar.setObjectName(u"ProgressBar")
+        self.ProgressBar.setValue(70)
+        self.ProgressBar.setAlignment(Qt.AlignCenter)
+        self.ProgressBar.setTextVisible(True)
+        self.ProgressBar.setOrientation(Qt.Horizontal)
+
+        self.horizontalLayout.addWidget(self.ProgressBar)
+
+        self.retranslateUi(Frame)
+
+        QMetaObject.connectSlotsByName(Frame)
+    # setupUi
+
+    def retranslateUi(self, Frame):
+        Frame.setWindowTitle(
+            QCoreApplication.translate("Frame", u"Frame", None))
+    # retranslateUi
 
 if __name__ == '__main__':
-
     import sys
-    app = QtWidgets.QApplication(sys.argv)
-    login = Login()
-
-    if login.exec_() == QtWidgets.QDialog.Accepted:
-        window = Window()
-        window.show()
-        sys.exit(app.exec_())
+    app = QApplication(sys.argv)
+    frame = QFrame()
+    volume = Ui_Frame()
+    volume.setupUi(frame)
+    volume.show()
+    sys.exit(app.exec_())

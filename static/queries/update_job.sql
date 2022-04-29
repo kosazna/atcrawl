@@ -2,7 +2,7 @@ INSERT INTO
     "job" (
         "site",
         "site_counter",
-        "run_at",
+        "collected_at",
         "parameters",
         "records",
         "out_file"
@@ -11,7 +11,7 @@ VALUES
     (
         :site,
         :site_counter,
-        :run_at,
+        :collected_at,
         :parameters,
         :records,
         :out_file

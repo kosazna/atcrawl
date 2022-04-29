@@ -699,6 +699,122 @@ class TitleWordsEdit(MainEdit):
                                 "Contact support")
 
 
+class UpdatePricesEdit(MainEdit):
+    def __init__(self, parent=None, *args, **kwargs):
+        super().__init__(parent=parent, *args, **kwargs)
+        self.setupUi()
+        self.fileToModify1.lineEdit.textChanged.connect(self.clearCombos1)
+        self.fileToModify2.lineEdit.textChanged.connect(self.clearCombos2)
+        self.button.subscribe(self.start_process)
+        self.status.subscribe(self.open_file)
+        self.can_process = False
+
+    def setupUi(self):
+        self.fileToModify1 = FileInput("Αρχείο προς επεξεργασία:",
+                                       orientation=VERTICAL)
+        self.fileToModify1.setBrowseCallback(self.readInputFile1)
+        self.fileToModify2 = FileInput("Αρχείο Γεωργακόπουλου:",
+                                       orientation=VERTICAL)
+        self.fileToModify2.setBrowseCallback(self.readInputFile2)
+
+        self.colCombo1 = ComboInput("Στήλη με το κωδικό στο αρχείο:",
+                                    size=(150, 150))
+
+        self.colCombo2 = ComboInput("Στήλη με το κωδικό στο GBG αρχείο:",
+                                    size=(150, 150))
+
+        self.colCombo3 = ComboInput("Στήλη με τη τιμή:",
+                                    size=(150, 150))
+
+        self.colCombo4 = ComboInput("Στήλη με τη τιμή στο GBG αρχείο:",
+                                    size=(150, 150))
+
+        self.destination = FileOutput("Αποθήκευση επεξεργασμένου αρχείου:",
+                                      orientation=VERTICAL)
+
+        self.splitAndPos = InputParameter("Διαχωρισμός και θέση κωδικού:",
+                                          orientation=VERTICAL)
+
+        self.splitAndPos.setText("-3")
+
+        self.progressBar = ProgressBar()
+
+        self.buttonLayout = QHBoxLayout()
+        self.status = StatusIndicator(status='')
+        self.button = Button("Εκτέλεση")
+        self.buttonLayout.addWidget(self.progressBar)
+        self.buttonLayout.addWidget(self.button)
+
+        self.pageLayout = QVBoxLayout()
+        self.pageLayout.addWidget(self.fileToModify1)
+        self.pageLayout.addWidget(self.fileToModify2)
+        self.pageLayout.addWidget(self.colCombo1)
+        self.pageLayout.addWidget(self.colCombo2)
+        self.pageLayout.addWidget(self.colCombo3)
+        self.pageLayout.addWidget(self.colCombo4)
+        self.pageLayout.addWidget(self.splitAndPos)
+        self.pageLayout.addWidget(self.destination)
+        self.pageLayout.addStretch()
+        self.pageLayout.addWidget(self.status)
+        self.pageLayout.addLayout(self.buttonLayout)
+        self.setLayout(self.pageLayout)
+
+    def getParams(self):
+        _params = {'src1': self.fileToModify1.getText(),
+                   'src2': self.fileToModify2.getText(),
+                   'join_on': self.colCombo2.getCurrentText(),
+                   'target_col': self.colCombo3.getCurrentText(),
+                   'reference_col': self.colCombo4.getCurrentText(),
+                   'pid_col': self.colCombo1.getCurrentText(),
+                   'dst_file': self.destination.getText(),
+                   'splitter': self.splitAndPos.getText()[0],
+                   'index': int(self.splitAndPos.getText()[1]) - 1}
+
+        return _params
+
+    def readInputFile1(self):
+        _file = self.fileToModify1.getText()
+        if os.path.exists(_file):
+            _file_ext = os.path.splitext(_file)[1]
+            if _file_ext in ['.xlsx', '.xls']:
+                _df = pd.read_excel(_file)
+                _cols = _df.columns.tolist()
+
+                self.colCombo1.addItems(_cols)
+                self.colCombo3.addItems(_cols)
+
+    def readInputFile2(self):
+        _file = self.fileToModify2.getText()
+        if os.path.exists(_file):
+            _file_ext = os.path.splitext(_file)[1]
+            if _file_ext in ['.xlsx', '.xls']:
+                _df = pd.read_excel(_file)
+                _cols = _df.columns.tolist()
+
+                self.colCombo2.addItems(_cols)
+                self.colCombo4.addItems(_cols)
+
+    def clearCombos1(self):
+        self.colCombo1.clearItems()
+        self.colCombo3.clearItems()
+
+    def clearCombos2(self):
+        self.colCombo2.clearItems()
+        self.colCombo4.clearItems()
+
+    def execute(self, progress_callback, progress_popup):
+        self.assert_process_capabilities()
+        if authorizer.user_is_licensed("update_prices"):
+            if self.can_process:
+                params = self.getParams()
+                update_from_GBG(**params, progress_callback=progress_callback)
+            else:
+                progress_popup.emit("Συμπλήρωσε τα απαραίτητα πεδία")
+        else:
+            progress_popup.emit("You are not authorized",
+                                "Contact support")
+
+
 class EditWindow(QWidget):
     def __init__(self, parent=None, *args, **kwargs):
         super().__init__(parent=parent, *args, **kwargs)
@@ -718,7 +834,8 @@ class EditWindow(QWidget):
                                      "Κόψιμο αρχείου",
                                      "Αντικατάσταση λέξεων",
                                      "Αναζήτηση εικόνων (GBG)",
-                                     "Αντικατάσταση κεφαλαίων λέξεων"],
+                                     "Αντικατάσταση κεφαλαίων λέξεων",
+                                     "Ενημέρωση τιμών GBG"],
                                     size=(100, 200))
         self.pageCombo.subscribe(self.switchPage)
         self.stackedLayout = QStackedLayout()
@@ -740,6 +857,8 @@ class EditWindow(QWidget):
         self.stackedLayout.addWidget(self.page8)
         self.page9 = TitleWordsEdit()
         self.stackedLayout.addWidget(self.page9)
+        self.page10 = UpdatePricesEdit()
+        self.stackedLayout.addWidget(self.page10)
 
         IOWidget.setLastVisit(cwd)
 

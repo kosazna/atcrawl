@@ -363,9 +363,11 @@ def replace_words(data, replacements, dst_file, columns, progress_callback=None)
             print("Οι αλλαγές έγιναν.")
     except PermissionError:
         if progress_callback is not None:
-            progress_callback.emit((0, max_items, "Το αρχείο είναι ανοιχτό στο Excel. Κλείσε και ξαναπροσπάθησε."))
+            progress_callback.emit(
+                (0, max_items, "Το αρχείο είναι ανοιχτό στο Excel. Κλείσε και ξαναπροσπάθησε."))
         else:
             print("Το αρχέιο είναι ανοιχτό στο Excel. Κλείσε και ξαναπροσπάθησε.")
+
 
 def title_words(data, dst_file, columns, progress_callback=None):
     df = pd.read_excel(data, dtype='string')
@@ -388,7 +390,8 @@ def title_words(data, dst_file, columns, progress_callback=None):
             print("Οι αλλαγές έγιναν.")
     except PermissionError:
         if progress_callback is not None:
-            progress_callback.emit((0, max_items, "Το αρχείο είναι ανοιχτό στο Excel. Κλείσε και ξαναπροσπάθησε."))
+            progress_callback.emit(
+                (0, max_items, "Το αρχείο είναι ανοιχτό στο Excel. Κλείσε και ξαναπροσπάθησε."))
         else:
             print("Το αρχέιο είναι ανοιχτό στο Excel. Κλείσε και ξαναπροσπάθησε.")
 
@@ -478,7 +481,7 @@ def download_image(url, destination, save_name=None):
 
 def download_images(urls, destination, save_names, progress_callback=None):
     progress_callback.emit((0, 100, "Κατέβασμα εικόνων"))
-    
+
     with concurrent.futures.ThreadPoolExecutor() as executor:
         max_items = len(urls)
         i = 0
@@ -628,3 +631,72 @@ def input_path(prompt: str,
                 else:
                     _error = f"{_path} can't be used for any operation."
                     raise IOError(_error)
+
+
+def update_col(df1: pd.DataFrame, df2: pd.DataFrame, join_on: str, target_col: str, reference_col: str) -> pd.DataFrame:
+    _cols = df1.columns
+    _temp = pd.merge(df1, df2,
+                     how='left',
+                     on=join_on,
+                     suffixes=(None, '_merged'))
+
+    if reference_col in _cols:
+        _reference = f"{reference_col}_merged"
+    else:
+        _reference = reference_col
+
+    _temp[target_col] = _temp[_reference]
+
+    na_idx = _temp.loc[_temp[target_col].isna()].index
+
+    if na_idx.any():
+        _temp.loc[na_idx, target_col] = df1.loc[na_idx, target_col]
+
+    return _temp[_cols]
+
+
+def parse_id(text: str, index: int, splitter: str = '-'):
+    try:
+        return text.split(splitter)[index]
+    except IndexError:
+        return None
+
+
+def update_from_GBG(src1: str,
+                    src2: str,
+                    dst_file: str,
+                    join_on: str,
+                    target_col: str,
+                    reference_col: str,
+                    pid_col: str,
+                    splitter: str = None,
+                    index: int = None,
+                    progress_callback=None):
+    progress_callback.emit((0, 100, "Φόρτωση Αρχείων"))
+    df1 = pd.read_excel(src1, dtype='string')
+    df2 = pd.read_excel(src2, dtype='string')
+
+    original_cols = df1.columns
+
+    if splitter is None and index is None:
+        df1[join_on] = df1[pid_col]
+    else:
+        df1[join_on] = df1[pid_col].apply(
+            lambda x: parse_id(x, index, splitter))
+
+    _df = update_col(df1, df2, join_on, target_col, reference_col)
+
+    _df[original_cols].to_excel(dst_file, index=False)
+
+    try:
+        _df[original_cols].to_excel(dst_file, index=False)
+        if progress_callback is not None:
+            progress_callback.emit((100, 100, dst_file))
+        else:
+            print("Οι αλλαγές έγιναν.")
+    except PermissionError:
+        if progress_callback is not None:
+            progress_callback.emit(
+                (0, 100, "Το αρχείο είναι ανοιχτό στο Excel. Κλείσε και ξαναπροσπάθησε."))
+        else:
+            print("Το αρχέιο είναι ανοιχτό στο Excel. Κλείσε και ξαναπροσπάθησε.")
